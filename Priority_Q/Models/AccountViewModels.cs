@@ -5,7 +5,7 @@ namespace Priority_Q.Models
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
-        [Display(Name = "用户名")]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
     }
 
@@ -13,18 +13,18 @@ namespace Priority_Q.Models
     {
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "当前密码")]
+        [Display(Name = "Old Password")]
         public string OldPassword { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0} 必须至少包含 {2} 个字符。", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} must have at least {2} characters.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "新密码")]
+        [Display(Name = "New Password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "确认新密码")]
-        [Compare("NewPassword", ErrorMessage = "新密码和确认密码不匹配。")]
+        [Display(Name = "Retype new password")]
+        [Compare("NewPassword", ErrorMessage = "Passwords don't match.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -46,18 +46,18 @@ namespace Priority_Q.Models
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "用户名")]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0} 必须至少包含 {2} 个字符。", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} must have at least {2} characters.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "密码")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "确认密码")]
-        [Compare("Password", ErrorMessage = "密码和确认密码不匹配。")]
+        [Display(Name = "Re-enter password")]
+        [Compare("Password", ErrorMessage = "Passwords don't match.")]
         public string ConfirmPassword { get; set; }
     }
 }
