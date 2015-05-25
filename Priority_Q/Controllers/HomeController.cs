@@ -15,14 +15,14 @@ namespace Priority_Q.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "PriorityQ is designed to make waiting for restaurants as efficient as possible.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Our contact page.";
 
             return View();
         }

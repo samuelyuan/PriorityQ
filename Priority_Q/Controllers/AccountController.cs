@@ -119,10 +119,10 @@ namespace Priority_Q.Controllers
         public ActionResult Manage(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "你的密码已更改。"
-                : message == ManageMessageId.SetPasswordSuccess ? "已设置你的密码。"
+                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been updated"
+                : message == ManageMessageId.SetPasswordSuccess ? "Password has been set"
                 : message == ManageMessageId.RemoveLoginSuccess ? "已删除外部登录名。"
-                : message == ManageMessageId.Error ? "出现错误。"
+                : message == ManageMessageId.Error ? "Encountered error"
                 : "";
             ViewBag.HasLocalPassword = HasPassword();
             ViewBag.ReturnUrl = Url.Action("Manage");
