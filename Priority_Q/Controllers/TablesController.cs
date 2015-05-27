@@ -35,9 +35,13 @@ namespace Priority_Q.Controllers
             return View(table);
         }
 
-        // GET: Tables/Create
-        public ActionResult Create()
+        // GET: Tables/Create/1
+        public ActionResult Create(int? restaurantId)
         {
+            if (restaurantId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             return View();
         }
 
@@ -55,21 +59,6 @@ namespace Priority_Q.Controllers
                 return RedirectToAction("Index");
             }
 
-            return View(table);
-        }
-
-        // GET: Tables/ViewTables/5
-        public ActionResult ViewTables(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Table table = db.Tables.Find(id);
-            if (table == null)
-            {
-                return HttpNotFound();
-            }
             return View(table);
         }
 

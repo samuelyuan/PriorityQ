@@ -11,9 +11,6 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.RestaurantId)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.MaxCapacity)
         </th>
         <th>
@@ -28,9 +25,6 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RestaurantId)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MaxCapacity)
             </td>
