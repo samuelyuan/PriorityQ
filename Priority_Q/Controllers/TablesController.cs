@@ -10,120 +10,122 @@ using Priority_Q.Models;
 
 namespace Priority_Q.Controllers
 {
-    public class RestaurantsController : Controller
+    public class TablesController : Controller
     {
-        private RestaurantDBContext db = new RestaurantDBContext();
+        private TableDBContext db = new TableDBContext();
 
-        // GET: Restaurants
+        // GET: Tables
         public ActionResult Index()
         {
-            return View(db.Restaurants.ToList());
+            return View(db.Tables.ToList());
         }
 
-        // GET: Restaurants/Details/5
+        // GET: Tables/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Restaurant restaurant = db.Restaurants.Find(id);
-            if (restaurant == null)
+            Table table = db.Tables.Find(id);
+            if (table == null)
             {
                 return HttpNotFound();
             }
-            return View(restaurant);
+            return View(table);
         }
 
-        // GET: Restaurants/Create
+        // GET: Tables/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Restaurants/Create
+        // POST: Tables/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Location,NumTables")] Restaurant restaurant)
+        public ActionResult Create([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,OccupationStartTime")] Table table)
         {
             if (ModelState.IsValid)
             {
-                db.Restaurants.Add(restaurant);
+                db.Tables.Add(table);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(restaurant);
+            return View(table);
         }
 
-        // GET: Restaurants/ViewTables/5
+        // GET: Tables/ViewTables/5
         public ActionResult ViewTables(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //Restaurant restaurant = db.Restaurants.Find(id);
-            TableDBContext tableDB = new TableDBContext();
-            IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == id);
-            return View(tables);
+            Table table = db.Tables.Find(id);
+            if (table == null)
+            {
+                return HttpNotFound();
+            }
+            return View(table);
         }
 
-        // GET: Restaurants/Edit/5
+        // GET: Tables/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Restaurant restaurant = db.Restaurants.Find(id);
-            if (restaurant == null)
+            Table table = db.Tables.Find(id);
+            if (table == null)
             {
                 return HttpNotFound();
             }
-            return View(restaurant);
+            return View(table);
         }
 
-        // POST: Restaurants/Edit/5
+        // POST: Tables/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Location,NumTables")] Restaurant restaurant)
+        public ActionResult Edit([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,OccupationStartTime")] Table table)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(restaurant).State = EntityState.Modified;
+                db.Entry(table).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(restaurant);
+            return View(table);
         }
 
-        // GET: Restaurants/Delete/5
+        // GET: Tables/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Restaurant restaurant = db.Restaurants.Find(id);
-            if (restaurant == null)
+            Table table = db.Tables.Find(id);
+            if (table == null)
             {
                 return HttpNotFound();
             }
-            return View(restaurant);
+            return View(table);
         }
 
-        // POST: Restaurants/Delete/5
+        // POST: Tables/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Restaurant restaurant = db.Restaurants.Find(id);
-            db.Restaurants.Remove(restaurant);
+            Table table = db.Tables.Find(id);
+            db.Tables.Remove(table);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
