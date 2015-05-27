@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Priority_Q.Models.Restaurant>
+﻿@using Microsoft.AspNet.Identity;
+@model IEnumerable<Priority_Q.Models.Restaurant>
 
 @{
     ViewBag.Title = "Index";
@@ -7,7 +8,11 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New Restaurant", "Create")
+    @if (Request.IsAuthenticated)
+    {
+        //this is to prevent a random person from generating new restaurants
+        @Html.ActionLink("Create New Restaurant", "Create")
+    }
 </p>
 <table class="table">
     <tr>
@@ -41,9 +46,14 @@
             @Html.DisplayFor(modelItem => item.NumTables)
         </td>
         <td>
-            @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID }) |
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID }) 
+            @if (Request.IsAuthenticated)
+            {
+                //only logged in users should be able to edit and delete
+                //best if only the user modifies their own restaurant and not someone else's
+                @Html.ActionLink("[Edit]", "Edit", new { id=item.ID }) 
+                @Html.ActionLink("[Delete]", "Delete", new { id=item.ID }) 
+            }
         </td>
     </tr>
 }
