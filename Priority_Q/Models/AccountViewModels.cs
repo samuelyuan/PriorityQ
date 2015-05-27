@@ -31,15 +31,15 @@ namespace Priority_Q.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "用户名")]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "密码")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Display(Name = "记住我?")]
+        [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
     }
 
