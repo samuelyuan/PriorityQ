@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Priority_Q.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Priority_Q.Controllers
 {
@@ -46,10 +47,11 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Location,NumTables")] Restaurant restaurant)
+        public ActionResult Create([Bind(Include = "ID,Name,Location,NumTables,UserID")] Restaurant restaurant)
         {
             if (ModelState.IsValid)
             {
+                restaurant.UserID = User.Identity.GetUserId();
                 db.Restaurants.Add(restaurant);
                 db.SaveChanges();
                 return RedirectToAction("Index");

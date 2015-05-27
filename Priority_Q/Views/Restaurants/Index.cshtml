@@ -28,6 +28,9 @@
         <th>
             @Html.DisplayNameFor(model => model.NumTables)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserID)
+        </th>
         <th></th>
     </tr>
 
@@ -47,7 +50,7 @@
         </td>
         <td>
             @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID }) 
-            @if (Request.IsAuthenticated)
+            @if (Request.IsAuthenticated && item.UserID.Equals(User.Identity.GetUserId()))
             {
                 //only logged in users should be able to edit and delete
                 //best if only the user modifies their own restaurant and not someone else's
