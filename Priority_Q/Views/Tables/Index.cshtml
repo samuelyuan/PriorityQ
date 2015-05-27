@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Priority_Q.Models.Restaurant>
+﻿@model IEnumerable<Priority_Q.Models.Table>
 
 @{
     ViewBag.Title = "Index";
@@ -12,16 +12,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ID)
+            @Html.DisplayNameFor(model => model.RestaurantId)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.MaxCapacity)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Location)
+            @Html.DisplayNameFor(model => model.IsOccupied)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.NumTables)
+            @Html.DisplayNameFor(model => model.OccupationStartTime)
         </th>
         <th></th>
     </tr>
@@ -29,19 +29,18 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.ID)
+            @Html.DisplayFor(modelItem => item.RestaurantId)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
+            @Html.DisplayFor(modelItem => item.MaxCapacity)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Location)
+            @Html.DisplayFor(modelItem => item.IsOccupied)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.NumTables)
+            @Html.DisplayFor(modelItem => item.OccupationStartTime)
         </td>
         <td>
-            @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID }) |
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
             @Html.ActionLink("Details", "Details", new { id=item.ID }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.ID })
