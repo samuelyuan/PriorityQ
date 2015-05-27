@@ -121,7 +121,7 @@ namespace Priority_Q.Controllers
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been updated"
                 : message == ManageMessageId.SetPasswordSuccess ? "Password has been set"
-                : message == ManageMessageId.RemoveLoginSuccess ? "已删除外部登录名。"
+                : message == ManageMessageId.RemoveLoginSuccess ? "Removed external account"
                 : message == ManageMessageId.Error ? "Encountered error"
                 : "";
             ViewBag.HasLocalPassword = HasPassword();
