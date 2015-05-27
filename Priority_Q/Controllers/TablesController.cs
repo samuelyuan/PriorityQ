@@ -17,7 +17,7 @@ namespace Priority_Q.Controllers
         // GET: Tables
         public ActionResult Index()
         {
-            return View(db.Tables.ToList());
+            return View();
         }
 
         // GET: Tables/Details/5
@@ -36,13 +36,15 @@ namespace Priority_Q.Controllers
         }
 
         // GET: Tables/Create/1
-        public ActionResult Create(int? restaurantId)
+        public ActionResult Create(int? id)
         {
-            if (restaurantId == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View();
+            Table table = new Table();
+            table.RestaurantId = id.Value;
+            return View(table);
         }
 
         // POST: Tables/Create
