@@ -231,6 +231,7 @@
     <Content Include="Views\Tables\Edit.cshtml" />
     <Content Include="Views\Tables\Index.cshtml" />
     <Content Include="Views\Restaurants\ViewTables.cshtml" />
+    <Content Include="Views\Account\AllUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
