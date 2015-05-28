@@ -18,7 +18,18 @@ namespace Priority_Q.Controllers
         // GET: Restaurants
         public ActionResult Index()
         {
-            return View(db.Restaurants.ToList());
+            Restaurant[] restaurantArray = db.Restaurants.ToArray();;
+            for (int i = 0; i < restaurantArray.Count(); i++)
+            {
+                int restaurantId = restaurantArray[i].ID;
+               
+                //the number of tables for a given restaurant can change, so update
+                TableDBContext tableDB = new TableDBContext();
+                IEnumerable<Priority_Q.Models.Table> allTables = tableDB.Tables.Where(table => table.RestaurantId == restaurantId);
+                restaurantArray[i].NumTables = allTables.Count();
+            }
+
+            return View(restaurantArray.ToList());
         }
 
         // GET: Restaurants/Details/5
