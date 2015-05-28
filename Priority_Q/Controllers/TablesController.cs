@@ -88,7 +88,7 @@ namespace Priority_Q.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(table).State = EntityState.Modified;
+                db.Entry(table).State = EntityState.Modified;   
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

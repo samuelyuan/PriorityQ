@@ -19,7 +19,7 @@ namespace Priority_Q.Models
         [Range(0, int.MaxValue, ErrorMessage = "The number of tables must be a positive number")]
         public int NumTables { get; set; }
 
-        public String UserID { get; set; } //this maps the restaurant to a certain account (should be private)
+        public String UserID { get; set; } //this maps the restaurant to a certain account
     }
 
     public class RestaurantDBContext : DbContext
