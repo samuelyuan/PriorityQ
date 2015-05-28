@@ -1,0 +1,6 @@
+# Log Files
+*.ldf
+
+# Compiled Dynamic libraries
+*.dll
+*.pdb
