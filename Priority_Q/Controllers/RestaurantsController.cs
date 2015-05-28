@@ -68,8 +68,12 @@ namespace Priority_Q.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //Restaurant restaurant = db.Restaurants.Find(id);
+
+            //Find all tables belonging to a restaurant 
             TableDBContext tableDB = new TableDBContext();
             IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == id);
+            ViewBag.RestaurantId = id;
+            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             return View(tables);
         }
 
@@ -97,6 +101,10 @@ namespace Priority_Q.Controllers
         {
             if (ModelState.IsValid)
             {
+                //while editing, make sure the user id is attached to the restaurant
+                //that way the user doesn't lose control by accident
+                restaurant.UserID = User.Identity.GetUserId();
+
                 db.Entry(restaurant).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

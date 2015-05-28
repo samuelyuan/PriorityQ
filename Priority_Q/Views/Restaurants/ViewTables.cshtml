@@ -6,13 +6,16 @@
 
 <h2>The Restaurant's Tables</h2>
 <p>
-    @foreach (var item in Model)
+    @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
     {
-        @Html.ActionLink("Create New", "Create", "Tables", new { id = item.ID }, null)
-        break;
+        //create a new table just for that restaurant
+        @Html.ActionLink("Create New", "Create", "Tables", new { id = ViewBag.RestaurantId }, null)
     }
 </p>
+
+<!-- The data passed in is a list of tables for a restaurant -->
 <table class="table">
+    <!-- header -->
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.ID)
@@ -26,6 +29,7 @@
         <th></th>
     </tr>
 
+    <!-- contents -->
     @foreach (var item in Model)
     {
         <tr>
@@ -39,8 +43,11 @@
                 @Html.DisplayFor(modelItem => item.IsOccupied)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", "Tables", new { id = item.ID }, null) |
-                @Html.ActionLink("Delete", "Delete", "Tables", new { id = item.ID }, null)
+                @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant) 
+                {
+                    @Html.ActionLink("[Edit]", "Edit", "Tables", new { id = item.ID }, null)
+                    @Html.ActionLink("[Delete]", "Delete", "Tables", new { id = item.ID }, null)
+                }
             </td>
         </tr>
     }
