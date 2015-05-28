@@ -16,8 +16,9 @@ namespace Priority_Q.Models
         [StringLength(100, ErrorMessage = "Location must be specified.")]
         public string Location { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "The number of tables must be a positive number")]
         public int NumTables { get; set; }
+
+        public int AvailableTables { get; set; }
 
         public String UserID { get; set; } //this maps the restaurant to a certain account
     }

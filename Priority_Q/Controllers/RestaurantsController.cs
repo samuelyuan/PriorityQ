@@ -27,6 +27,9 @@ namespace Priority_Q.Controllers
                 TableDBContext tableDB = new TableDBContext();
                 IEnumerable<Priority_Q.Models.Table> allTables = tableDB.Tables.Where(table => table.RestaurantId == restaurantId);
                 restaurantArray[i].NumTables = allTables.Count();
+
+                IEnumerable<Priority_Q.Models.Table> availableTables = allTables.Where(table => table.IsOccupied == false);
+                restaurantArray[i].AvailableTables = availableTables.Count();
             }
 
             return View(restaurantArray.ToList());
