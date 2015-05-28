@@ -9,7 +9,7 @@
     @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
     {
         //create a new table just for that restaurant
-        @Html.ActionLink("Create New", "Create", "Tables", new { id = ViewBag.RestaurantId }, null)
+        @Html.ActionLink("Create New Table", "Create", "Tables", new { id = ViewBag.RestaurantId }, null)
     }
 </p>
 
