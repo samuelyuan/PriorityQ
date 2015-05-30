@@ -58,7 +58,7 @@ namespace Priority_Q.Controllers
             {
                 db.Tables.Add(table);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Restaurants");
             }
 
             return View(table);
@@ -76,6 +76,13 @@ namespace Priority_Q.Controllers
             {
                 return HttpNotFound();
             }
+
+            //if the user isn't logged in, they shouldn't be able to edit tables!
+            if (!Request.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Restaurants");
+            }
+
             return View(table);
         }
 
@@ -90,7 +97,7 @@ namespace Priority_Q.Controllers
             {
                 db.Entry(table).State = EntityState.Modified;   
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Restaurants");
             }
             return View(table);
         }
@@ -118,7 +125,7 @@ namespace Priority_Q.Controllers
             Table table = db.Tables.Find(id);
             db.Tables.Remove(table);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Restaurants");
         }
 
         protected override void Dispose(bool disposing)
