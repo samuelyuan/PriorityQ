@@ -103,6 +103,15 @@ namespace Priority_Q.Controllers
             {
                 return HttpNotFound();
             }
+
+            //if the user isn't logged in, they shouldn't be able to edit restaurants!
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Index", "Restaurants");
+         
+            //if the logged in user doesn't own the restaurant, they shouldn't be able to edit other people's data
+            if (restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
+
             return View(restaurant);
         }
 
@@ -138,6 +147,15 @@ namespace Priority_Q.Controllers
             {
                 return HttpNotFound();
             }
+
+            //if the user isn't logged in, they shouldn't be able to delete restaurants!
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Index", "Restaurants");
+
+            //if the logged in user doesn't own the restaurant, they shouldn't be able to delete other people's data!
+            if (restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
+
             return View(restaurant);
         }
 
