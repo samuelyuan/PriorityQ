@@ -30,23 +30,23 @@
     </tr>
 
     <!-- contents -->
-    @foreach (var item in Model)
+    @foreach (var item in Model.Select((value, i) => new { i, value }))
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ID)
+                @Html.DisplayFor(modelItem => item.i) 
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MaxCapacity)
+                @Html.DisplayFor(modelItem => item.value.MaxCapacity)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsOccupied)
+                @Html.DisplayFor(modelItem => item.value.IsOccupied)
             </td>
             <td>
                 @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant) 
                 {
-                    @Html.ActionLink("[Edit]", "Edit", "Tables", new { id = item.ID }, null)
-                    @Html.ActionLink("[Delete]", "Delete", "Tables", new { id = item.ID }, null)
+                    @Html.ActionLink("[Edit]", "Edit", "Tables", new { id = item.value.ID }, null)
+                    @Html.ActionLink("[Delete]", "Delete", "Tables", new { id = item.value.ID }, null)
                 }
             </td>
         </tr>
