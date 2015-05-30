@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Priority_Q.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Priority_Q.Controllers
 {
@@ -79,9 +80,12 @@ namespace Priority_Q.Controllers
 
             //if the user isn't logged in, they shouldn't be able to edit tables!
             if (!Request.IsAuthenticated)
-            {
                 return RedirectToAction("Index", "Restaurants");
-            }
+
+            //if the user doesn't own the table, they shouldn't be able to edit tables
+            Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(table.RestaurantId);
+            if (restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
 
             return View(table);
         }
@@ -114,6 +118,16 @@ namespace Priority_Q.Controllers
             {
                 return HttpNotFound();
             }
+
+            //if the user isn't logged in, they shouldn't be able to delete tables!
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Index", "Restaurants");
+
+            //if the user doesn't own the table, they shouldn't be able to delete tables
+            Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(table.RestaurantId);
+            if (restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
+
             return View(table);
         }
 
