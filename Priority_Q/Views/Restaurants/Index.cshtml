@@ -54,7 +54,7 @@
         <td>
             @if (item.AvailableTables <= 0)
             {
-                @Html.ActionLink("ADD to Priority Queue", "Create", "Customers", new { id = item.ID }, null)
+                @Html.ActionLink("View Priority Queue", "ViewPriorityQueue", new { id = item.ID })
             }
         </td>
         <td>
