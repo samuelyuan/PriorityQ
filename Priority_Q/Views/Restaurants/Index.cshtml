@@ -52,6 +52,12 @@
             @Html.DisplayFor(modelItem => item.AvailableTables)
         </td>
         <td>
+            @if (item.AvailableTables <= 0)
+            {
+                @Html.ActionLink("ADD to Priority Queue", "Create", "Customers", new { id = item.ID }, null)
+            }
+        </td>
+        <td>
             @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID }) 
             @if (Request.IsAuthenticated && item.UserID.Equals(User.Identity.GetUserId()))
             {
