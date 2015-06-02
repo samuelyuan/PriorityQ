@@ -31,7 +31,10 @@
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
             <td>
-                @Html.ActionLink("Cancel", "Delete", "Customers", new { id = item.ID }, null)
+                @if (User.Identity.IsAuthenticated && ViewBag.OwnsRestaurant)
+                { 
+                    @Html.ActionLink("Cancel", "Delete", "Customers", new { id = item.ID }, null)
+                }
             </td>
         </tr>
     }
