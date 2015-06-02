@@ -74,6 +74,22 @@ namespace Priority_Q.Controllers
             return View(restaurant);
         }
 
+        // GET: Restaurants/ViewPriorityQueue/5
+        public ActionResult ViewPriorityQueue(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Restaurant restaurant = db.Restaurants.Find(id);
+
+            //Find all customer belonging to a restaurant 
+            CustomerDBContext customerDB = new CustomerDBContext();
+            IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
+            ViewBag.RestaurantID = id;
+            return View(customers);
+        }
+
         // GET: Restaurants/ViewTables/5
         public ActionResult ViewTables(int? id)
         {

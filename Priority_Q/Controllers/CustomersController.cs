@@ -58,7 +58,7 @@ namespace Priority_Q.Controllers
             {
                 db.Customers.Add(customer);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewPriorityQueue", "Restaurants", new { id = customer.RestaurantID });
             }
 
             return View(customer);
@@ -118,7 +118,7 @@ namespace Priority_Q.Controllers
             Customer customer = db.Customers.Find(id);
             db.Customers.Remove(customer);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewPriorityQueue", "Restaurants", new { id = customer.RestaurantID });
         }
 
         protected override void Dispose(bool disposing)
