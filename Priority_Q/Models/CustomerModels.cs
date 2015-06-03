@@ -15,7 +15,7 @@ namespace Priority_Q.Models
         public string Name { get; set; }
 
         [Required]
-        public int PhoneNumber { get; set; }
+        public int GroupCapacity { get; set; }
     }
 
     public class CustomerDBContext : DbContext

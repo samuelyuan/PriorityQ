@@ -34,30 +34,6 @@ namespace Priority_Q.Controllers
                 //Find all customer belonging to a restaurant 
                 CustomerDBContext customerDB = new CustomerDBContext();
                 IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(cust => cust.RestaurantID == restaurantId);
-
-                //If there are available tables and customers are still in the priority queue, remove them one at a time
-                if (availableTables.Count() > 0 && customers.Count() > 0)
-                {
-                    foreach (Table table in availableTables)
-                    {
-                        //if table is unoccupied, fill in the seat with the highest priority customer
-                        if (table.IsOccupied == false)
-                        {
-                            //fill in seat
-                            Table emptyTable = tableDB.Tables.Find(table.ID);
-                            emptyTable.IsOccupied = true;
-                            tableDB.Entry(emptyTable).State = EntityState.Modified;
-                            tableDB.SaveChanges();
-                            restaurantArray[i].AvailableTables--;
-
-                            //remove customer from queue
-                            Customer topCustomer = customers.First();
-                            topCustomer = customerDB.Customers.Find(topCustomer.ID);
-                            customerDB.Customers.Remove(topCustomer);
-                            customerDB.SaveChanges();
-                        }
-                    }
-                }
             }
 
             return View(restaurantArray.ToList());

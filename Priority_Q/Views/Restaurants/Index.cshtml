@@ -52,10 +52,7 @@
             @Html.DisplayFor(modelItem => item.AvailableTables)
         </td>
         <td>
-            @if (item.AvailableTables <= 0)
-            {
-                @Html.ActionLink("View Priority Queue", "ViewPriorityQueue", new { id = item.ID })
-            }
+            @Html.ActionLink("View Priority Queue", "ViewPriorityQueue", new { id = item.ID })
         </td>
         <td>
             @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID }) 

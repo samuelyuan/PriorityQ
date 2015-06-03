@@ -8,7 +8,10 @@
 
 
 <p>
-    @Html.ActionLink("Create New", "Create", "Customers", new { id = ViewBag.RestaurantID }, null)
+    @if (User.Identity.IsAuthenticated && ViewBag.OwnsRestaurant)
+    {
+        @Html.ActionLink("Add Customer", "Create", "Customers", new { id = ViewBag.RestaurantID }, null)
+    }
 </p>
 <table class="table">
     <tr>
@@ -16,7 +19,7 @@
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Html.DisplayNameFor(model => model.GroupCapacity)
         </th>
         <th></th>
     </tr>
@@ -28,12 +31,12 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                @Html.DisplayFor(modelItem => item.GroupCapacity)
             </td>
             <td>
                 @if (User.Identity.IsAuthenticated && ViewBag.OwnsRestaurant)
                 { 
-                    @Html.ActionLink("Cancel", "Delete", "Customers", new { id = item.ID }, null)
+                    @Html.ActionLink("Remove", "Delete", "Customers", new { id = item.ID }, null)
                 }
             </td>
         </tr>
