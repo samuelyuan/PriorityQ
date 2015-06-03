@@ -52,7 +52,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,RestaurantID,Name,PhoneNumber")] Customer customer)
+        public ActionResult Create([Bind(Include = "ID,RestaurantID,Name,GroupCapacity")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,RestaurantID,Name,PhoneNumber")] Customer customer)
+        public ActionResult Edit([Bind(Include = "ID,RestaurantID,Name,GroupCapacity")] Customer customer)
         {
             if (ModelState.IsValid)
             {

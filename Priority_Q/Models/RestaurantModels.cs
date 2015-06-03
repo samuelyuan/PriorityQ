@@ -16,8 +16,10 @@ namespace Priority_Q.Models
         [StringLength(100, ErrorMessage = "Location must be specified.")]
         public string Location { get; set; }
 
+        [Display(Name = "Number of tables")]
         public int NumTables { get; set; }
 
+        [Display(Name = "Available tables")]
         public int AvailableTables { get; set; }
 
         public String UserID { get; set; } //this maps the restaurant to a certain account
