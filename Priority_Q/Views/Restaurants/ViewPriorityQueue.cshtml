@@ -4,9 +4,8 @@
     ViewBag.Title = "View Priority Queue";
 }
 
-<h2>@ViewBag.Title</h2>
-
-
+<h2>Priority Queue</h2>
+<h3>Restaurant: @ViewBag.RestaurantName</h3>
 <p>
     @if (User.Identity.IsAuthenticated && ViewBag.OwnsRestaurant)
     {

@@ -4,7 +4,9 @@
     ViewBag.Title = "View Tables";
 }
 
-<h2>The Restaurant's Tables</h2>
+<h2>Tables</h2>
+<h3>Restaurant: @ViewBag.RestaurantName</h3>
+
 <p>
     @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
     {
