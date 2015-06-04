@@ -15,6 +15,9 @@
 <table class="table">
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model.ID)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
@@ -23,9 +26,16 @@
         <th></th>
     </tr>
 
+    <!-- table contents -->
+    @{
+        var counter = 1;
+    }
     @foreach (var item in Model)
     {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => counter)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -39,6 +49,8 @@
                 }
             </td>
         </tr>
+        
+        counter++;
     }
 
 </table>
