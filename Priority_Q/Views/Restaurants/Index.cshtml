@@ -32,6 +32,7 @@
             @Html.DisplayNameFor(model => model.AvailableTables)
         </th>
         <th></th>
+        <th></th>
     </tr>
 
 @foreach (var item in Model) {
@@ -55,14 +56,15 @@
             @Html.ActionLink("View Priority Queue", "ViewPriorityQueue", new { id = item.ID })
         </td>
         <td>
-            @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID }) 
+            @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID })
             @if (Request.IsAuthenticated && item.UserID.Equals(User.Identity.GetUserId()))
             {
                 //only logged in users should be able to edit and delete
                 //best if only the user modifies their own restaurant and not someone else's
-                @Html.ActionLink("[Edit]", "Edit", new { id=item.ID }) 
-                @Html.ActionLink("[Delete]", "Delete", new { id=item.ID }) 
+                @Html.ActionLink("[Edit]", "Edit", new { id = item.ID })
+                @Html.ActionLink("[Delete]", "Delete", new { id = item.ID })
             }
+           
         </td>
     </tr>
 }
