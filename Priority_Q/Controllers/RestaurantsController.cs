@@ -18,7 +18,12 @@ namespace Priority_Q.Controllers
         // GET: Restaurants
         public ActionResult Index()
         {
-            Restaurant[] restaurantArray = db.Restaurants.ToArray();;
+            Restaurant[] restaurantArray = db.Restaurants.ToArray();
+            ViewBag.AvailableTablesArray = new int[restaurantArray.Length];
+            ViewBag.TotalTablesArray = new int[restaurantArray.Length];
+            ViewBag.PercentIntArray = new int[restaurantArray.Length];
+            ViewBag.NumWaitingArray = new int[restaurantArray.Length];
+
             for (int i = 0; i < restaurantArray.Count(); i++)
             {
                 int restaurantId = restaurantArray[i].ID;
@@ -26,14 +31,18 @@ namespace Priority_Q.Controllers
                 //the number of tables for a given restaurant can change, so update
                 TableDBContext tableDB = new TableDBContext();
                 IEnumerable<Priority_Q.Models.Table> allTables = tableDB.Tables.Where(table => table.RestaurantId == restaurantId);
-                restaurantArray[i].NumTables = allTables.Count();
+                ViewBag.TotalTablesArray[i] = allTables.Count();
 
                 IEnumerable<Priority_Q.Models.Table> availableTables = allTables.Where(table => table.IsOccupied == false);
-                restaurantArray[i].AvailableTables = availableTables.Count();
+                ViewBag.AvailableTablesArray[i] = availableTables.Count();
+
+                ViewBag.PercentIntArray[i] = (int)(Math.Round(((double)ViewBag.AvailableTablesArray[i] / (double)ViewBag.TotalTablesArray[i]), 2) * 100);
 
                 //Find all customer belonging to a restaurant 
                 CustomerDBContext customerDB = new CustomerDBContext();
                 IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(cust => cust.RestaurantID == restaurantId);
+
+                ViewBag.NumWaitingArray[i] = customers.Count();
             }
 
             return View(restaurantArray.ToList());

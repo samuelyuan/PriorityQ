@@ -26,47 +26,48 @@
             @Html.DisplayNameFor(model => model.Location)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.NumTables)
+            Tables (Available/Total)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AvailableTables)
-        </th>
-        <th></th>
         <th></th>
     </tr>
+    @{
+        var counter = 0;
+    }
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ID)
+    @foreach (var item in Model) 
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => counter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                <a class="btn btn-info" href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
+                    @ViewBag.AvailableTablesArray[counter] / @ViewBag.TotalTablesArray[counter]  [@ViewBag.PercentIntArray[counter] %]
+                </a>
+            </td>
+            <td>
+                <a class="btn btn-info" href='@string.Format("/Restaurants/ViewPriorityQueue/{0}", item.ID)'>
+                    Priority Queue (@ViewBag.NumWaitingArray[counter])
+                </a>
+            </td>
+            <td>
+                @if (Request.IsAuthenticated && item.UserID.Equals(User.Identity.GetUserId()))
+                {
+                    //only logged in users should be able to edit and delete
+                    //best if only the user modifies their own restaurant and not someone else's
+                    <a class="btn btn-warning" href='@string.Format("/Restaurants/Edit/{0}", item.ID)'> Edit </a>
+                    <a class="btn btn-danger" href='@string.Format("/Restaurants/Delete/{0}", item.ID)'> Delete </a>
+               }
+
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Location)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumTables)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AvailableTables)
-        </td>
-        <td>
-            @Html.ActionLink("View Priority Queue", "ViewPriorityQueue", new { id = item.ID })
-        </td>
-        <td>
-            @Html.ActionLink("View Tables", "ViewTables", new { id = item.ID })
-            @if (Request.IsAuthenticated && item.UserID.Equals(User.Identity.GetUserId()))
-            {
-                //only logged in users should be able to edit and delete
-                //best if only the user modifies their own restaurant and not someone else's
-                @Html.ActionLink("[Edit]", "Edit", new { id = item.ID })
-                @Html.ActionLink("[Delete]", "Delete", new { id = item.ID })
-            }
-           
-        </td>
-    </tr>
-}
+        </tr>
+        counter++;
+    }
 
 </table>

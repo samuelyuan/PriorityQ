@@ -40,6 +40,7 @@ namespace Priority_Q.Models
         [Range(0, int.MaxValue, ErrorMessage = "Max capacity must be a positive number")]
         public int MaxCapacity { get; set; }
 
+        [Display(Name = "Occupied")]
         public Boolean IsOccupied { get; set; }
         public int OccupationStartTime { get; set; }
     }
