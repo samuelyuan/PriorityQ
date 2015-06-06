@@ -6,31 +6,23 @@
 
 <h2>Tables</h2>
 <h3>Restaurant: @ViewBag.RestaurantName</h3>
-
+<h3>
+    <span class="label label-default">
+        Available: @ViewBag.AvailableTables / @ViewBag.TotalTables
+    </span>
+</h3>
 <p>
     @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
     {
         //create a new table just for that restaurant
-        @Html.ActionLink("Create New Table", "Create", "Tables", new { id = ViewBag.RestaurantId }, null)
+        <a class="btn btn-info" href='@string.Format("/Tables/Create/{0}", ViewBag.RestaurantId)'>
+            Add New Table
+        </a>
     }
 </p>
 
 <!-- The data passed in is a list of tables for a restaurant -->
 <table class="table">
-    <!-- header -->
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MaxCapacity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsOccupied)
-        </th>
-        <th></th>
-    </tr>
-
     <!-- contents -->
     @{
         var counter = 1;
@@ -39,19 +31,26 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => counter) 
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxCapacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsOccupied)
-            </td>
-            <td>
-                @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant) 
+                @if (!item.IsOccupied)
                 {
-                    @Html.ActionLink("[Edit]", "Edit", "Tables", new { id = item.ID }, null)
-                    @Html.ActionLink("[Delete]", "Delete", "Tables", new { id = item.ID }, null)
+                    <span class="label label-success">
+                        #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                    </span>
+                }
+                else
+                {
+                    <span class="label label-danger">
+                        #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                    </span>
+                }
+            </td>
+            <td>
+                @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                {
+                     //only logged in users should be able to edit and delete
+                    //best if only the user modifies their own restaurant and not someone else's
+                    <a class="btn btn-warning" href='@string.Format("/Tables/Edit/{0}", item.ID)'> Edit </a>
+                    <a class="btn btn-danger" href='@string.Format("/Tables/Delete/{0}", item.ID)'> Delete </a>
                 }
             </td>
         </tr>

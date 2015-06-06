@@ -36,7 +36,10 @@ namespace Priority_Q.Controllers
                 IEnumerable<Priority_Q.Models.Table> availableTables = allTables.Where(table => table.IsOccupied == false);
                 ViewBag.AvailableTablesArray[i] = availableTables.Count();
 
-                ViewBag.PercentIntArray[i] = (int)(Math.Round(((double)ViewBag.AvailableTablesArray[i] / (double)ViewBag.TotalTablesArray[i]), 2) * 100);
+                if (ViewBag.TotalTablesArray[i] == 0)
+                    ViewBag.PercentIntArray[i] = 0;
+                else
+                    ViewBag.PercentIntArray[i] = (int)(Math.Round(((double)ViewBag.AvailableTablesArray[i] / (double)ViewBag.TotalTablesArray[i]), 2) * 100);
 
                 //Find all customer belonging to a restaurant 
                 CustomerDBContext customerDB = new CustomerDBContext();
@@ -122,6 +125,12 @@ namespace Priority_Q.Controllers
             ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
             ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+           
+            ViewBag.TotalTables = tables.Count();
+            IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
+            ViewBag.AvailableTables = availableTables.Count();
+
+
             return View(tables);
         }
 

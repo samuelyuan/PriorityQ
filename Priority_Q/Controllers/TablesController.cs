@@ -59,7 +59,7 @@ namespace Priority_Q.Controllers
             {
                 db.Tables.Add(table);
                 db.SaveChanges();
-                return RedirectToAction("Index", "Restaurants");
+                return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
             }
 
             return View(table);
@@ -101,7 +101,7 @@ namespace Priority_Q.Controllers
             {
                 db.Entry(table).State = EntityState.Modified;   
                 db.SaveChanges();
-                return RedirectToAction("Index", "Restaurants");
+                return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
             }
             return View(table);
         }
@@ -139,7 +139,7 @@ namespace Priority_Q.Controllers
             Table table = db.Tables.Find(id);
             db.Tables.Remove(table);
             db.SaveChanges();
-            return RedirectToAction("Index", "Restaurants");
+            return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
         }
 
         protected override void Dispose(bool disposing)
