@@ -106,6 +106,7 @@ namespace Priority_Q.Controllers
             ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
             ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+            ViewBag.NumCustomers = customers.Count();
             return View(customers);
         }
 
