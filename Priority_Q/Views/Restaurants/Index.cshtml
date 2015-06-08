@@ -11,7 +11,9 @@
     @if (Request.IsAuthenticated)
     {
         //this is to prevent a random person from generating new restaurants
-        @Html.ActionLink("Create New Restaurant", "Create")
+            <a class="btn btn-info" href='@string.Format("/Restaurants/Create")'>
+                Create New Restaurant
+            </a>
     }
 </p>
 <table class="table table-striped table-hover ">
