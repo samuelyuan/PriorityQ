@@ -1,41 +1,46 @@
 ﻿@model Priority_Q.Models.Table
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Delete Table";
 }
 
-<h2>Delete</h2>
+<h2>Delete Table</h2>
 
-<h3>Are you sure you want to delete a table? This may unintentionally affect something else.</h3>
+<h3>Are you sure you want to delete a table?</h3>
+<h3>This may unintentionally affect something else.</h3>
 <div>
-    <h4>Table</h4>
-    <hr />
-    <dl class="dl-horizontal">
+    <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h3 class="panel-title">Table</h3>
+        </div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
 
-        <dt>
-            @Html.DisplayNameFor(model => model.MaxCapacity)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.MaxCapacity)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.MaxCapacity)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.MaxCapacity)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsOccupied)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.IsOccupied)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.IsOccupied)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.IsOccupied)
+                </dd>
+            </dl>   
+        </div>
+    </div>
 
-    </dl>
-
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index", "Restaurants")
+            <input type="submit" value="Delete" class="btn btn-default" />
         </div>
     }
 </div>

@@ -69,6 +69,10 @@ namespace Priority_Q.Controllers
         // GET: Restaurants/Create
         public ActionResult Create()
         {
+            //user isn't logged in
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Index", "Restaurants");
+
             return View();
         }
 
