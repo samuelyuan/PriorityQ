@@ -59,5 +59,9 @@ namespace Priority_Q.Models
         [Display(Name = "Re-enter password")]
         [Compare("Password", ErrorMessage = "Passwords don't match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "Access Code")]
+        public string AccessCode { get; set; }
     }
 }

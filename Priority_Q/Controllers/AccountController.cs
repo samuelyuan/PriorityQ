@@ -78,6 +78,11 @@ namespace Priority_Q.Controllers
         {
             if (ModelState.IsValid)
             {
+                //for now, set the access code to 1234
+                //in the future, this should be changed to something unique
+                if (!model.AccessCode.Equals("1234"))
+                    return View(model);
+
                 var user = new ApplicationUser() { UserName = model.UserName };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
