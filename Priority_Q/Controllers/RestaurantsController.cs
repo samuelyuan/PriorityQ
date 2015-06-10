@@ -29,9 +29,16 @@ namespace Priority_Q.Controllers
         }
 
         // GET: Restaurants
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             Restaurant[] restaurantArray = db.Restaurants.ToArray();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                restaurantArray = db.Restaurants.Where(s => s.Name.Contains(searchString)
+                                       || s.Location.Contains(searchString)).ToArray();
+            }
+
             ViewBag.AvailableTablesArray = new int[restaurantArray.Length];
             ViewBag.TotalTablesArray = new int[restaurantArray.Length];
             ViewBag.PercentIntArray = new int[restaurantArray.Length];
