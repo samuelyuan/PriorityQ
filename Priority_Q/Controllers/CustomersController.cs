@@ -18,7 +18,7 @@ namespace Priority_Q.Controllers
         // GET: Customers
         public ActionResult Index()
         {
-            return View(db.Customers.ToList());
+            return RedirectToAction("Index", "Restaurants");
         }
 
         // GET: Customers/Details/5

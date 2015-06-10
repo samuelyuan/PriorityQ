@@ -15,6 +15,19 @@ namespace Priority_Q.Controllers
     {
         private RestaurantDBContext db = new RestaurantDBContext();
 
+        private Boolean IsAuthorized(Restaurant restaurant)
+        {
+            //user isn't logged in
+            if (!Request.IsAuthenticated)
+                return false;
+
+            //logged in user doesn't own the restaurant
+            if (restaurant.UserID != User.Identity.GetUserId())
+                return false;
+
+            return true;
+        }
+
         // GET: Restaurants
         public ActionResult Index()
         {
@@ -23,7 +36,7 @@ namespace Priority_Q.Controllers
             ViewBag.TotalTablesArray = new int[restaurantArray.Length];
             ViewBag.PercentIntArray = new int[restaurantArray.Length];
             ViewBag.NumWaitingArray = new int[restaurantArray.Length];
-
+            
             for (int i = 0; i < restaurantArray.Count(); i++)
             {
                 int restaurantId = restaurantArray[i].ID;
@@ -152,14 +165,9 @@ namespace Priority_Q.Controllers
                 return HttpNotFound();
             }
 
-            //if the user isn't logged in, they shouldn't be able to edit restaurants!
-            if (!Request.IsAuthenticated)
+            if (!IsAuthorized(restaurant))
                 return RedirectToAction("Index", "Restaurants");
-         
-            //if the logged in user doesn't own the restaurant, they shouldn't be able to edit other people's data
-            if (restaurant.UserID != User.Identity.GetUserId())
-                return RedirectToAction("Index", "Restaurants");
-
+        
             return View(restaurant);
         }
 
@@ -196,12 +204,7 @@ namespace Priority_Q.Controllers
                 return HttpNotFound();
             }
 
-            //if the user isn't logged in, they shouldn't be able to delete restaurants!
-            if (!Request.IsAuthenticated)
-                return RedirectToAction("Index", "Restaurants");
-
-            //if the logged in user doesn't own the restaurant, they shouldn't be able to delete other people's data!
-            if (restaurant.UserID != User.Identity.GetUserId())
+            if (!IsAuthorized(restaurant))
                 return RedirectToAction("Index", "Restaurants");
 
             return View(restaurant);
