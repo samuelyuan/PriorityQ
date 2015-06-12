@@ -150,11 +150,39 @@ namespace Priority_Q.Controllers
             ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
             ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+
+            ViewBag.TotalTables = tables.Count();
+            IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
+            ViewBag.AvailableTablesCount = availableTables.Count();
+            IEnumerable<Priority_Q.Models.Table> occupiedTables = tables.Where(table => table.IsOccupied == true);
+            ViewBag.OccupiedTablesCount = occupiedTables.Count();
+
+            return View(tables);
+        }
+
+        // GET: Restaurants/ManageTables/5
+        public ActionResult ManageTables(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Restaurant restaurant = db.Restaurants.Find(id);
+
+            if (!IsAuthorized(db.Restaurants.Find(id)))
+                return RedirectToAction("Index", "Restaurants");
+
+            //Find all tables belonging to a restaurant 
+            TableDBContext tableDB = new TableDBContext();
+            IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == id);
+            ViewBag.RestaurantId = id;
+            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
+            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
            
             ViewBag.TotalTables = tables.Count();
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTables = availableTables.Count();
-
 
             return View(tables);
         }
