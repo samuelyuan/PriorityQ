@@ -37,7 +37,7 @@
             @Html.DisplayNameFor(model => model.Location)
         </th>
         <th>
-            Tables (Available/Total)
+            Tables Available
         </th>
         <th>
             Priority Queue
@@ -62,7 +62,7 @@
             </td>
             <td>
                 <a class="btn btn-info" href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
-                    @ViewBag.AvailableTablesArray[counter] / @ViewBag.TotalTablesArray[counter]  [@ViewBag.PercentIntArray[counter] %]
+                    @ViewBag.AvailableTablesArray[counter]
                 </a>
             </td>
             <td>

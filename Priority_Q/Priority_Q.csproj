@@ -228,12 +228,13 @@
     <Content Include="Views\Tables\Delete.cshtml" />
     <Content Include="Views\Tables\Edit.cshtml" />
     <Content Include="Views\Tables\Index.cshtml" />
-    <Content Include="Views\Restaurants\ViewTables.cshtml" />
+    <Content Include="Views\Restaurants\ManageTables.cshtml" />
     <Content Include="Views\Account\AllUsers.cshtml" />
     <Content Include="Views\Customers\Create.cshtml" />
     <Content Include="Views\Customers\Delete.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
     <Content Include="Views\Restaurants\ViewPriorityQueue.cshtml" />
+    <Content Include="Views\Restaurants\ViewTables.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
