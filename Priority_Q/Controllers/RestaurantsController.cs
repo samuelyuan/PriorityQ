@@ -114,14 +114,16 @@ namespace Priority_Q.Controllers
             return View(restaurant);
         }
 
-        // GET: Restaurants/ViewPriorityQueue/5
-        public ActionResult ViewPriorityQueue(int? id)
+        // GET: Restaurants/ManagePriorityQueue/5
+        public ActionResult ManagePriorityQueue(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //Restaurant restaurant = db.Restaurants.Find(id);
+            if (!IsAuthorized(db.Restaurants.Find(id)))
+                return RedirectToAction("Index", "Restaurants");
 
             //Find all customer belonging to a restaurant 
             CustomerDBContext customerDB = new CustomerDBContext();
@@ -157,7 +159,14 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.Table> occupiedTables = tables.Where(table => table.IsOccupied == true);
             ViewBag.OccupiedTablesCount = occupiedTables.Count();
 
-            return View(tables);
+            //Find all customer belonging to a restaurant 
+            CustomerDBContext customerDB = new CustomerDBContext();
+            IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
+            ViewBag.NumCustomers = customers.Count();
+            ViewBag.CustomerData = customers;
+
+            var tuple = new Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>(tables, customers);
+            return View(tuple);
         }
 
         // GET: Restaurants/ManageTables/5
