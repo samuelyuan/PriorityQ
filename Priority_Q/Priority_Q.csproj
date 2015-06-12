@@ -233,8 +233,8 @@
     <Content Include="Views\Customers\Create.cshtml" />
     <Content Include="Views\Customers\Delete.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
-    <Content Include="Views\Restaurants\ViewPriorityQueue.cshtml" />
     <Content Include="Views\Restaurants\ViewTables.cshtml" />
+    <Content Include="Views\Restaurants\ManagePriorityQueue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
