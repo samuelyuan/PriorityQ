@@ -40,8 +40,6 @@ namespace Priority_Q.Controllers
             }
 
             ViewBag.AvailableTablesArray = new int[restaurantArray.Length];
-            ViewBag.TotalTablesArray = new int[restaurantArray.Length];
-            ViewBag.PercentIntArray = new int[restaurantArray.Length];
             ViewBag.NumWaitingArray = new int[restaurantArray.Length];
             
             for (int i = 0; i < restaurantArray.Count(); i++)
@@ -51,15 +49,8 @@ namespace Priority_Q.Controllers
                 //the number of tables for a given restaurant can change, so update
                 TableDBContext tableDB = new TableDBContext();
                 IEnumerable<Priority_Q.Models.Table> allTables = tableDB.Tables.Where(table => table.RestaurantId == restaurantId);
-                ViewBag.TotalTablesArray[i] = allTables.Count();
-
                 IEnumerable<Priority_Q.Models.Table> availableTables = allTables.Where(table => table.IsOccupied == false);
                 ViewBag.AvailableTablesArray[i] = availableTables.Count();
-
-                if (ViewBag.TotalTablesArray[i] == 0)
-                    ViewBag.PercentIntArray[i] = 0;
-                else
-                    ViewBag.PercentIntArray[i] = (int)(Math.Round(((double)ViewBag.AvailableTablesArray[i] / (double)ViewBag.TotalTablesArray[i]), 2) * 100);
 
                 //Find all customer belonging to a restaurant 
                 CustomerDBContext customerDB = new CustomerDBContext();
@@ -112,28 +103,6 @@ namespace Priority_Q.Controllers
             }
 
             return View(restaurant);
-        }
-
-        // GET: Restaurants/ManagePriorityQueue/5
-        public ActionResult ManagePriorityQueue(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            //Restaurant restaurant = db.Restaurants.Find(id);
-            if (!IsAuthorized(db.Restaurants.Find(id)))
-                return RedirectToAction("Index", "Restaurants");
-
-            //Find all customer belonging to a restaurant 
-            CustomerDBContext customerDB = new CustomerDBContext();
-            IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
-            ViewBag.RestaurantID = id;
-            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
-            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
-            ViewBag.NumCustomers = customers.Count();
-            return View(customers);
         }
 
         // GET: Restaurants/ViewTables/5
@@ -194,6 +163,60 @@ namespace Priority_Q.Controllers
             ViewBag.AvailableTables = availableTables.Count();
 
             return View(tables);
+        }
+
+        // GET:  Restaurants/AssignTable/?tableID=XX&customerID=XX
+        public ActionResult AssignTable(int? tableID, int? customerID)
+        {
+            //the number of tables for a given restaurant can change, so update
+            TableDBContext tableDB = new TableDBContext();
+            Table emptyTable = tableDB.Tables.Find(tableID);
+
+            //Find all customer belonging to a restaurant 
+            CustomerDBContext customerDB = new CustomerDBContext();
+            Customer topCustomer = customerDB.Customers.Find(customerID);
+
+            int restaurantID = emptyTable.RestaurantId;
+
+            //fill in seat
+            //refuse to fill table if there's no enough seats
+            if (emptyTable.MaxCapacity < topCustomer.GroupCapacity)
+            {
+                return RedirectToAction("Index", "Restaurants");
+            }
+            emptyTable.IsOccupied = true;
+            tableDB.Entry(emptyTable).State = EntityState.Modified;
+            tableDB.SaveChanges();
+
+            //remove customer from queue
+            topCustomer = customerDB.Customers.Find(topCustomer.ID);
+            customerDB.Customers.Remove(topCustomer);
+            customerDB.SaveChanges();
+
+            return RedirectToAction("ViewTables", "Restaurants", new { id = restaurantID });
+        }
+
+
+        // GET: Restaurants/ManagePriorityQueue/5
+        public ActionResult ManagePriorityQueue(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Restaurant restaurant = db.Restaurants.Find(id);
+            if (!IsAuthorized(db.Restaurants.Find(id)))
+                return RedirectToAction("Index", "Restaurants");
+
+            //Find all customer belonging to a restaurant 
+            CustomerDBContext customerDB = new CustomerDBContext();
+            IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
+            ViewBag.RestaurantID = id;
+            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
+            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+            ViewBag.NumCustomers = customers.Count();
+            return View(customers);
         }
 
         // GET: Restaurants/Edit/5
