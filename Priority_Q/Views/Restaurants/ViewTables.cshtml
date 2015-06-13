@@ -99,9 +99,18 @@
             {
                 <tr>
                     <td>
-                        <span class="btn btn-default disabled">
-                            #@Html.DisplayFor(modelItem => counter) -- @Html.DisplayFor(modelItem => item.Name) [@Html.DisplayFor(modelItem => item.GroupCapacity)]
-                        </span>
+                        @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                        {
+                            <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
+                                #@Html.DisplayFor(modelItem => counter) -- @Html.DisplayFor(modelItem => item.Name) [@Html.DisplayFor(modelItem => item.GroupCapacity)]
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="btn btn-default disabled">
+                                #@Html.DisplayFor(modelItem => counter) -- @Html.DisplayFor(modelItem => item.Name) [@Html.DisplayFor(modelItem => item.GroupCapacity)]
+                            </span>
+                        }
                     </td>
                 </tr>
 

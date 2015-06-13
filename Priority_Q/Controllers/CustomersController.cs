@@ -69,10 +69,49 @@ namespace Priority_Q.Controllers
             {
                 db.Customers.Add(customer);
                 db.SaveChanges();
-                return RedirectToAction("ViewPriorityQueue", "Restaurants", new { id = customer.RestaurantID });
+                return RedirectToAction("ViewTables", "Restaurants", new { id = customer.RestaurantID });
             }
 
             return View(customer);
+        }
+
+        // GET: Customers/AssignTable/5
+        public ActionResult AssignTable(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Customer customer = db.Customers.Find(id);
+            ViewBag.CustomerID = customer.ID;
+            ViewBag.CustomerName = customer.Name;
+            ViewBag.CustomerGroupSize = customer.GroupCapacity;
+
+            RestaurantDBContext RestaurantDB = new RestaurantDBContext();
+
+            //Restaurant restaurant = db.Restaurants.Find(id);
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Index", "Restaurants");
+
+            //restaurant doesn't have this customer
+            Restaurant restaurant = RestaurantDB.Restaurants.Find(customer.RestaurantID);
+            if (restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
+
+            //Find all tables belonging to a restaurant 
+            TableDBContext tableDB = new TableDBContext();
+            IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == restaurant.ID);
+            ViewBag.RestaurantId = restaurant.ID;
+            ViewBag.OwnsRestaurant = (restaurant.UserID == User.Identity.GetUserId());
+            ViewBag.RestaurantName = restaurant.Name;
+            ViewBag.RestaurantLocation = restaurant.Location;
+
+            ViewBag.TotalTables = tables.Count();
+            IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
+            ViewBag.AvailableTables = availableTables.Count();
+
+            return View(tables);
         }
 
         // GET: Customers/Edit/5
@@ -139,7 +178,7 @@ namespace Priority_Q.Controllers
             Customer customer = db.Customers.Find(id);
             db.Customers.Remove(customer);
             db.SaveChanges();
-            return RedirectToAction("ViewPriorityQueue", "Restaurants", new { id = customer.RestaurantID });
+            return RedirectToAction("ViewTables", "Restaurants", new { id = customer.RestaurantID });
         }
 
         protected override void Dispose(bool disposing)
