@@ -106,6 +106,35 @@ namespace Priority_Q.Controllers
             return View(table);
         }
 
+        // GET: Tables/ToggleOccupied/1
+        public ActionResult ToggleOccupied(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Table table = db.Tables.Find(id);
+            if (table == null)
+            {
+                return HttpNotFound();
+            }
+
+            //if the user isn't logged in, they shouldn't be able to edit tables!
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Index", "Restaurants");
+
+            //if the user doesn't own the table, they shouldn't be able to edit tables
+            Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(table.RestaurantId);
+            if (restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
+
+            table.IsOccupied = !table.IsOccupied;
+            db.Entry(table).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
+        }
+
         // GET: Tables/Delete/5
         public ActionResult Delete(int? id)
         {
