@@ -102,13 +102,13 @@ namespace Priority_Q.Controllers
             //Find all tables belonging to a restaurant 
             TableDBContext tableDB = new TableDBContext();
             IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == restaurant.ID);
+            IEnumerable<Priority_Q.Models.Table> canSeatTables = tables.Where(i => i.MaxCapacity >= ViewBag.CustomerGroupSize); 
             ViewBag.RestaurantId = restaurant.ID;
             ViewBag.OwnsRestaurant = (restaurant.UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = restaurant.Name;
             ViewBag.RestaurantLocation = restaurant.Location;
 
-            ViewBag.TotalTables = tables.Count();
-            IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
+            IEnumerable<Priority_Q.Models.Table> availableTables = canSeatTables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTables = availableTables.Count();
 
             return View(tables);

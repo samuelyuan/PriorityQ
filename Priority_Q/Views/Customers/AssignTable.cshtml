@@ -20,7 +20,7 @@
     </h3>
     @foreach (var item in Model)
     {
-        if (!item.IsOccupied)
+        if (!item.IsOccupied && item.MaxCapacity >= ViewBag.CustomerGroupSize)
         {
             <tr>
                 <td>
