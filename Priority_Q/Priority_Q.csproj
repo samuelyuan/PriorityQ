@@ -161,6 +161,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NewsInfosController.cs" />
     <Compile Include="Controllers\RestaurantsController.cs" />
     <Compile Include="Controllers\TablesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -227,15 +228,18 @@
     <Content Include="Views\Tables\Create.cshtml" />
     <Content Include="Views\Tables\Delete.cshtml" />
     <Content Include="Views\Tables\Edit.cshtml" />
-    <Content Include="Views\Tables\Index.cshtml" />
     <Content Include="Views\Restaurants\ManageTables.cshtml" />
     <Content Include="Views\Account\AllUsers.cshtml" />
     <Content Include="Views\Customers\Create.cshtml" />
     <Content Include="Views\Customers\Delete.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
     <Content Include="Views\Restaurants\ViewTables.cshtml" />
-    <Content Include="Views\Restaurants\ManagePriorityQueue.cshtml" />
     <Content Include="Views\Customers\AssignTable.cshtml" />
+    <Content Include="Views\NewsInfos\Create.cshtml" />
+    <Content Include="Views\NewsInfos\Delete.cshtml" />
+    <Content Include="Views\NewsInfos\Details.cshtml" />
+    <Content Include="Views\NewsInfos\Edit.cshtml" />
+    <Content Include="Views\Restaurants\ViewNews.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
