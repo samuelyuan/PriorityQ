@@ -105,6 +105,24 @@ namespace Priority_Q.Controllers
             return View(restaurant);
         }
 
+        // GET: Restaurants/ViewNews/5
+        public ActionResult ViewNews(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Find all pieces of news belonging to a restaurant 
+            NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
+            IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
+            ViewBag.RestaurantId = id;
+            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
+            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+
+            return View(newsInfos);
+        }
+
         // GET: Restaurants/ViewTables/5
         public ActionResult ViewTables(int? id)
         {

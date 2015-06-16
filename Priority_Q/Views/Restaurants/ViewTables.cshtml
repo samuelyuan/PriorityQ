@@ -6,6 +6,18 @@
 
 <h2>Restaurant: @ViewBag.RestaurantName</h2>
 
+<h3>
+    <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
+        View News
+    </a>
+    @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+    {
+        <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
+            Update News
+        </a>
+    }
+</h3>
+
 <!-- Create two columns: Empty and Occupied tables -->
 <div class="col-xs-6">
     <h3>

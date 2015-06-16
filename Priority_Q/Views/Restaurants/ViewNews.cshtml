@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Priority_Q.Models.NewsInfo>
+@{
+    ViewBag.Title = "View News";
+}
+
+<h2>Restaurant: @ViewBag.RestaurantName</h2>
+<h3>News</h3>
+
+<table class="table table-striped table-hover ">
+    <!-- contents -->
+    @{
+        int counter = 1;
+    }
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <p>
+                    #@Html.DisplayFor(modelItem => counter) <br />
+                    @Html.DisplayFor(modelItem => item.Content) <br />
+                    Posted On @Html.DisplayFor(modelItem => item.Date)
+
+                    @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                    {
+                        <br />
+                        //create a new table just for that restaurant
+                        <a class="btn btn-danger" href='@string.Format("/NewsInfos/Delete/{0}", item.ID)'>
+                            Delete Post
+                        </a>
+                    }
+                </p>
+            </td>
+        </tr>
+
+        counter++;
+    }
+</table>
+
+
+

@@ -49,4 +49,17 @@ namespace Priority_Q.Models
     {
         public DbSet<Table> Tables { get; set; }
     }
+
+    public class NewsInfo
+    {
+        public int ID { get; set; }
+        public int RestaurantId { get; set; }
+        public String Content { get; set; }
+        public String Date { get; set; }
+    }
+
+    public class NewsInfoDBContext : DbContext
+    {
+        public DbSet<NewsInfo> NewsInfos { get; set; }
+    }
 }
