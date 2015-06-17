@@ -120,7 +120,8 @@ namespace Priority_Q.Controllers
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
             ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
 
-            return View(newsInfos);
+            //reverse because the site should display the most recent posts, which are at the end
+            return View(newsInfos.Reverse());
         }
 
         // GET: Restaurants/ViewTables/5
@@ -151,6 +152,12 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
             ViewBag.NumCustomers = customers.Count();
             ViewBag.CustomerData = customers;
+
+            //find the most recent news item for a restaurant (usually the last element)
+            NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
+            IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
+            ViewBag.MostRecentNews = newsInfos.Last().Content;
+            ViewBag.MostRecentDate = newsInfos.Last().Date;
 
             var tuple = new Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>(tables, customers);
             return View(tuple);

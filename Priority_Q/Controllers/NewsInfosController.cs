@@ -57,11 +57,10 @@ namespace Priority_Q.Controllers
         {
             if (ModelState.IsValid)
             {
-                
                 newsInfo.Date = DateTime.Now.ToString("MM/dd/yyyy h:mm tt");
                 db.NewsInfos.Add(newsInfo);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewTables", "Restaurants", new { id = newsInfo.RestaurantId });
             }
 
             return View(newsInfo);
@@ -93,7 +92,7 @@ namespace Priority_Q.Controllers
             {
                 db.Entry(newsInfo).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewTables", "Restaurants", new { id = newsInfo.RestaurantId });
             }
             return View(newsInfo);
         }
@@ -121,7 +120,7 @@ namespace Priority_Q.Controllers
             NewsInfo newsInfo = db.NewsInfos.Find(id);
             db.NewsInfos.Remove(newsInfo);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewTables", "Restaurants", new { id = newsInfo.RestaurantId });
         }
 
         protected override void Dispose(bool disposing)

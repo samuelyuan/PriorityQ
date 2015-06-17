@@ -6,17 +6,22 @@
 
 <h2>Restaurant: @ViewBag.RestaurantName</h2>
 
-<h3>
-    <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
-        View News
-    </a>
-    @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
-    {
-        <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
-            Update News
+<!-- Display news -->
+<div class="panel panel-default">
+    <div class="panel-body">
+        @ViewBag.MostRecentNews <br />
+        Posted On @ViewBag.MostRecentDate <br />
+        <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
+            View All News
         </a>
-    }
-</h3>
+        @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+        {
+            <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
+                Update News
+            </a>
+        }
+    </div>
+</div>
 
 <!-- Create two columns: Empty and Occupied tables -->
 <div class="col-xs-6">
@@ -29,8 +34,7 @@
     <p>
         @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
         {
-            //create a new table just for that restaurant
-            <a class="btn btn-info" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
+            <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
                 Manage Tables
             </a>
         }
@@ -150,8 +154,7 @@
     </h3>
     <p>
         @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
-        {
-            //create a new table just for that restaurant
+        { 
             <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", ViewBag.RestaurantId)'>
                 Add Customer
             </a>
