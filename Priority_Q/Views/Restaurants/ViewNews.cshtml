@@ -24,7 +24,11 @@
                     @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
                     {
                         <br />
-                        //create a new table just for that restaurant
+                        //edit
+                        <a class="btn btn-warning" href='@string.Format("/NewsInfos/Edit/{0}", item.ID)'>
+                           Edit Post
+                        </a>
+                        //delete
                         <a class="btn btn-danger" href='@string.Format("/NewsInfos/Delete/{0}", item.ID)'>
                             Delete Post
                         </a>
