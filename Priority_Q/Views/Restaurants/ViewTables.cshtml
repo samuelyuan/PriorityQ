@@ -1,4 +1,4 @@
-﻿@model Tuple <IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>
+﻿@model Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>
 
 @{
     ViewBag.Title = "View Tables";
@@ -7,21 +7,33 @@
 <h2>Restaurant: @ViewBag.RestaurantName</h2>
 
 <!-- Display news -->
-<div class="panel panel-default">
-    <div class="panel-body">
-        @ViewBag.MostRecentNews <br />
-        Posted On @ViewBag.MostRecentDate <br />
-        <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
-            View All News
-        </a>
-        @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
-        {
-            <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
-                Update News
-            </a>
-        }
+@if (ViewBag.MostRecentNews == "")
+{
+    <div class="panel panel-default">
+        <div class="panel-body">
+            No News
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @ViewBag.MostRecentNews <br />
+            Posted On @ViewBag.MostRecentDate <br />
+            <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
+                View All News
+            </a>
+            @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+            {
+                <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
+                    Update News
+                </a>
+            }
+        </div>
+    </div>
+}
+
 
 <!-- Create two columns: Empty and Occupied tables -->
 <div class="col-xs-6">
@@ -52,7 +64,7 @@
             @foreach (var item in Model.Item1)
             {
                 if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
-                { 
+                {
                     <tr>
                         <td>
                             <!-- display clickable button for empty -->
@@ -154,7 +166,7 @@
     </h3>
     <p>
         @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
-        { 
+        {
             <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", ViewBag.RestaurantId)'>
                 Add Customer
             </a>
@@ -186,9 +198,8 @@
                     </td>
                 </tr>
 
-                counter++;
+                        counter++;
             }
         </table>
     </div>
 </div>
-

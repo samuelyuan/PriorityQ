@@ -156,9 +156,16 @@ namespace Priority_Q.Controllers
             //find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewBag.MostRecentNews = newsInfos.Last().Content;
-            ViewBag.MostRecentDate = newsInfos.Last().Date;
-
+            if (newsInfos.Count() > 0)
+            {
+                ViewBag.MostRecentNews = newsInfos.Last().Content;
+                ViewBag.MostRecentDate = newsInfos.Last().Date;
+            }
+            else 
+            {
+                ViewBag.MostRecentNews = "";
+                ViewBag.MostRecentDate = "";
+            }
             var tuple = new Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>(tables, customers);
             return View(tuple);
         }
