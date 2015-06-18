@@ -19,7 +19,7 @@
                 <p>
                     #@Html.DisplayFor(modelItem => counter) <br />
                     @Html.DisplayFor(modelItem => item.Content) <br />
-                    Posted On @Html.DisplayFor(modelItem => item.Date)
+                    <i>Posted On @Html.DisplayFor(modelItem => item.Date)</i>
 
                     @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
                     {

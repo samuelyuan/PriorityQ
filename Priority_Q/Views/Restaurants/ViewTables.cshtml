@@ -20,7 +20,7 @@ else
     <div class="panel panel-default">
         <div class="panel-body">
             @ViewBag.MostRecentNews <br />
-            Posted On @ViewBag.MostRecentDate <br />
+            <i>Posted On @ViewBag.MostRecentDate</i> <br />
             <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
                 View All News
             </a>
