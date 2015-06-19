@@ -36,7 +36,7 @@ namespace Priority_Q.Controllers
             if (!String.IsNullOrEmpty(searchString))
             {
                 restaurantArray = db.Restaurants.Where(s => s.Name.Contains(searchString)
-                                       || s.Location.Contains(searchString)).ToArray();
+                                       || s.City.Contains(searchString)).ToArray();
             }
 
             ViewBag.AvailableTablesArray = new int[restaurantArray.Length];
@@ -92,7 +92,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Location,NumTables,UserID")] Restaurant restaurant)
+        public ActionResult Create([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID")] Restaurant restaurant)
         {
             if (ModelState.IsValid)
             {
@@ -118,7 +118,7 @@ namespace Priority_Q.Controllers
             ViewBag.RestaurantId = id;
             ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
 
             //reverse because the site should display the most recent posts, which are at the end
             return View(newsInfos.Reverse());
@@ -139,7 +139,7 @@ namespace Priority_Q.Controllers
             ViewBag.RestaurantId = id;
             ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
 
             ViewBag.TotalTables = tables.Count();
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
@@ -188,7 +188,7 @@ namespace Priority_Q.Controllers
             ViewBag.RestaurantId = id;
             ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
            
             ViewBag.TotalTables = tables.Count();
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
@@ -246,7 +246,7 @@ namespace Priority_Q.Controllers
             ViewBag.RestaurantID = id;
             ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).Location;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
             ViewBag.NumCustomers = customers.Count();
             return View(customers);
         }
@@ -275,7 +275,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Location,NumTables")] Restaurant restaurant)
+        public ActionResult Edit([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID")] Restaurant restaurant)
         {
             if (ModelState.IsValid)
             {
