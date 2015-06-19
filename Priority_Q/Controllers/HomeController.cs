@@ -10,7 +10,7 @@ namespace Priority_Q.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Restaurants");
         }
 
         public ActionResult About()
