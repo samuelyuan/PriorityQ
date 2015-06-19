@@ -11,3 +11,6 @@ obj/
 # Compiled Dynamic libraries
 *.dll
 *.pdb
+
+# Database files
+*.mdf
