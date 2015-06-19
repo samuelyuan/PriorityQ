@@ -106,7 +106,7 @@ namespace Priority_Q.Controllers
             ViewBag.RestaurantId = restaurant.ID;
             ViewBag.OwnsRestaurant = (restaurant.UserID == User.Identity.GetUserId());
             ViewBag.RestaurantName = restaurant.Name;
-            ViewBag.RestaurantLocation = restaurant.Location;
+            ViewBag.RestaurantLocation = restaurant.City;
 
             IEnumerable<Priority_Q.Models.Table> availableTables = canSeatTables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTables = availableTables.Count();

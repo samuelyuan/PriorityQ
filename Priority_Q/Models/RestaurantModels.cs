@@ -13,8 +13,19 @@ namespace Priority_Q.Models
         public string Name { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Location must be specified.")]
-        public string Location { get; set; }
+        [Display(Name = "Street Address")]
+        [StringLength(100, ErrorMessage = "Street address must be specified.")]
+        public string StreetAddress { get; set; }
+
+        [Required]
+        [Display(Name = "City")]
+        [StringLength(100, ErrorMessage = "City must be specified.")]
+        public string City { get; set; }
+
+        [Required]
+        [Display(Name = "Phone Number")]
+        [StringLength(15, ErrorMessage = "Phone number must be specified.")]
+        public String PhoneNumber { get; set; }
 
         [Display(Name = "Number of tables")]
         public int NumTables { get; set; }
