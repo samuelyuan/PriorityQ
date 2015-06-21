@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNet.Identity;
+@using System;
+@using System.Globalization;
 @model IEnumerable<Priority_Q.Models.Restaurant>
 
 @{
@@ -50,7 +52,11 @@
                     <span class="label label-danger">Closed</span>
                 }
                 <br />
-                Opening Hours: @Html.DisplayFor(modelItem => item.OpeningHourStart):00 - @Html.DisplayFor(modelItem => item.OpeningHourEnd):00 
+               
+                Opening Hours: 
+                @DateTime.ParseExact(item.OpeningHourStart.ToString(), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt") 
+                - 
+                @DateTime.ParseExact(item.OpeningHourEnd.ToString(), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt") 
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StreetAddress) <br />
