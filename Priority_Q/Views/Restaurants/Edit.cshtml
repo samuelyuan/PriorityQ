@@ -51,8 +51,10 @@
                 </div>
             </div>
 
-            @Html.HiddenFor(model => model.NumTables)
-            @Html.HiddenFor(model => model.AvailableTables)
+            <!-- fill in opening hours -->
+            @Html.EditorFor(model => model.OpeningHourStart) : 00
+            -
+            @Html.EditorFor(model => model.OpeningHourEnd) : 00
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
