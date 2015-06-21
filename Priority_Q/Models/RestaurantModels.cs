@@ -27,11 +27,11 @@ namespace Priority_Q.Models
         [StringLength(15, ErrorMessage = "Phone number must be specified.")]
         public String PhoneNumber { get; set; }
 
-        [Display(Name = "Number of tables")]
-        public int NumTables { get; set; }
+        [Required]
+        public int OpeningHourStart { get; set; }
 
-        [Display(Name = "Available tables")]
-        public int AvailableTables { get; set; }
+        [Required]
+        public int OpeningHourEnd { get; set; }
 
         public String UserID { get; set; } //this maps the restaurant to a certain account
     }

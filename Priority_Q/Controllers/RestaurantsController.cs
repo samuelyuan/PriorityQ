@@ -39,25 +39,7 @@ namespace Priority_Q.Controllers
                                        || s.City.Contains(searchString)).ToArray();
             }
 
-            ViewBag.AvailableTablesArray = new int[restaurantArray.Length];
-            ViewBag.NumWaitingArray = new int[restaurantArray.Length];
-            
-            for (int i = 0; i < restaurantArray.Count(); i++)
-            {
-                int restaurantId = restaurantArray[i].ID;
-               
-                //the number of tables for a given restaurant can change, so update
-                TableDBContext tableDB = new TableDBContext();
-                IEnumerable<Priority_Q.Models.Table> allTables = tableDB.Tables.Where(table => table.RestaurantId == restaurantId);
-                IEnumerable<Priority_Q.Models.Table> availableTables = allTables.Where(table => table.IsOccupied == false);
-                ViewBag.AvailableTablesArray[i] = availableTables.Count();
-
-                //Find all customer belonging to a restaurant 
-                CustomerDBContext customerDB = new CustomerDBContext();
-                IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(cust => cust.RestaurantID == restaurantId);
-
-                ViewBag.NumWaitingArray[i] = customers.Count();
-            }
+            ViewBag.CurrentHour = Int32.Parse(DateTime.Now.ToString("HH"));
 
             return View(restaurantArray.ToList());
         }
@@ -92,7 +74,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID")] Restaurant restaurant)
+        public ActionResult Create([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID,OpeningHourStart,OpeningHourEnd")] Restaurant restaurant)
         {
             if (ModelState.IsValid)
             {
@@ -275,7 +257,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID")] Restaurant restaurant)
+        public ActionResult Edit([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID,OpeningHourStart,OpeningHourEnd")] Restaurant restaurant)
         {
             if (ModelState.IsValid)
             {
