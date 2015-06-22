@@ -19,22 +19,15 @@
             @Html.HiddenFor(model => model.ID)
 
             @Html.HiddenFor(model => model.RestaurantId)
+            @Html.HiddenFor(model => model.IsOccupied)
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.MaxCapacity, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.MaxCapacity)
-                    @Html.ValidationMessageFor(model => model.MaxCapacity)
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.IsOccupied, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.IsOccupied)
-                    @Html.ValidationMessageFor(model => model.IsOccupied)
-                </div>
-            </div>
+            <table>
+                <tr>
+                    <td>
+                        [Max: @Html.EditorFor(model => model.MaxCapacity)]
+                    </td>
+                </tr>
+            </table>
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">

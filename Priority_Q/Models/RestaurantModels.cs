@@ -28,6 +28,7 @@ namespace Priority_Q.Models
         public String PhoneNumber { get; set; }
 
         [Required]
+        [Display(Name = "Opening Hours")]
         public int OpeningHourStart { get; set; }
 
         [Required]
@@ -65,8 +66,11 @@ namespace Priority_Q.Models
     {
         public int ID { get; set; }
         public int RestaurantId { get; set; }
-        public String Content { get; set; }
+
         public String Date { get; set; }
+
+        [Required]
+        public String Content { get; set; }
     }
 
     public class NewsInfoDBContext : DbContext
