@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<br />
+
+<div class="jumbotron">
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="title">PriorityQ</h1>
+        <p class="intro">
+            PriorityQ is designed to make waiting for restaurants as <b>efficient</b> as possible.
+        </p>
+        <p>
+            Find a restaurant and see how many people are waiting.
+            @using (Html.BeginForm("Index", "Restaurants"))
+            {
+            <p>
+                @Html.TextBox("SearchString")
+                <input type="submit" value="Search" />
+            </p>
+            }
+            <a href="/Restaurants/Index" class="btn btn-primary btn-large">View All Restaurants &raquo;</a>
+            </p>
+        </div>
+
+        <!-- side image -->
+        <div class="col-md-6">
+            <div id="carousel-sshot" class="carousel slide">
+                <div class="carousel-inner">
+
+                    <div class="item active">
+                        <img src="http://www.slate.com/content/dam/slate/articles/life/a_fine_whine/2011/10/111019_WHINE_waiting.jpg.CROP.rectangle3-large.jpg"
+                                alt="Waiting">
+                        <div class="carousel-caption">
+                            <h3>&nbsp;</h3>
+                            <p>Waiting In Line</p>
+                        </div>
+                    </div>
+
+                    <div class="item ">
+
+                        <img src="http://bloximages.chicago2.vip.townnews.com/nwitimes.com/content/tncms/assets/v3/editorial/4/85/4855f4f0-9a78-53c1-a451-f9a1d4a64db0/555e5fb644c79.image.jpg?resize=620%2C413"
+                                alt="Management">
+
+                        <div class="carousel-caption">
+                            <h3>&nbsp;</h3>
+                            <p>Adding You To The Priority Queue</p>
+                        </div>
+                    </div>
+
+                    <div class="item ">
+                        <img src="http://www.everywhereist.com/wp-content/uploads/2010/06/757-1024x682.jpg"
+                                alt="Checking Priority Queue">
+
+                        <div class="carousel-caption">
+                            <h3>&nbsp;</h3>
+                            <p>Check The Line Anytime</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- go left or right to view different images-->
+                <a class="left carousel-control" href="#carousel-sshot" data-slide="prev"><span class="icon-prev"></span></a>
+                <a class="right carousel-control" href="#carousel-sshot" data-slide="next"><span class="icon-next"></span></a>
+
+            </div>
+        </div>
+    </div>
+</div>

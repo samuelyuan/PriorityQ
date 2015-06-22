@@ -140,15 +140,14 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
             ViewBag.MostRecentNews = "";
             ViewBag.MostRecentDate = "";
+            ViewBag.NumNewsItems = newsInfos.Count();
             if (newsInfos.Count() > 0)
             {
                 DateTime mostRecentDate = Convert.ToDateTime(newsInfos.Last().Date);
                 DateTime dateNow = DateTime.Now;
 
                 //only post news for today
-                if (mostRecentDate.Day == dateNow.Day
-                    && mostRecentDate.Month == dateNow.Month
-                    && mostRecentDate.Year == dateNow.Year)
+                if (mostRecentDate.Day == dateNow.Day && mostRecentDate.Month == dateNow.Month && mostRecentDate.Year == dateNow.Year)
                 { 
                     ViewBag.MostRecentNews = newsInfos.Last().Content;
                     ViewBag.MostRecentDate = newsInfos.Last().Date;
