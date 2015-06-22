@@ -7,42 +7,35 @@
 <h2>Restaurant: @ViewBag.RestaurantName</h2>
 
 <!-- Display news -->
-@if (ViewBag.MostRecentNews == "")
-{
-    <div class="panel panel-default">
-        <div class="panel-body">
-            No News For Today <br />
-            <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
-                View Previous News
-            </a>
-            @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
-            {
-                <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
-                    Add News
-                </a>
-            }
-        </div>
-    </div>
-}
-else
-{
-    <div class="panel panel-default">
-        <div class="panel-body">
+<div class="panel panel-default">
+    <div class="panel-body">
+        <!-- Check if there's any news for today-->
+        @if (ViewBag.MostRecentNews == "")
+        {
+            <span>No News For Today </span>
+        }
+        else
+        {
             @ViewBag.MostRecentNews <br />
-            <i>Posted On @ViewBag.MostRecentDate</i> <br />
+            <i>Posted On @ViewBag.MostRecentDate</i>
+        }
+        <br />
+        <!-- Make sure there are news items posted-->
+        @if (ViewBag.NumNewsItems > 0)
+        {
             <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
                 View All News
             </a>
-            @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
-            {
-                <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
-                    Add News
-                </a>
-            }
-        </div>
+        }
+        <!-- Only the restaurant can add news-->
+        @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+        {
+            <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
+                Add News
+            </a>
+        }
     </div>
-}
-
+</div>
 
 <!-- Create two columns: Empty and Occupied tables -->
 <div class="col-xs-6">
@@ -72,6 +65,7 @@ else
             <h4>Empty</h4>
             @foreach (var item in Model.Item1)
             {
+                <!-- If user owns this restaurant, allow the user to modify data-->
                 if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
                 {
                     <tr>
