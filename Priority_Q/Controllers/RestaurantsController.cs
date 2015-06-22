@@ -138,15 +138,21 @@ namespace Priority_Q.Controllers
             //find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
+            ViewBag.MostRecentNews = "";
+            ViewBag.MostRecentDate = "";
             if (newsInfos.Count() > 0)
             {
-                ViewBag.MostRecentNews = newsInfos.Last().Content;
-                ViewBag.MostRecentDate = newsInfos.Last().Date;
-            }
-            else 
-            {
-                ViewBag.MostRecentNews = "";
-                ViewBag.MostRecentDate = "";
+                DateTime mostRecentDate = Convert.ToDateTime(newsInfos.Last().Date);
+                DateTime dateNow = DateTime.Now;
+
+                //only post news for today
+                if (mostRecentDate.Day == dateNow.Day
+                    && mostRecentDate.Month == dateNow.Month
+                    && mostRecentDate.Year == dateNow.Year)
+                { 
+                    ViewBag.MostRecentNews = newsInfos.Last().Content;
+                    ViewBag.MostRecentDate = newsInfos.Last().Date;
+                }
             }
             var tuple = new Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>(tables, customers);
             return View(tuple);
@@ -208,29 +214,6 @@ namespace Priority_Q.Controllers
             customerDB.SaveChanges();
 
             return RedirectToAction("ViewTables", "Restaurants", new { id = restaurantID });
-        }
-
-
-        // GET: Restaurants/ManagePriorityQueue/5
-        public ActionResult ManagePriorityQueue(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            //Restaurant restaurant = db.Restaurants.Find(id);
-            if (!IsAuthorized(db.Restaurants.Find(id)))
-                return RedirectToAction("Index", "Restaurants");
-
-            //Find all customer belonging to a restaurant 
-            CustomerDBContext customerDB = new CustomerDBContext();
-            IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
-            ViewBag.RestaurantID = id;
-            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
-            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
-            ViewBag.NumCustomers = customers.Count();
-            return View(customers);
         }
 
         // GET: Restaurants/Edit/5

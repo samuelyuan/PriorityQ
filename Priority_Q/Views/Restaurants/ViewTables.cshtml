@@ -11,7 +11,16 @@
 {
     <div class="panel panel-default">
         <div class="panel-body">
-            No News
+            No News For Today <br />
+            <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
+                View Previous News
+            </a>
+            @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+            {
+                <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
+                    Add News
+                </a>
+            }
         </div>
     </div>
 }
@@ -27,7 +36,7 @@ else
             @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
             {
                 <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
-                    Update News
+                    Add News
                 </a>
             }
         </div>

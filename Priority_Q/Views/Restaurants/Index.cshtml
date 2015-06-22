@@ -43,9 +43,18 @@
                 </a>
             </td>
             <td>
-                @if (ViewBag.CurrentHour >= item.OpeningHourStart && ViewBag.CurrentHour < item.OpeningHourEnd)
+                @if (ViewBag.CurrentHour >= item.OpeningHourStart) 
                 {
-                    <span class="label label-success">Open</span>
+                    /*Two cases:
+                    if the opening and closing hour are both on the same day (10am - 10pm, which is 10:00 - 22:00)
+                        OR 
+                    if the closing hour is on the day after (10am - 3am, which is 10:00 - 03:00)
+                    */
+                    if ((item.OpeningHourStart < item.OpeningHourEnd && ViewBag.CurrentHour < item.OpeningHourEnd) ||
+                        (item.OpeningHourStart > item.OpeningHourEnd && ViewBag.CurrentHour < item.OpeningHourEnd + 24))
+                    { 
+                        <span class="label label-success">Open</span>
+                    }
                 }
                 else
                 {
@@ -54,9 +63,10 @@
                 <br />
                
                 Opening Hours: 
-                @DateTime.ParseExact(item.OpeningHourStart.ToString(), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt") 
+                <!-- add zero to single digit numbers (3 -> 03), but leave it alone if it's double digit-->
+                @DateTime.ParseExact(item.OpeningHourStart.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
                 - 
-                @DateTime.ParseExact(item.OpeningHourEnd.ToString(), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt") 
+                @DateTime.ParseExact(item.OpeningHourEnd.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StreetAddress) <br />
