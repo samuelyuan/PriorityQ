@@ -12,7 +12,7 @@
         <!-- Check if there's any news for today-->
         @if (ViewBag.MostRecentNews == "")
         {
-            <span>No News For Today </span>
+            <span>No News</span>
         }
         else
         {
@@ -48,7 +48,10 @@
     <p>
         @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
         {
-            <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
+            <a class="btn btn-warning" href='@string.Format("/Restaurants/ReserveTables/{0}", ViewBag.RestaurantId)'>
+                Reserve a Table
+            </a>
+            <a class="btn btn-danger" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
                 Manage Tables
             </a>
         }

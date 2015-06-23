@@ -143,15 +143,8 @@ namespace Priority_Q.Controllers
             ViewBag.NumNewsItems = newsInfos.Count();
             if (newsInfos.Count() > 0)
             {
-                DateTime mostRecentDate = Convert.ToDateTime(newsInfos.Last().Date);
-                DateTime dateNow = DateTime.Now;
-
-                //only post news for today
-                if (mostRecentDate.Day == dateNow.Day && mostRecentDate.Month == dateNow.Month && mostRecentDate.Year == dateNow.Year)
-                { 
-                    ViewBag.MostRecentNews = newsInfos.Last().Content;
-                    ViewBag.MostRecentDate = newsInfos.Last().Date;
-                }
+                ViewBag.MostRecentNews = newsInfos.Last().Content;
+                ViewBag.MostRecentDate = newsInfos.Last().Date;
             }
             var tuple = new Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>(tables, customers);
             return View(tuple);
@@ -180,6 +173,46 @@ namespace Priority_Q.Controllers
             ViewBag.TotalTables = tables.Count();
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTables = availableTables.Count();
+
+            return View(tables);
+        }
+
+        // GET: Restaurants/ReserveTables/5?GroupSizeList=XX
+        public ActionResult ReserveTables(int? id, int? GroupSizeList)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Restaurant restaurant = db.Restaurants.Find(id);
+            if (restaurant == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (!IsAuthorized(restaurant))
+                return RedirectToAction("Index", "Restaurants");
+
+            //Find all tables belonging to a restaurant 
+            TableDBContext tableDB = new TableDBContext();
+            IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == id);
+            ViewBag.RestaurantId = id;
+            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
+            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
+            ViewBag.TableCount = tables.Count();
+
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Text = "1 person", Value = "1" });
+            for (var i = 2; i <= 20; i++)
+            {
+                items.Add(new SelectListItem { Text = i.ToString() + " people", Value = i.ToString() });
+            }
+            ViewBag.GroupSizeList = items;
+            if (GroupSizeList == null)
+                ViewBag.GroupSize = 0;
+            else
+                ViewBag.GroupSize = GroupSizeList;
 
             return View(tables);
         }

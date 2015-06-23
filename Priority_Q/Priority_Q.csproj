@@ -240,6 +240,7 @@
     <Content Include="Views\NewsInfos\Edit.cshtml" />
     <Content Include="Views\Restaurants\ViewNews.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Restaurants\ReserveTables.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
