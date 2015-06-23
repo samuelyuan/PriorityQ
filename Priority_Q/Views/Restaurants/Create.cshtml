@@ -45,10 +45,22 @@
             </div>
 
             <!-- fill in opening hours -->
-            @Html.TextBoxFor(model => model.OpeningHourStart, new { placeholder = "11" }) : 00
+            @{
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                for (var i = 0; i < 24; i++)
+                {
+                    listItems.Add(new SelectListItem
+                    {
+                        Text = i.ToString().PadLeft(2, '0'),
+                        Value = i.ToString().PadLeft(2, '0')
+                    });
+                }
+            }
+
+            @Html.DropDownListFor(model => model.OpeningHourStart, listItems, "-- Select Opening Hour --") : 00
             -
-            @Html.TextBoxFor(model => model.OpeningHourEnd, new { placeholder = "22" }) : 00
-         
+            @Html.DropDownListFor(model => model.OpeningHourEnd, listItems, "-- Select Closing Hour --") : 00
+
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="submit" value="Create" class="btn btn-default" />
