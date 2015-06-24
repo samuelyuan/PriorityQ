@@ -1,4 +1,6 @@
-﻿@model Priority_Q.Models.Restaurant
+﻿@using System.Globalization;
+
+@model Priority_Q.Models.Restaurant
 
 @{
     ViewBag.Title = "Create";
@@ -51,15 +53,15 @@
                 {
                     listItems.Add(new SelectListItem
                     {
-                        Text = i.ToString().PadLeft(2, '0'),
+                        Text = DateTime.ParseExact(i.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt"),
                         Value = i.ToString().PadLeft(2, '0')
                     });
                 }
             }
 
-            @Html.DropDownListFor(model => model.OpeningHourStart, listItems, "-- Select Opening Hour --") : 00
+            @Html.DropDownListFor(model => model.OpeningHourStart, listItems, "-- Select Opening Hour --")
             -
-            @Html.DropDownListFor(model => model.OpeningHourEnd, listItems, "-- Select Closing Hour --") : 00
+            @Html.DropDownListFor(model => model.OpeningHourEnd, listItems, "-- Select Closing Hour --")
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">

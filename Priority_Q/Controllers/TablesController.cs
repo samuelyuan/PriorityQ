@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Data.Entity;
 using System.Net;
-using System.Web;
+using System.Collections;
 using System.Web.Mvc;
 using Priority_Q.Models;
 using Microsoft.AspNet.Identity;
+using System.Collections.Generic;
 
 namespace Priority_Q.Controllers
 {
@@ -53,7 +50,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,OccupationStartTime")] Table table)
+        public ActionResult Create([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,ReservedTimes")] Table table)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +92,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,OccupationStartTime")] Table table)
+        public ActionResult Edit([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,ReservedTimes")] Table table)
         {
             if (ModelState.IsValid)
             {

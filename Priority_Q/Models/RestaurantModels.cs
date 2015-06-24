@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 
@@ -42,6 +43,8 @@ namespace Priority_Q.Models
         public DbSet<Restaurant> Restaurants { get; set; }
     }
 
+    //===========================================
+
     public class Table
     {
         public int ID { get; set; }
@@ -49,18 +52,36 @@ namespace Priority_Q.Models
         [Range(0, int.MaxValue, ErrorMessage = "The restaurant id must be a positive number")]
         public int RestaurantId { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "Max capacity must be a positive number")]
+        [Display(Name = "Table of")]
+        [Range(1, 20, ErrorMessage = "Max capacity must be between 1 to 20")]
         public int MaxCapacity { get; set; }
 
         [Display(Name = "Occupied")]
         public Boolean IsOccupied { get; set; }
-        public int OccupationStartTime { get; set; }
     }
 
     public class TableDBContext : DbContext
     {
         public DbSet<Table> Tables { get; set; }
     }
+
+    //===========================================
+
+    public class Reservation
+    {
+        public int ID { get; set; }
+
+        public int TableId { get; set; }
+
+        public int TimeSlot { get; set; }
+    }
+
+    public class ReservationDBContext : DbContext
+    {
+        public DbSet<Reservation> Reservations { get; set; }
+    }
+
+    //===========================================
 
     public class NewsInfo
     {

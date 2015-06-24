@@ -1,4 +1,6 @@
-﻿@model Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>
+﻿@using System.Globalization;
+
+@model Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>
 
 @{
     ViewBag.Title = "View Tables";
@@ -160,6 +162,30 @@
             }
         </table>
     </div>
+
+    <!-- List reservation times (only for restaurant owner to see)-->
+    @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+    {
+        <div class="col-xs-3">
+            <table class="table table-striped table-hover ">
+                <!-- contents -->
+                @{
+                    counter = 0;
+                }
+                <h4>Reserved</h4>
+                @foreach (var reservationTime in ViewBag.AllTimeSlots[counter])
+                {
+                    <span class="label label-info">
+                        @DateTime.ParseExact(reservationTime.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
+                    </span>
+                    <br />
+                    counter++;
+                }
+            </table>
+
+        </div>
+    }
+
 </div>
 
 <!-- Manage Priority Queue -->

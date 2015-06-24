@@ -7,12 +7,17 @@
 <h2>Reserve a Table</h2>
 
 <!-- Display group size -->
+<!-- Display available time slots -->
 @using (Html.BeginForm("ReserveTables", "Restaurants", FormMethod.Get))
 {
     <fieldset>
         Group Size
         @Html.DropDownList("GroupSizeList")
-            <input class="btn btn-info" type="submit" value="Find A Table" />
+
+        Time Slot
+        @Html.DropDownList("TimeSlotList")
+        
+        <input class="btn btn-info" type="submit" value="Find A Table" />
     </fieldset>
 } 
 
@@ -27,15 +32,21 @@
     
         @foreach (var item in Model)
         {
+            //make sure table can seat enough customers
             if (!item.IsOccupied && item.MaxCapacity >= ViewBag.GroupSize)
             {
-                <tr>
-                    <td>
-                        <span class="btn btn-success disabled">
-                            #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
-                        </span>
-                    </td>
-                </tr>
+                //make sure table hasn't been reserved already
+               // if (item.ReservedTimes == null ||
+               //     (item.ReservedTimes != null && !item.ReservedTimes.Contains(ViewBag.TimeSlot)))
+              //  {
+                    <tr>
+                        <td>
+                            <a class="btn btn-success" href="@String.Format("../../Restaurants/AssignReservation/?tableID={0}&timeSlot={1}", item.ID, ViewBag.TimeSlot)">
+                                #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                            </a>
+                        </td>
+                    </tr>
+               // }
             }
             counter++;
         }
