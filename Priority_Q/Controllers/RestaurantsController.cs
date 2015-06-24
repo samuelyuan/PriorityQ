@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Priority_Q.Models;
 using Microsoft.AspNet.Identity;
+using System.Globalization;
 
 namespace Priority_Q.Controllers
 {
@@ -129,6 +130,22 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.Table> occupiedTables = tables.Where(table => table.IsOccupied == true);
             ViewBag.OccupiedTablesCount = occupiedTables.Count();
 
+            //Find all reservations for each table
+            ReservationDBContext reservationDB = new ReservationDBContext();
+            ViewBag.AllTimeSlots = new List<int>[tables.Count()];
+            int counter = 0;
+            foreach (var table in tables)
+            {
+                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
+
+                ViewBag.AllTimeSlots[counter] = new List<int>();
+                foreach (var reservation in reservations)
+                {
+                    ViewBag.AllTimeSlots[counter].Add(reservation.TimeSlot);
+                }
+                counter++;
+            }
+
             //Find all customer belonging to a restaurant 
             CustomerDBContext customerDB = new CustomerDBContext();
             IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
@@ -177,8 +194,8 @@ namespace Priority_Q.Controllers
             return View(tables);
         }
 
-        // GET: Restaurants/ReserveTables/5?GroupSizeList=XX
-        public ActionResult ReserveTables(int? id, int? GroupSizeList)
+        // GET: Restaurants/ReserveTables/5?GroupSizeList=XX&&TimeSlotList=XX
+        public ActionResult ReserveTables(int? id, int? GroupSizeList, int? TimeSlotList)
         {
             if (id == null)
             {
@@ -202,6 +219,7 @@ namespace Priority_Q.Controllers
             ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
             ViewBag.TableCount = tables.Count();
 
+            //add options for group size
             List<SelectListItem> items = new List<SelectListItem>();
             items.Add(new SelectListItem { Text = "1 person", Value = "1" });
             for (var i = 2; i <= 20; i++)
@@ -214,13 +232,47 @@ namespace Priority_Q.Controllers
             else
                 ViewBag.GroupSize = GroupSizeList;
 
+            //add time slots
+            items = new List<SelectListItem>();
+            int restaurantOpeningHour = restaurant.OpeningHourStart;
+            int restaurantClosingHour = restaurant.OpeningHourEnd;
+            for (var i = restaurantOpeningHour; i < restaurantClosingHour; i++)
+            {
+                items.Add(new SelectListItem
+                {
+                    Text = DateTime.ParseExact(i.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt"),
+                    Value = i.ToString()
+                });
+            }
+            ViewBag.TimeSlotList = items;
+            if (TimeSlotList == null)
+                ViewBag.TimeSlot = 0;
+            else
+                ViewBag.TimeSlot = TimeSlotList;
+           
             return View(tables);
+        }
+
+        // GET:  Restaurants/AssignReservation/?tableID=XX&timeSlot=XX
+        public ActionResult AssignReservation(int? tableID, int? timeSlot)
+        {
+            TableDBContext tableDB = new TableDBContext();
+            Table emptyTable = tableDB.Tables.Find(tableID);
+
+            ReservationDBContext reservationDB = new ReservationDBContext();
+            Reservation reservation = new Reservation();
+            reservation.TableId = emptyTable.ID;
+            reservation.TimeSlot = timeSlot.Value;
+
+            reservationDB.Reservations.Add(reservation);
+            reservationDB.SaveChanges();
+
+            return RedirectToAction("ViewTables", "Restaurants", new { id = emptyTable.RestaurantId });
         }
 
         // GET:  Restaurants/AssignTable/?tableID=XX&customerID=XX
         public ActionResult AssignTable(int? tableID, int? customerID)
         {
-            //the number of tables for a given restaurant can change, so update
             TableDBContext tableDB = new TableDBContext();
             Table emptyTable = tableDB.Tables.Find(tableID);
 
