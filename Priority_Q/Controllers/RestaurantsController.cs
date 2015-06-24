@@ -133,17 +133,22 @@ namespace Priority_Q.Controllers
             //Find all reservations for each table
             ReservationDBContext reservationDB = new ReservationDBContext();
             ViewBag.AllTimeSlots = new List<int>[tables.Count()];
-            int counter = 0;
+            ViewBag.ReservationIds = new List<int>[tables.Count()];
+            ViewBag.NumReservations = new int[tables.Count()];
+            int tableCounter = 0;
             foreach (var table in tables)
             {
                 IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
 
-                ViewBag.AllTimeSlots[counter] = new List<int>();
+                ViewBag.AllTimeSlots[tableCounter] = new List<int>();
+                ViewBag.ReservationIds[tableCounter] = new List<int>();
                 foreach (var reservation in reservations)
                 {
-                    ViewBag.AllTimeSlots[counter].Add(reservation.TimeSlot);
+                    ViewBag.AllTimeSlots[tableCounter].Add(reservation.TimeSlot);
+                    ViewBag.ReservationIds[tableCounter].Add(reservation.ID);
                 }
-                counter++;
+                ViewBag.NumReservations[tableCounter] = reservations.Count();
+                tableCounter++;
             }
 
             //Find all customer belonging to a restaurant 
@@ -249,7 +254,25 @@ namespace Priority_Q.Controllers
                 ViewBag.TimeSlot = 0;
             else
                 ViewBag.TimeSlot = TimeSlotList;
-           
+
+            //Find all reservations for each table
+            ReservationDBContext reservationDB = new ReservationDBContext();
+            ViewBag.AllTimeSlots = new List<int>[tables.Count()];
+            ViewBag.NumReservations = new int[tables.Count()];
+            int tableCounter = 0;
+            foreach (var table in tables)
+            {
+                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
+
+                ViewBag.AllTimeSlots[tableCounter] = new List<int>();
+                foreach (var reservation in reservations)
+                {
+                    ViewBag.AllTimeSlots[tableCounter].Add(reservation.TimeSlot);
+                }
+                ViewBag.NumReservations[tableCounter] = reservations.Count();
+                tableCounter++;
+            }
+
             return View(tables);
         }
 

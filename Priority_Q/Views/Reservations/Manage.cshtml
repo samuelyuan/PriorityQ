@@ -1,0 +1,25 @@
+﻿@using System.Globalization;
+
+@model Priority_Q.Models.Reservation
+
+@{
+    ViewBag.Title = "Manage Reservation";
+}
+
+<h2>Manage Reservation</h2>
+
+<h3>
+    @{
+        String formattedTime = DateTime.ParseExact(Model.TimeSlot.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt");
+    }
+    Reservation At @formattedTime
+</h3>
+
+<p>
+    <a class="btn btn-danger" href="@String.Format("../../Reservations/Delete/{0}", Model.ID)">
+        Remove 
+    </a>
+    <a class="btn btn-warning" href="@String.Format("../../Restaurants/ViewTables/{0}", ViewBag.RestaurantId)">
+        Cancel
+    </a>
+</p>

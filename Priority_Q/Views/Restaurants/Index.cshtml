@@ -7,17 +7,20 @@
     ViewBag.Title = "All Restaurants";
 }
 
-<h2>@ViewBag.Title</h2>
-
-<p>
+<h2>
+    @ViewBag.Title
+    &nbsp;
     @if (Request.IsAuthenticated)
     {
+        <span>(</span>
         //this is to prevent a random person from generating new restaurants
-            <a class="btn btn-info" href='@string.Format("/Restaurants/Create")'>
-                Create New Restaurant
-            </a>
+        <a class="btn btn-info" href='@string.Format("/Restaurants/Create")'>
+            +
+        </a>
+        <span>)</span>
     }
-</p>
+</h2>
+
 
 @using (Html.BeginForm())
 {

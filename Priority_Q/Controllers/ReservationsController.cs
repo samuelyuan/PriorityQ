@@ -37,6 +37,25 @@ namespace Priority_Q.Views
             return View(reservation);
         }
 
+        // GET: Reservations/Manage/5
+        public ActionResult Manage(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation reservation = db.Reservations.Find(id);
+            if (reservation == null)
+            {
+                return HttpNotFound();
+            }
+
+            TableDBContext tableDB = new TableDBContext();
+            ViewBag.RestaurantId = tableDB.Tables.Find(reservation.TableId).RestaurantId;
+
+            return View(reservation);
+        }
+
         // GET: Reservations/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -91,7 +110,11 @@ namespace Priority_Q.Views
             Reservation reservation = db.Reservations.Find(id);
             db.Reservations.Remove(reservation);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            var table = (new TableDBContext()).Tables.Find(reservation.TableId);
+            var restaurantId = table.RestaurantId;
+
+            return RedirectToAction("ViewTables", "Restaurants", new { id = restaurantId });
         }
 
         protected override void Dispose(bool disposing)
