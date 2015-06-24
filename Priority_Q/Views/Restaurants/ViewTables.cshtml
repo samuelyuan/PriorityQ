@@ -46,18 +46,14 @@
         <span class="label label-default">
             @ViewBag.AvailableTablesCount
         </span>
-    </h3>
-    <p>
+        &nbsp;
         @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
         {
-            <a class="btn btn-warning" href='@string.Format("/Restaurants/ReserveTables/{0}", ViewBag.RestaurantId)'>
-                Reserve a Table
-            </a>
-            <a class="btn btn-danger" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
-                Manage Tables
+            <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
+                Manage
             </a>
         }
-    </p>
+    </h3>
 
     <!-- The data passed in is a list of tables for a restaurant -->
     <!-- Empty -->
@@ -166,21 +162,36 @@
     <!-- List reservation times (only for restaurant owner to see)-->
     @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
     {
-        <div class="col-xs-3">
+        <div class="col-xs-6">
+            <h4>
+                Reserved
+                (
+                <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", ViewBag.RestaurantId)'>
+                    +
+                </a>
+                )
+            </h4>
             <table class="table table-striped table-hover ">
                 <!-- contents -->
-                @{
-                    counter = 0;
-                }
-                <h4>Reserved</h4>
-                @foreach (var reservationTime in ViewBag.AllTimeSlots[counter])
+                @for (var tableCounter = 0; tableCounter < Model.Item1.Count(); tableCounter++)
                 {
-                    <span class="label label-info">
-                        @DateTime.ParseExact(reservationTime.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
-                    </span>
-                    <br />
-                    counter++;
+                    <tr>
+                        <td>
+                            <span class="btn btn-default">
+                                @for (var reservationCounter = 0; reservationCounter < ViewBag.NumReservations[tableCounter]; reservationCounter++)
+                                {
+                                    var reservationTime = ViewBag.AllTimeSlots[tableCounter][reservationCounter];
+                                    var reservationId = ViewBag.ReservationIds[tableCounter][reservationCounter];
+
+                                    <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservationId)'>
+                                        @DateTime.ParseExact(reservationTime.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
+                                    </a>
+                                }
+                            </span>
+                        </td>
+                    </tr>
                 }
+
             </table>
 
         </div>
@@ -195,15 +206,15 @@
         <span class="label label-default">
             @ViewBag.NumCustomers
         </span>
-    </h3>
-    <p>
+        &nbsp;
         @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
         {
             <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", ViewBag.RestaurantId)'>
-                Add Customer
+                +
             </a>
         }
-    </p>
+    </h3>
+
     <div class="col-xs-6">
         <table class="table table-striped table-hover ">
             <!-- contents -->
