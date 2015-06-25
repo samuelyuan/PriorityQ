@@ -162,12 +162,17 @@ namespace Priority_Q.Controllers
 
                 ViewBag.AllTimeSlots[tableCounter] = new List<int>();
                 ViewBag.ReservationIds[tableCounter] = new List<int>();
+                ViewBag.NumReservations[tableCounter] = 0;
                 foreach (var reservation in reservations)
                 {
-                    ViewBag.AllTimeSlots[tableCounter].Add(reservation.TimeSlot);
-                    ViewBag.ReservationIds[tableCounter].Add(reservation.ID);
+                    //only display reservations for the current day
+                    if (DateTime.Now.ToString("MM/dd/yyyy").Equals(reservation.DaySlot))
+                    { 
+                        ViewBag.AllTimeSlots[tableCounter].Add(reservation.TimeSlot);
+                        ViewBag.ReservationIds[tableCounter].Add(reservation.ID);
+                        ViewBag.NumReservations[tableCounter]++;
+                    }
                 }
-                ViewBag.NumReservations[tableCounter] = reservations.Count();
                 tableCounter++;
             }
 
@@ -182,7 +187,6 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
             ViewBag.MostRecentNews = "";
             ViewBag.MostRecentDate = "";
-            ViewBag.NumNewsItems = newsInfos.Count();
             if (newsInfos.Count() > 0)
             {
                 ViewBag.MostRecentNews = newsInfos.Last().Content;
@@ -207,16 +211,16 @@ namespace Priority_Q.Controllers
             //Find all tables belonging to a restaurant 
             IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
             ViewBagSetRestaurantInfo(id);
-           
             ViewBag.TotalTables = tables.Count();
+
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTables = availableTables.Count();
 
             return View(tables);
         }
 
-        // GET: Restaurants/ReserveTables/5?GroupSizeList=XX&&TimeSlotList=XX
-        public ActionResult ReserveTables(int? id, int? GroupSizeList, int? TimeSlotList)
+        // GET: Restaurants/ReserveTables/5?GroupSizeList=XX&&TimeSlotList=XX&&DaySlotList=XX
+        public ActionResult ReserveTables(int? id, int? GroupSizeList, int? TimeSlotList, String DaySlotList)
         {
             if (id == null)
             {
@@ -264,6 +268,21 @@ namespace Priority_Q.Controllers
             else
                 ViewBag.TimeSlot = TimeSlotList;
 
+            //add day slots
+            items = new List<SelectListItem>();
+            DateTime todaysDate = DateTime.Now;
+            for (var i = 0; i < 14; i++)
+            {
+                String currentDateDisplay = todaysDate.AddDays(i).ToString("MMM dd, yyyy");
+                String currentDateStored = todaysDate.AddDays(i).ToString("MM/dd/yyyy");
+                items.Add(new SelectListItem { Text = currentDateDisplay, Value = currentDateStored });
+            }
+            ViewBag.DaySlotList = items;
+            if (DaySlotList == null)
+                ViewBag.DaySlot = 0;
+            else
+                ViewBag.DaySlot = DaySlotList;
+
             //Find all reservations for each table
             ReservationDBContext reservationDB = new ReservationDBContext();
             ViewBag.AllTimeSlots = new List<int>[tables.Count()];
@@ -282,24 +301,10 @@ namespace Priority_Q.Controllers
                 tableCounter++;
             }
 
+            //keep track of time. tables should be reserved at least an hour in advance (this might depend on the restaurant though)
+            ViewBag.CurrentHour = Int32.Parse(DateTime.Now.ToString("HH"));
+
             return View(tables);
-        }
-
-        // GET:  Restaurants/AssignReservation/?tableID=XX&timeSlot=XX
-        public ActionResult AssignReservation(int? tableID, int? timeSlot)
-        {
-            TableDBContext tableDB = new TableDBContext();
-            Table emptyTable = tableDB.Tables.Find(tableID);
-
-            ReservationDBContext reservationDB = new ReservationDBContext();
-            Reservation reservation = new Reservation();
-            reservation.TableId = emptyTable.ID;
-            reservation.TimeSlot = timeSlot.Value;
-
-            reservationDB.Reservations.Add(reservation);
-            reservationDB.SaveChanges();
-
-            return RedirectToAction("ViewTables", "Restaurants", new { id = emptyTable.RestaurantId });
         }
 
         // GET:  Restaurants/AssignTable/?tableID=XX&customerID=XX
@@ -324,7 +329,11 @@ namespace Priority_Q.Controllers
             {
                 return RedirectToAction("Index", "Restaurants");
             }
+
+            //Occupy the table
             emptyTable.IsOccupied = true;
+            
+            //Modify the table in the database
             tableDB.Entry(emptyTable).State = EntityState.Modified;
             tableDB.SaveChanges();
 

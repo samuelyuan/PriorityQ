@@ -6,6 +6,13 @@
     ViewBag.Title = "Reserve A Table";
 }
 
+@functions {
+    private String DisplayTableData(int counter, Priority_Q.Models.Table item)
+    {
+        return "#" + counter + " --- [Max: " + item.MaxCapacity + "]";
+    }
+}
+
 <h2>Reserve a Table</h2>
 
 <!-- Display group size -->
@@ -13,18 +20,16 @@
 @using (Html.BeginForm("ReserveTables", "Restaurants", FormMethod.Get))
 {
     <fieldset>
-        Group Size
         @Html.DropDownList("GroupSizeList")
-
-        Time Slot
+        @Html.DropDownList("DaySlotList")
         @Html.DropDownList("TimeSlotList")
-        
+
         <input class="btn btn-info" type="submit" value="Find A Table" />
     </fieldset>
-} 
+}
 
 @if (ViewBag.GroupSize > 0)
-{ 
+{
     <!-- The data passed in is a list of tables for a restaurant -->
     <table class="table table-striped table-hover ">
         <!-- contents -->
@@ -36,7 +41,7 @@
         @foreach (var item in Model)
         {
             //make sure table can seat enough customers
-            if (!item.IsOccupied && item.MaxCapacity >= ViewBag.GroupSize)
+            if (item.MaxCapacity >= ViewBag.GroupSize)
             {
                 <!-- check if table has been reserved -->
                 var isReservedAlready = false;
@@ -48,15 +53,23 @@
                         isReservedAlready = true;
                         break;
                     }
+
                 }
-                
+
+                //too late to reserve
+                if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
+                {
+                    continue;
+                }
+
                 <tr>
                     <td>
                         <!-- make sure table hasn't been reserved already -->
                         @if (!isReservedAlready)
                         {
-                            <a class="btn btn-success" href="@String.Format("../../Restaurants/AssignReservation/?tableID={0}&timeSlot={1}", item.ID, ViewBag.TimeSlot)">
-                                #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                            <a class="btn btn-success" 
+                               href="@String.Format("../../Reservations/AssignTable/?tableID={0}&timeSlot={1}&daySlot={2}", item.ID, ViewBag.TimeSlot, ViewBag.DaySlot)">
+                                @DisplayTableData(counter, item)
                             </a>
                         }
                         else
@@ -64,8 +77,8 @@
                             <span>Already Reserved</span>
                         }
                     </td>
-                </tr>  
-            
+                </tr>
+
                 available++;
             }
 
