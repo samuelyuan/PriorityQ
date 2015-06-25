@@ -13,12 +13,6 @@
     @{
         var counter = 1;
     }
-    <h3>
-        Empty 
-        <span class="label label-default">
-        @ViewBag.AvailableTables
-        </span>
-    </h3>
     @foreach (var item in Model)
     {
         if (!item.IsOccupied && item.MaxCapacity >= ViewBag.CustomerGroupSize)

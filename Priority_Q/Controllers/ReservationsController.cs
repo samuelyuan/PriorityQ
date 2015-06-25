@@ -37,6 +37,26 @@ namespace Priority_Q.Views
             return View(reservation);
         }
 
+        // GET:  Reservations/AssignTable/?tableID=XX&timeSlot=XX&daySlot=XX
+        public ActionResult AssignTable(int? tableID, int? timeSlot, String daySlot)
+        {
+            //Find the table that we want to reserve
+            TableDBContext tableDB = new TableDBContext();
+            Table desiredTable = tableDB.Tables.Find(tableID);
+
+            //Find the reservation
+            Reservation reservation = new Reservation();
+            reservation.TableId = desiredTable.ID;
+            reservation.TimeSlot = timeSlot.Value;
+            reservation.DaySlot = daySlot;
+
+            //Add the reservation to the database
+            db.Reservations.Add(reservation);
+            db.SaveChanges();
+
+            return RedirectToAction("ViewTables", "Restaurants", new { id = desiredTable.RestaurantId });
+        }
+
         // GET: Reservations/Manage/5
         public ActionResult Manage(int? id)
         {
