@@ -22,7 +22,6 @@
                 @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.Name)
-                    @Html.ValidationMessageFor(model => model.Name)
                 </div>
             </div>
 
@@ -38,8 +37,6 @@
                     }
 
                      @Html.DropDownListFor(model => model.GroupCapacity, listItems, "-- Select Group Size --")
-
-
                 </div>
             </div>
 

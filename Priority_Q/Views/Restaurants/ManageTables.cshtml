@@ -4,13 +4,25 @@
     ViewBag.Title = "Manage Tables";
 }
 
+@functions {
+    private String DisplayTableData(int counter, Priority_Q.Models.Table item)
+    {
+        return "#" + counter + " --- [Max: " + item.MaxCapacity + "]";
+    }
+
+    private Boolean IsOwner()
+    {
+        return (Request.IsAuthenticated && ViewBag.OwnsRestaurant);
+    }
+}
+
 <h2>Restaurant: @ViewBag.RestaurantName</h2>
 <h3>Tables
     <span class="label label-default">
         @ViewBag.AvailableTables / @ViewBag.TotalTables
     </span>
     &nbsp;
-    @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+    @if (IsOwner())
     {
         //create a new table just for that restaurant
         <a class="btn btn-info" href='@string.Format("/Tables/Create/{0}", ViewBag.RestaurantId)'>
@@ -32,16 +44,16 @@
                 @if (!item.IsOccupied)
                 {
                     <span class="btn btn-success disabled">
-                        #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                        @DisplayTableData(counter, item)
                     </span>
                 }
                 else
                 {
                     <span class="btn btn-danger disabled">
-                        #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                        @DisplayTableData(counter, item)
                     </span>
                 }
-                @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                @if (IsOwner())
                 {
                      //only logged in users should be able to edit and delete
                     //best if only the user modifies their own restaurant and not someone else's
@@ -49,7 +61,7 @@
                 }
             </td>
             <td>
-                @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                @if (IsOwner())
                 {
                      //only logged in users should be able to edit and delete
                     //best if only the user modifies their own restaurant and not someone else's

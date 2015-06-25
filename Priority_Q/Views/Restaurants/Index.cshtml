@@ -54,7 +54,7 @@
                     if the closing hour is on the day after (10am - 3am, which is 10:00 - 03:00)
                     */
                     if ((item.OpeningHourStart < item.OpeningHourEnd && ViewBag.CurrentHour < item.OpeningHourEnd) ||
-                        (item.OpeningHourStart > item.OpeningHourEnd && ViewBag.CurrentHour < item.OpeningHourEnd + 24))
+                        (item.OpeningHourStart >= item.OpeningHourEnd && ViewBag.CurrentHour < item.OpeningHourEnd + 24))
                     { 
                         <span class="label label-success">Open</span>
                     }
