@@ -16,6 +16,8 @@ namespace Priority_Q.Controllers
     {
         private RestaurantDBContext db = new RestaurantDBContext();
 
+        //------------HELPER FUNCTIONS-------------------
+
         private Boolean IsAuthorized(Restaurant restaurant)
         {
             //user isn't logged in
@@ -28,6 +30,31 @@ namespace Priority_Q.Controllers
 
             return true;
         }
+
+        //Join the two databases based off of restaurant id
+        private IEnumerable<Priority_Q.Models.Table> GetTables(int? restaurantID)
+        {
+            TableDBContext tableDB = new TableDBContext();
+            return tableDB.Tables.Where(i => i.RestaurantId == restaurantID);
+        }
+
+        //set some basic properties for the view
+        private void ViewBagSetRestaurantInfo(int? id)
+        {
+            ViewBag.RestaurantId = id;
+            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
+            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
+            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
+        }
+
+        private String ConvertIntTo24Hour(int number)
+        {
+            String convertToString = number.ToString().PadLeft(2, '0');
+            DateTime convertToDateTime = DateTime.ParseExact(convertToString, "HH", CultureInfo.CurrentCulture);
+            return convertToDateTime.ToString("h:mm tt");
+        }
+
+        //----------------------------------------------
 
         // GET: Restaurants
         public ActionResult Index(string searchString)
@@ -98,10 +125,7 @@ namespace Priority_Q.Controllers
             //Find all pieces of news belonging to a restaurant 
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewBag.RestaurantId = id;
-            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
-            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
+            ViewBagSetRestaurantInfo(id);
 
             //reverse because the site should display the most recent posts, which are at the end
             return View(newsInfos.Reverse());
@@ -117,14 +141,10 @@ namespace Priority_Q.Controllers
             //Restaurant restaurant = db.Restaurants.Find(id);
 
             //Find all tables belonging to a restaurant 
-            TableDBContext tableDB = new TableDBContext();
-            IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == id);
-            ViewBag.RestaurantId = id;
-            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
-            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
-
+            IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
+            ViewBagSetRestaurantInfo(id);
             ViewBag.TotalTables = tables.Count();
+
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTablesCount = availableTables.Count();
             IEnumerable<Priority_Q.Models.Table> occupiedTables = tables.Where(table => table.IsOccupied == true);
@@ -185,12 +205,8 @@ namespace Priority_Q.Controllers
                 return RedirectToAction("Index", "Restaurants");
 
             //Find all tables belonging to a restaurant 
-            TableDBContext tableDB = new TableDBContext();
-            IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == id);
-            ViewBag.RestaurantId = id;
-            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
-            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
+            IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
+            ViewBagSetRestaurantInfo(id);
            
             ViewBag.TotalTables = tables.Count();
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
@@ -216,12 +232,9 @@ namespace Priority_Q.Controllers
                 return RedirectToAction("Index", "Restaurants");
 
             //Find all tables belonging to a restaurant 
-            TableDBContext tableDB = new TableDBContext();
-            IEnumerable<Priority_Q.Models.Table> tables = tableDB.Tables.Where(i => i.RestaurantId == id);
-            ViewBag.RestaurantId = id;
-            ViewBag.OwnsRestaurant = (db.Restaurants.Find(id).UserID == User.Identity.GetUserId());
-            ViewBag.RestaurantName = db.Restaurants.Find(id).Name;
-            ViewBag.RestaurantLocation = db.Restaurants.Find(id).City;
+            IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
+            ViewBagSetRestaurantInfo(id);
+
             ViewBag.TableCount = tables.Count();
 
             //add options for group size
@@ -243,11 +256,7 @@ namespace Priority_Q.Controllers
             int restaurantClosingHour = restaurant.OpeningHourEnd;
             for (var i = restaurantOpeningHour; i < restaurantClosingHour; i++)
             {
-                items.Add(new SelectListItem
-                {
-                    Text = DateTime.ParseExact(i.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt"),
-                    Value = i.ToString()
-                });
+                items.Add(new SelectListItem { Text = ConvertIntTo24Hour(i), Value = i.ToString() });
             }
             ViewBag.TimeSlotList = items;
             if (TimeSlotList == null)
@@ -304,6 +313,10 @@ namespace Priority_Q.Controllers
             Customer topCustomer = customerDB.Customers.Find(customerID);
 
             int restaurantID = emptyTable.RestaurantId;
+
+            //make sure user is authorized before proceeding
+            if (!IsAuthorized(db.Restaurants.Find(restaurantID)))
+                return RedirectToAction("Index", "Restaurants");
 
             //fill in seat
             //refuse to fill table if there's no enough seats

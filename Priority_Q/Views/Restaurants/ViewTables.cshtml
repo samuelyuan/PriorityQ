@@ -6,6 +6,30 @@
     ViewBag.Title = "View Tables";
 }
 
+@functions {
+    private String DisplayTableData(int counter, Priority_Q.Models.Table item)
+    {
+        return "#" + counter + " --- [Max: " + item.MaxCapacity + "]";
+    }    
+
+    private String DisplayCustomerData(int counter, Priority_Q.Models.Customer item)
+    {
+        return "#" + counter + " -- " + item.Name + " [" + item.GroupCapacity + "]";
+    }
+    
+    private Boolean IsOwner()
+    {
+        return (Request.IsAuthenticated && ViewBag.OwnsRestaurant);
+    }
+
+    private String ConvertIntTo24Hour(int number)
+    {
+        String convertToString = number.ToString().PadLeft(2, '0');
+        DateTime convertToDateTime = DateTime.ParseExact(convertToString, "HH", CultureInfo.CurrentCulture);
+        return convertToDateTime.ToString("h:mm tt");
+    }
+}
+
 <h2>Restaurant: @ViewBag.RestaurantName</h2>
 
 <!-- Display news -->
@@ -21,7 +45,9 @@
             @ViewBag.MostRecentNews <br />
             <i>Posted On @ViewBag.MostRecentDate</i>
         }
+        
         <br />
+
         <!-- Make sure there are news items posted-->
         @if (ViewBag.NumNewsItems > 0)
         {
@@ -67,7 +93,7 @@
             @foreach (var item in Model.Item1)
             {
                 <!-- If user owns this restaurant, allow the user to modify data-->
-                if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                if (IsOwner())
                 {
                     <tr>
                         <td>
@@ -75,14 +101,14 @@
                             @if (!item.IsOccupied)
                             {
                                 <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                    #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                                    @DisplayTableData(counter, item)
                                 </a>
                             }
                             else
                             {
                                 //display disabled button for occupied
                                 <span class="btn btn-default disabled">
-                                    #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                                    @DisplayTableData(counter, item)
                                 </span>
                             }
                         </td>
@@ -96,7 +122,7 @@
                         <tr>
                             <td>
                                 <span class="btn btn-success disabled">
-                                    #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                                    @DisplayTableData(counter, item)
                                 </span>
                             </td>
                         </tr>
@@ -118,7 +144,7 @@
             <h4>Occupied</h4>
             @foreach (var item in Model.Item1)
             {
-                if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                if (IsOwner())
                 {
                     <tr>
                         <td>
@@ -126,32 +152,30 @@
                             @if (item.IsOccupied)
                             {
                                 <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                    #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                                    @DisplayTableData(counter, item)
                                 </a>
                             }
                             else
                             {
                                 //display disabled button for empty
                                 <span class="btn btn-default disabled">
-                                    #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                                    @DisplayTableData(counter, item)
                                 </span>
                             }
                         </td>
                     </tr>
                 }
-                else
+                else if (item.IsOccupied)
                 {
                     //just display disabled button for occupied
-                    if (item.IsOccupied)
-                    {
                         <tr>
                             <td>
                                 <span class="btn btn-danger disabled">
-                                    #@Html.DisplayFor(modelItem => counter) --- [Max: @Html.DisplayFor(modelItem => item.MaxCapacity)]
+                                    @DisplayTableData(counter, item)
                                 </span>
                             </td>
                         </tr>
-                    }
+                    
                 }
 
                 counter++;
@@ -160,7 +184,7 @@
     </div>
 
     <!-- List reservation times (only for restaurant owner to see)-->
-    @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+    @if (IsOwner())
     {
         <div class="col-xs-6">
             <h4>
@@ -184,7 +208,7 @@
                                     var reservationId = ViewBag.ReservationIds[tableCounter][reservationCounter];
 
                                     <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservationId)'>
-                                        @DateTime.ParseExact(reservationTime.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
+                                        @ConvertIntTo24Hour(reservationTime)
                                     </a>
                                 }
                             </span>
@@ -207,7 +231,7 @@
             @ViewBag.NumCustomers
         </span>
         &nbsp;
-        @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+        @if (IsOwner())
         {
             <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", ViewBag.RestaurantId)'>
                 +
@@ -226,22 +250,22 @@
             {
                 <tr>
                     <td>
-                        @if (Request.IsAuthenticated && ViewBag.OwnsRestaurant)
+                        @if (IsOwner())
                         {
                             <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
-                                #@Html.DisplayFor(modelItem => counter) -- @Html.DisplayFor(modelItem => item.Name) [@Html.DisplayFor(modelItem => item.GroupCapacity)]
+                                @DisplayCustomerData(counter, item)
                             </a>
                         }
                         else
                         {
                             <span class="btn btn-default disabled">
-                                #@Html.DisplayFor(modelItem => counter) -- @Html.DisplayFor(modelItem => item.Name) [@Html.DisplayFor(modelItem => item.GroupCapacity)]
+                                @DisplayCustomerData(counter, item)
                             </span>
                         }
                     </td>
                 </tr>
 
-                        counter++;
+                counter++;
             }
         </table>
     </div>
