@@ -24,7 +24,15 @@
             <table>
                 <tr>
                     <td>
-                        [Max: @Html.EditorFor(model => model.MaxCapacity)]
+                        @{
+                            List<SelectListItem> listItems = new List<SelectListItem>();
+                            for (var i = 1; i <= 20; i++)
+                            {
+                                listItems.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+                            }
+                        }
+
+                        [Max: @Html.DropDownListFor(model => model.MaxCapacity, listItems, "-- Select Table Size --")]
                     </td>
                 </tr>
             </table>

@@ -131,6 +131,33 @@ namespace Priority_Q.Controllers
             return View(newsInfos.Reverse());
         }
 
+        // GET: Restaurants/ViewReservations/5
+        public ActionResult ViewReservations(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Restaurant restaurant = db.Restaurants.Find(id);
+
+            //Find all tables belonging to a restaurant 
+            IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
+            ViewBagSetRestaurantInfo(id);
+            ViewBag.TotalTables = tables.Count();
+
+            //Find all reservations for each table
+            ReservationDBContext reservationDB = new ReservationDBContext();
+            List<IEnumerable<Priority_Q.Models.Reservation>> allReservations = new List<IEnumerable<Priority_Q.Models.Reservation>>();
+            foreach (var table in tables)
+            {
+                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
+                allReservations.Add(reservations);
+            }
+
+            return View(allReservations);
+        }
+
         // GET: Restaurants/ViewTables/5
         public ActionResult ViewTables(int? id)
         {
@@ -138,7 +165,9 @@ namespace Priority_Q.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //Restaurant restaurant = db.Restaurants.Find(id);
+            Restaurant restaurant = db.Restaurants.Find(id);
+            ViewBag.RestaurantOpeningHour = restaurant.OpeningHourStart;
+            ViewBag.RestaurantClosingHour = restaurant.OpeningHourEnd;
 
             //Find all tables belonging to a restaurant 
             IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
@@ -152,6 +181,7 @@ namespace Priority_Q.Controllers
 
             //Find all reservations for each table
             ReservationDBContext reservationDB = new ReservationDBContext();
+
             ViewBag.AllTimeSlots = new List<int>[tables.Count()];
             ViewBag.ReservationIds = new List<int>[tables.Count()];
             ViewBag.NumReservations = new int[tables.Count()];
@@ -180,7 +210,6 @@ namespace Priority_Q.Controllers
             CustomerDBContext customerDB = new CustomerDBContext();
             IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
             ViewBag.NumCustomers = customers.Count();
-            ViewBag.CustomerData = customers;
 
             //find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
@@ -286,6 +315,7 @@ namespace Priority_Q.Controllers
             //Find all reservations for each table
             ReservationDBContext reservationDB = new ReservationDBContext();
             ViewBag.AllTimeSlots = new List<int>[tables.Count()];
+            ViewBag.AllDaySlots = new List<String>[tables.Count()];
             ViewBag.NumReservations = new int[tables.Count()];
             int tableCounter = 0;
             foreach (var table in tables)
@@ -293,9 +323,11 @@ namespace Priority_Q.Controllers
                 IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
 
                 ViewBag.AllTimeSlots[tableCounter] = new List<int>();
+                ViewBag.AllDaySlots[tableCounter] = new List<String>();
                 foreach (var reservation in reservations)
                 {
                     ViewBag.AllTimeSlots[tableCounter].Add(reservation.TimeSlot);
+                    ViewBag.AllDaySlots[tableCounter].Add(reservation.DaySlot);
                 }
                 ViewBag.NumReservations[tableCounter] = reservations.Count();
                 tableCounter++;

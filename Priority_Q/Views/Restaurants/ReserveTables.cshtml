@@ -48,7 +48,8 @@
                 for (var reservationCounter = 0; reservationCounter < ViewBag.NumReservations[counter - 1]; reservationCounter++)
                 {
                     var reservationTime = ViewBag.AllTimeSlots[counter - 1][reservationCounter];
-                    if (reservationTime == ViewBag.TimeSlot)
+                    var reservationDay = ViewBag.AllDaySlots[counter - 1][reservationCounter];
+                    if (reservationTime == ViewBag.TimeSlot && reservationDay == ViewBag.DaySlot)
                     {
                         isReservedAlready = true;
                         break;
@@ -57,10 +58,10 @@
                 }
 
                 //too late to reserve
-                if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
+                /*if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
                 {
                     continue;
-                }
+                }*/
 
                 <tr>
                     <td>

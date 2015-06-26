@@ -1,0 +1,37 @@
+﻿@using System.Globalization
+
+@model List<IEnumerable<Priority_Q.Models.Reservation>>
+
+@{
+    ViewBag.Title = "View Reservations";
+}
+
+<h2>View Reservations</h2>
+@{
+    var counter = 1;
+}
+
+@functions {
+    private String ConvertIntTo24Hour(int number)
+    {
+        String convertToString = number.ToString().PadLeft(2, '0');
+        DateTime convertToDateTime = DateTime.ParseExact(convertToString, "HH", CultureInfo.CurrentCulture);
+        return convertToDateTime.ToString("h:mm tt");
+    }
+}
+
+@foreach (var table in Model)
+{
+    <h3>Table #@counter</h3>
+    <hr />
+    foreach (var reservation in table)
+    {
+        <a class="btn btn-default" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
+           @reservation.DaySlot - @ConvertIntTo24Hour(reservation.TimeSlot)
+        </a>   
+        <br />     
+    }
+
+    counter++;
+}
+
