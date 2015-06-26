@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Priority_Q.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Priority_Q.Views
 {
@@ -44,6 +45,10 @@ namespace Priority_Q.Views
             TableDBContext tableDB = new TableDBContext();
             Table desiredTable = tableDB.Tables.Find(tableID);
 
+            Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(desiredTable.RestaurantId);
+            if (!Request.IsAuthenticated || restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
+
             //Find the reservation
             Reservation reservation = new Reservation();
             reservation.TableId = desiredTable.ID;
@@ -72,6 +77,10 @@ namespace Priority_Q.Views
 
             TableDBContext tableDB = new TableDBContext();
             ViewBag.RestaurantId = tableDB.Tables.Find(reservation.TableId).RestaurantId;
+
+            Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(ViewBag.RestaurantId);
+            if (!Request.IsAuthenticated || restaurant.UserID != User.Identity.GetUserId())
+                return RedirectToAction("Index", "Restaurants");
 
             return View(reservation);
         }

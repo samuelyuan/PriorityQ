@@ -32,248 +32,275 @@
 
 <h2>Restaurant: @ViewBag.RestaurantName</h2>
 
-<!-- Display news -->
 <div class="panel panel-default">
     <div class="panel-body">
-        <!-- Check if there's any news for today-->
-        @if (ViewBag.MostRecentNews == "")
-        {
-            <span>No News</span>
 
-            <br />
-        }
-        else
-        {
-            @ViewBag.MostRecentNews <br />
-            <i>Posted On @ViewBag.MostRecentDate</i>
 
-            <br />
-
-            <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
-                &laquo; View All News &raquo;
-            </a>
-        }
-
-        <!-- Only the restaurant can add news-->
-        @if (IsOwner())
-        {
-            <a class="btn btn-warning" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
-                Add News
-            </a>
-        }
-    </div>
-</div>
-
-<!-- Create two columns: Empty and Occupied tables -->
-<div class="col-xs-6">
-    <h3>
-        Tables Available
-        <span class="label label-default">
-            @ViewBag.AvailableTablesCount
-        </span>
-        &nbsp;
-        @if (IsOwner())
-        {
-            <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
-                <span class="glyphicon glyphicon-cog"></span>
-            </a>
-        }
-    </h3>
-
-    <!-- The data passed in is a list of tables for a restaurant -->
-    <!-- Empty -->
-    <div class="col-xs-3">
-        <table class="table table-striped table-hover ">
-            <!-- contents -->
-            @{
-                var counter = 1;
-            }
-            <h4>Empty</h4>
-            @foreach (var item in Model.Item1)
-            {
-                <!-- If user owns this restaurant, allow the user to modify data-->
-                if (IsOwner())
-                {
-                    <tr>
-                        <td>
-                            <!-- display clickable button for empty -->
-                            @if (!item.IsOccupied)
-                            {
-                                <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                    @DisplayTableData(counter, item)
-                                </a>
-                            }
-                            else
-                            {
-                                //display disabled button for occupied
-                                <span class="btn btn-default disabled">
-                                    @DisplayTableData(counter, item)
-                                </span>
-                            }
-                        </td>
-                    </tr>
-                }
-                else
-                {
-                    //just display disabled button for empty
-                    if (!item.IsOccupied)
-                    {
-                        <tr>
-                            <td>
-                                <span class="btn btn-success disabled">
-                                    @DisplayTableData(counter, item)
-                                </span>
-                            </td>
-                        </tr>
-                    }
-                }
-
-                counter++;
-            }
-        </table>
-    </div>
-
-    <!-- Occupied -->
-    <div class="col-xs-3">
-        <table class="table table-striped table-hover ">
-            <!-- contents -->
-            @{
-                counter = 1;
-            }
-            <h4>Occupied</h4>
-            @foreach (var item in Model.Item1)
-            {
-                if (IsOwner())
-                {
-                    <tr>
-                        <td>
-                            <!-- display clickable button for occupied -->
-                            @if (item.IsOccupied)
-                            {
-                                <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                    @DisplayTableData(counter, item)
-                                </a>
-                            }
-                            else
-                            {
-                                //display disabled button for empty
-                                <span class="btn btn-default disabled">
-                                    @DisplayTableData(counter, item)
-                                </span>
-                            }
-                        </td>
-                    </tr>
-                }
-                else if (item.IsOccupied)
-                {
-                    //just display disabled button for occupied
-                    <tr>
-                        <td>
-                            <span class="btn btn-danger disabled">
-                                @DisplayTableData(counter, item)
-                            </span>
-                        </td>
-                    </tr>
-
-                }
-
-                counter++;
-            }
-        </table>
-    </div>
-
-    <!-- List reservation times (only for restaurant owner to see)-->
-    @if (IsOwner())
-    {
+        <!-- Create two columns: Empty and Occupied tables -->
         <div class="col-xs-6">
-            <h4>
-                Reserved
-                <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", ViewBag.RestaurantId)'>
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </a>
-            </h4>
-            <table class="table table-striped table-hover ">
-                <!-- contents -->
-                @for (var tableCounter = 0; tableCounter < Model.Item1.Count(); tableCounter++)
+            <h3>
+                Tables Available
+                <span class="label label-default">
+                    @ViewBag.AvailableTablesCount
+                </span>
+                &nbsp;
+                @if (IsOwner())
                 {
-                    <tr>
-                        <td>
-                            <!-- don't display empty blocks -->
-                            @if (ViewBag.NumReservations[tableCounter] > 0)
-                            {
-                                <span class="btn btn-default">
-                                    @for (var reservationCounter = 0; reservationCounter < ViewBag.NumReservations[tableCounter]; reservationCounter++)
+                    <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
+                        <span class="glyphicon glyphicon-cog"></span>
+                    </a>
+                }
+            </h3>
+            <hr />
+            <!-- The data passed in is a list of tables for a restaurant -->
+            <!-- Empty -->
+            <div class="col-xs-3">
+                <table class="table table-striped table-hover ">
+                    <!-- contents -->
+                    @{
+                        var counter = 1;
+                    }
+                    <h4>Empty</h4>
+                    @foreach (var item in Model.Item1)
+                    {
+                <!-- If user owns this restaurant, allow the user to modify data-->
+                        if (IsOwner())
+                        {
+                            <tr>
+                                <td>
+                                    <!-- display clickable button for empty -->
+                                    @if (!item.IsOccupied)
                                     {
-                                        var reservationTime = ViewBag.AllTimeSlots[tableCounter][reservationCounter];
-                                        var reservationId = ViewBag.ReservationIds[tableCounter][reservationCounter];
-
-                                        <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservationId)'>
-                                            @ConvertIntTo24Hour(reservationTime)
+                                        <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                            @DisplayTableData(counter, item)
                                         </a>
                                     }
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="btn btn-default disabled">
-                                    None
-                                </span>
-                            }
-                        </td>
-                    </tr>
-                }
-
-            </table>
-
-        </div>
-    }
-
-</div>
-
-<!-- Manage Priority Queue -->
-<div class="col-xs-6">
-    <h3>
-        Priority Queue
-        <span class="label label-default">
-            @ViewBag.NumCustomers
-        </span>
-        &nbsp;
-        @if (IsOwner())
-        {
-            <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", ViewBag.RestaurantId)'>
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </a>
-        }
-    </h3>
-
-    <div class="col-xs-6">
-        <table class="table table-striped table-hover ">
-            <!-- contents -->
-            @{
-                counter = 1;
-            }
-
-            @foreach (var item in Model.Item2)
-            {
-                <tr>
-                    <td>
-                        @if (IsOwner())
-                        {
-                            <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
-                                @DisplayCustomerData(counter, item)
-                            </a>
+                                    else
+                                    {
+                                        //display disabled button for occupied
+                                        <span class="btn btn-default disabled">
+                                            @DisplayTableData(counter, item)
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
                         }
                         else
                         {
-                            <span class="btn btn-default disabled">
-                                @DisplayCustomerData(counter, item)
-                            </span>
+                            //just display disabled button for empty
+                            if (!item.IsOccupied)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="btn btn-success disabled">
+                                            @DisplayTableData(counter, item)
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
                         }
-                    </td>
-                </tr>
 
                         counter++;
+                    }
+                </table>
+            </div>
+
+            <!-- Occupied -->
+            <div class="col-xs-3">
+                <table class="table table-striped table-hover ">
+                    <!-- contents -->
+                    @{
+                        counter = 1;
+                    }
+                    <h4>Occupied</h4>
+                    @foreach (var item in Model.Item1)
+                    {
+                        if (IsOwner())
+                        {
+                            <tr>
+                                <td>
+                                    <!-- display clickable button for occupied -->
+                                    @if (item.IsOccupied)
+                                    {
+                                        <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                            @DisplayTableData(counter, item)
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        //display disabled button for empty
+                                        <span class="btn btn-default disabled">
+                                            @DisplayTableData(counter, item)
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        else if (item.IsOccupied)
+                        {
+                            //just display disabled button for occupied
+                            <tr>
+                                <td>
+                                    <span class="btn btn-danger disabled">
+                                        @DisplayTableData(counter, item)
+                                    </span>
+                                </td>
+                            </tr>
+
+                        }
+
+                        counter++;
+                    }
+                </table>
+            </div>
+
+            <!-- List reservation times -->
+            
+            <div class="col-xs-6">
+                <h4>
+                    Reserved
+                    @if (IsOwner())
+                    {
+                        <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", ViewBag.RestaurantId)'>
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </a>
+                        <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", ViewBag.RestaurantId)'>
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <select>
+                            <option value="-1">--- See All Available Times ---</option>
+                            @for (var i = ViewBag.RestaurantOpeningHour; i < ViewBag.RestaurantClosingHour; i++)
+                            {
+                                <option value="@i.ToString()">@ConvertIntTo24Hour(i)</option>
+                            }
+                        </select>
+                    }
+                </h4>
+
+                @{
+                    //only let the owner see when the table has been reserved
+                }
+                @if (IsOwner())
+                {
+                    <table class="table table-striped table-hover ">
+                        <!-- contents -->
+                        @for (var tableCounter = 0; tableCounter < Model.Item1.Count(); tableCounter++)
+                        {
+                            <tr>
+                                <td>
+
+                                    <!-- don't display empty blocks -->
+                                    @if (ViewBag.NumReservations[tableCounter] > 0)
+                                    {
+                                        <span class="btn btn-default">
+                                            @for (var reservationCounter = 0; reservationCounter < ViewBag.NumReservations[tableCounter]; reservationCounter++)
+                                            {
+                                                var reservationTime = ViewBag.AllTimeSlots[tableCounter][reservationCounter];
+                                                var reservationId = ViewBag.ReservationIds[tableCounter][reservationCounter];
+
+                                                <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservationId)'>
+                                                    @ConvertIntTo24Hour(reservationTime)
+                                                </a>
+                                            }
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="btn btn-default disabled">
+                                            None
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }   
+            </div>
+        </div>
+
+        <!-- Manage Priority Queue -->
+        <div class="col-xs-6">
+            <h3>
+                Priority Queue
+                <span class="label label-default">
+                    @ViewBag.NumCustomers
+                </span>
+                &nbsp;
+                @if (IsOwner())
+                {
+                    <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", ViewBag.RestaurantId)'>
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </a>
+                }
+            </h3>
+            <hr />
+            <div class="col-xs-6">
+                <table class="table table-striped table-hover ">
+                    <!-- contents -->
+                    @{
+                        counter = 1;
+                    }
+
+                    @foreach (var item in Model.Item2)
+                    {
+                        <tr>
+                            <td>
+                                @if (IsOwner())
+                                {
+                                    <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
+                                        @DisplayCustomerData(counter, item)
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="btn btn-default disabled">
+                                        @DisplayCustomerData(counter, item)
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+
+                        counter++;
+                    }
+                </table>
+            </div>
+        </div>
+
+        <!-- Display news -->
+        <div class="col-xs-3">
+            <h4>
+                News
+                &nbsp;
+                <!-- Only the restaurant can add news-->
+                @if (IsOwner())
+                {
+                    <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </a>
+                }
+            </h4>
+            <hr />
+            <!-- Check if there's any news for today-->
+            @if (ViewBag.MostRecentNews == "")
+            {
+                <span>No News</span>
+
+                <br />
             }
-        </table>
+            else
+            {
+                @ViewBag.MostRecentNews <br />
+                <i>Posted On @ViewBag.MostRecentDate</i>
+
+                <br />
+
+                <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
+                    &laquo; View All &raquo;
+                </a>
+            }
+        </div>
     </div>
 </div>
