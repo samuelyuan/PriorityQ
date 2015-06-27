@@ -30,8 +30,12 @@
     }
 }
 
-<h2>Restaurant: @ViewBag.RestaurantName</h2>
+<h2>@ViewBag.RestaurantName</h2>
 
+<span class="glyphicon glyphicon-map-marker"></span> @ViewBag.Street , @ViewBag.City <br />
+<span class="glyphicon glyphicon-earphone"></span> @ViewBag.PhoneNumber
+
+<p></p>
 <div class="panel panel-default">
     <div class="panel-body">
 
@@ -155,7 +159,7 @@
             </div>
 
             <!-- List reservation times -->
-            
+
             <div class="col-xs-6">
                 <h4>
                     Reserved
@@ -167,16 +171,6 @@
                         <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", ViewBag.RestaurantId)'>
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </a>
-                    }
-                    else
-                    {
-                        <select>
-                            <option value="-1">--- See All Available Times ---</option>
-                            @for (var i = ViewBag.RestaurantOpeningHour; i < ViewBag.RestaurantClosingHour; i++)
-                            {
-                                <option value="@i.ToString()">@ConvertIntTo24Hour(i)</option>
-                            }
-                        </select>
                     }
                 </h4>
 
@@ -217,7 +211,17 @@
                             </tr>
                         }
                     </table>
-                }   
+                }
+                else
+                {
+                    <select>
+                        <option value="-1">--- See All Available Times ---</option>
+                        @for (var i = ViewBag.RestaurantOpeningHour; i < ViewBag.RestaurantClosingHour; i++)
+                        {
+                            <option value="@i.ToString()">@ConvertIntTo24Hour(i)</option>
+                        }
+                    </select>
+                }
             </div>
         </div>
 
@@ -303,4 +307,6 @@
             }
         </div>
     </div>
+
+
 </div>

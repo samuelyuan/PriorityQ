@@ -12,7 +12,7 @@
     @{
         String formattedTime = DateTime.ParseExact(Model.TimeSlot.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt");
     }
-    Reservation At @formattedTime
+    Reservation At @formattedTime on @Model.DaySlot
 </h3>
 
 <p>
