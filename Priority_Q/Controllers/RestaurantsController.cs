@@ -37,6 +37,13 @@ namespace Priority_Q.Controllers
             TableDBContext tableDB = new TableDBContext();
             return tableDB.Tables.Where(i => i.RestaurantId == restaurantID);
         }
+        
+        //Join the two databases based off of restaurant id
+        private IEnumerable<Priority_Q.Models.Customer> GetCustomers(int? restaurantID)
+        {
+            CustomerDBContext customerDB = new CustomerDBContext();
+            return customerDB.Customers.Where(i => i.RestaurantID == restaurantID);
+        }
 
         //set some basic properties for the view
         private void ViewBagSetRestaurantInfo(int? id)
@@ -168,6 +175,9 @@ namespace Priority_Q.Controllers
             Restaurant restaurant = db.Restaurants.Find(id);
             ViewBag.RestaurantOpeningHour = restaurant.OpeningHourStart;
             ViewBag.RestaurantClosingHour = restaurant.OpeningHourEnd;
+            ViewBag.Street = restaurant.StreetAddress;
+            ViewBag.City = restaurant.City;
+            ViewBag.PhoneNumber = restaurant.PhoneNumber;
 
             //Find all tables belonging to a restaurant 
             IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
@@ -202,25 +212,27 @@ namespace Priority_Q.Controllers
                         ViewBag.ReservationIds[tableCounter].Add(reservation.ID);
                         ViewBag.NumReservations[tableCounter]++;
                     }
+                    //if the reservation is from a past date, remove it
+                    else if (DateTime.Now.Date > DateTime.Parse(reservation.DaySlot))
+                    {
+                        //remove the old entry
+                        reservationDB.Reservations.Remove(reservationDB.Reservations.Find(reservation.ID));
+                        reservationDB.SaveChanges();
+                    }
                 }
                 tableCounter++;
             }
 
             //Find all customer belonging to a restaurant 
-            CustomerDBContext customerDB = new CustomerDBContext();
-            IEnumerable<Priority_Q.Models.Customer> customers = customerDB.Customers.Where(i => i.RestaurantID == id);
+            IEnumerable<Priority_Q.Models.Customer> customers = GetCustomers(id);
             ViewBag.NumCustomers = customers.Count();
 
-            //find the most recent news item for a restaurant (usually the last element)
+            //Find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewBag.MostRecentNews = "";
-            ViewBag.MostRecentDate = "";
-            if (newsInfos.Count() > 0)
-            {
-                ViewBag.MostRecentNews = newsInfos.Last().Content;
-                ViewBag.MostRecentDate = newsInfos.Last().Date;
-            }
+            ViewBag.MostRecentNews = (newsInfos.Count() > 0) ? newsInfos.Last().Content : "";
+            ViewBag.MostRecentDate = (newsInfos.Count() > 0) ? newsInfos.Last().Date : "";
+
             var tuple = new Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>(tables, customers);
             return View(tuple);
         }
@@ -278,10 +290,7 @@ namespace Priority_Q.Controllers
                 items.Add(new SelectListItem { Text = i.ToString() + " people", Value = i.ToString() });
             }
             ViewBag.GroupSizeList = items;
-            if (GroupSizeList == null)
-                ViewBag.GroupSize = 0;
-            else
-                ViewBag.GroupSize = GroupSizeList;
+            ViewBag.GroupSize = (GroupSizeList == null) ? 0 : GroupSizeList;
 
             //add time slots
             items = new List<SelectListItem>();
