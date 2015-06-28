@@ -45,6 +45,19 @@ namespace Priority_Q.Controllers
             return customerDB.Customers.Where(i => i.RestaurantID == restaurantID);
         }
 
+        //Get all reservations for each table
+        private List<IEnumerable<Priority_Q.Models.Reservation>> GetAllReservations(IEnumerable<Priority_Q.Models.Table> tables)
+        {
+            ReservationDBContext reservationDB = new ReservationDBContext();
+            List<IEnumerable<Priority_Q.Models.Reservation>> allReservations = new List<IEnumerable<Priority_Q.Models.Reservation>>();
+            foreach (var table in tables)
+            {
+                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
+                allReservations.Add(reservations);
+            }
+            return allReservations;
+        }
+
         //set some basic properties for the view
         private void ViewBagSetRestaurantInfo(int? id)
         {
@@ -154,15 +167,7 @@ namespace Priority_Q.Controllers
             ViewBag.TotalTables = tables.Count();
 
             //Find all reservations for each table
-            ReservationDBContext reservationDB = new ReservationDBContext();
-            List<IEnumerable<Priority_Q.Models.Reservation>> allReservations = new List<IEnumerable<Priority_Q.Models.Reservation>>();
-            foreach (var table in tables)
-            {
-                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
-                allReservations.Add(reservations);
-            }
-
-            return View(allReservations);
+            return View(GetAllReservations(tables));
         }
 
         // GET: Restaurants/ViewTables/5
@@ -173,68 +178,59 @@ namespace Priority_Q.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Restaurant restaurant = db.Restaurants.Find(id);
-            ViewBag.RestaurantOpeningHour = restaurant.OpeningHourStart;
-            ViewBag.RestaurantClosingHour = restaurant.OpeningHourEnd;
-            ViewBag.Street = restaurant.StreetAddress;
-            ViewBag.City = restaurant.City;
-            ViewBag.PhoneNumber = restaurant.PhoneNumber;
+            ViewData["Restaurant"] = restaurant;
+            ViewBag.OwnsRestaurant = (restaurant.UserID == User.Identity.GetUserId());
 
             //Find all tables belonging to a restaurant 
             IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
-            ViewBagSetRestaurantInfo(id);
-            ViewBag.TotalTables = tables.Count();
+            ViewData["AllTables"] = tables;
 
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTablesCount = availableTables.Count();
-            IEnumerable<Priority_Q.Models.Table> occupiedTables = tables.Where(table => table.IsOccupied == true);
-            ViewBag.OccupiedTablesCount = occupiedTables.Count();
-
-            //Find all reservations for each table
-            ReservationDBContext reservationDB = new ReservationDBContext();
-
-            ViewBag.AllTimeSlots = new List<int>[tables.Count()];
-            ViewBag.ReservationIds = new List<int>[tables.Count()];
-            ViewBag.NumReservations = new int[tables.Count()];
-            int tableCounter = 0;
-            foreach (var table in tables)
-            {
-                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
-
-                ViewBag.AllTimeSlots[tableCounter] = new List<int>();
-                ViewBag.ReservationIds[tableCounter] = new List<int>();
-                ViewBag.NumReservations[tableCounter] = 0;
-                foreach (var reservation in reservations)
-                {
-                    //only display reservations for the current day
-                    if (DateTime.Now.ToString("MM/dd/yyyy").Equals(reservation.DaySlot))
-                    { 
-                        ViewBag.AllTimeSlots[tableCounter].Add(reservation.TimeSlot);
-                        ViewBag.ReservationIds[tableCounter].Add(reservation.ID);
-                        ViewBag.NumReservations[tableCounter]++;
-                    }
-                    //if the reservation is from a past date, remove it
-                    else if (DateTime.Now.Date > DateTime.Parse(reservation.DaySlot))
-                    {
-                        //remove the old entry
-                        reservationDB.Reservations.Remove(reservationDB.Reservations.Find(reservation.ID));
-                        reservationDB.SaveChanges();
-                    }
-                }
-                tableCounter++;
-            }
 
             //Find all customer belonging to a restaurant 
             IEnumerable<Priority_Q.Models.Customer> customers = GetCustomers(id);
-            ViewBag.NumCustomers = customers.Count();
+            ViewData["AllCustomers"] = customers;
 
             //Find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewBag.MostRecentNews = (newsInfos.Count() > 0) ? newsInfos.Last().Content : "";
-            ViewBag.MostRecentDate = (newsInfos.Count() > 0) ? newsInfos.Last().Date : "";
+            ViewData["MostRecentNews"] = (newsInfos.Count() > 0) ? newsInfos.Last() : null;
 
-            var tuple = new Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>(tables, customers);
-            return View(tuple);
+            //Find all reservations for each table
+            List<IEnumerable<Priority_Q.Models.Reservation>> allReservations = GetAllReservations(tables);
+            List<List<Priority_Q.Models.Reservation>> todayReservations = new List<List<Reservation>>();
+            foreach (var item in allReservations)
+            {
+                todayReservations.Add(new List<Priority_Q.Models.Reservation>());
+                foreach (var reservation in item)
+                {
+                    //only display reservations for the current day
+                    if (DateTime.Now.ToString("MM/dd/yyyy").Equals(reservation.DaySlot))
+                    {
+                        int tableCounter = todayReservations.Count() - 1;
+                        todayReservations[tableCounter].Add(reservation);
+                    }   
+                }
+            }
+            ViewData["TodayReservations"] = todayReservations;
+
+            //Remove all old reservations
+            foreach (var item in allReservations)
+            {
+                foreach (var reservation in item)
+                {
+                    if (DateTime.Now.Date > DateTime.Parse(reservation.DaySlot))
+                    {
+                        //remove the old entry
+                        ReservationDBContext reservationDB = new ReservationDBContext();
+                        reservationDB.Reservations.Remove(reservationDB.Reservations.Find(reservation.ID));
+                        reservationDB.SaveChanges();
+                    }
+                }
+            }
+
+            return View();
         }
 
         // GET: Restaurants/ManageTables/5
@@ -245,13 +241,13 @@ namespace Priority_Q.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //Restaurant restaurant = db.Restaurants.Find(id);
+            ViewBagSetRestaurantInfo(id);
 
             if (!IsAuthorized(db.Restaurants.Find(id)))
                 return RedirectToAction("Index", "Restaurants");
 
             //Find all tables belonging to a restaurant 
             IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
-            ViewBagSetRestaurantInfo(id);
             ViewBag.TotalTables = tables.Count();
 
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
@@ -294,17 +290,12 @@ namespace Priority_Q.Controllers
 
             //add time slots
             items = new List<SelectListItem>();
-            int restaurantOpeningHour = restaurant.OpeningHourStart;
-            int restaurantClosingHour = restaurant.OpeningHourEnd;
-            for (var i = restaurantOpeningHour; i < restaurantClosingHour; i++)
+            for (var i = restaurant.OpeningHourStart; i < restaurant.OpeningHourEnd; i++)
             {
                 items.Add(new SelectListItem { Text = ConvertIntTo24Hour(i), Value = i.ToString() });
             }
             ViewBag.TimeSlotList = items;
-            if (TimeSlotList == null)
-                ViewBag.TimeSlot = 0;
-            else
-                ViewBag.TimeSlot = TimeSlotList;
+            ViewBag.TimeSlot = (TimeSlotList == null) ? 0 : TimeSlotList;
 
             //add day slots
             items = new List<SelectListItem>();
@@ -316,31 +307,10 @@ namespace Priority_Q.Controllers
                 items.Add(new SelectListItem { Text = currentDateDisplay, Value = currentDateStored });
             }
             ViewBag.DaySlotList = items;
-            if (DaySlotList == null)
-                ViewBag.DaySlot = 0;
-            else
-                ViewBag.DaySlot = DaySlotList;
+            ViewBag.DaySlot = (DaySlotList == null) ? "" : DaySlotList;
 
             //Find all reservations for each table
-            ReservationDBContext reservationDB = new ReservationDBContext();
-            ViewBag.AllTimeSlots = new List<int>[tables.Count()];
-            ViewBag.AllDaySlots = new List<String>[tables.Count()];
-            ViewBag.NumReservations = new int[tables.Count()];
-            int tableCounter = 0;
-            foreach (var table in tables)
-            {
-                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
-
-                ViewBag.AllTimeSlots[tableCounter] = new List<int>();
-                ViewBag.AllDaySlots[tableCounter] = new List<String>();
-                foreach (var reservation in reservations)
-                {
-                    ViewBag.AllTimeSlots[tableCounter].Add(reservation.TimeSlot);
-                    ViewBag.AllDaySlots[tableCounter].Add(reservation.DaySlot);
-                }
-                ViewBag.NumReservations[tableCounter] = reservations.Count();
-                tableCounter++;
-            }
+            ViewData["AllReservations"] = GetAllReservations(tables);
 
             //keep track of time. tables should be reserved at least an hour in advance (this might depend on the restaurant though)
             ViewBag.CurrentHour = Int32.Parse(DateTime.Now.ToString("HH"));
@@ -353,33 +323,26 @@ namespace Priority_Q.Controllers
         {
             TableDBContext tableDB = new TableDBContext();
             Table emptyTable = tableDB.Tables.Find(tableID);
-
-            //Find all customer belonging to a restaurant 
-            CustomerDBContext customerDB = new CustomerDBContext();
-            Customer topCustomer = customerDB.Customers.Find(customerID);
-
             int restaurantID = emptyTable.RestaurantId;
 
             //make sure user is authorized before proceeding
             if (!IsAuthorized(db.Restaurants.Find(restaurantID)))
                 return RedirectToAction("Index", "Restaurants");
 
-            //fill in seat
             //refuse to fill table if there's no enough seats
+            CustomerDBContext customerDB = new CustomerDBContext();
+            Customer topCustomer = customerDB.Customers.Find(customerID);
             if (emptyTable.MaxCapacity < topCustomer.GroupCapacity)
-            {
                 return RedirectToAction("Index", "Restaurants");
-            }
 
             //Occupy the table
             emptyTable.IsOccupied = true;
-            
+
             //Modify the table in the database
             tableDB.Entry(emptyTable).State = EntityState.Modified;
             tableDB.SaveChanges();
 
             //remove customer from queue
-            topCustomer = customerDB.Customers.Find(topCustomer.ID);
             customerDB.Customers.Remove(topCustomer);
             customerDB.SaveChanges();
 
