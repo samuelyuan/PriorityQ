@@ -1,9 +1,12 @@
 ﻿@using System.Globalization;
 
-@model Tuple<IEnumerable<Priority_Q.Models.Table>, IEnumerable<Priority_Q.Models.Customer>>
-
 @{
     ViewBag.Title = "View Tables";
+    var restaurant = ViewData["Restaurant"] as Priority_Q.Models.Restaurant;
+    var allTables = ViewData["AllTables"] as IEnumerable<Priority_Q.Models.Table>;
+    var allCustomers = ViewData["AllCustomers"] as IEnumerable<Priority_Q.Models.Customer>;
+    var mostRecentNews = ViewData["MostRecentNews"] as Priority_Q.Models.NewsInfo;
+    var todayReservations = ViewData["TodayReservations"] as List<List<Priority_Q.Models.Reservation>>;
 }
 
 @functions {
@@ -30,16 +33,14 @@
     }
 }
 
-<h2>@ViewBag.RestaurantName</h2>
+<h2>@restaurant.Name</h2>
 
-<span class="glyphicon glyphicon-map-marker"></span> @ViewBag.Street , @ViewBag.City <br />
-<span class="glyphicon glyphicon-earphone"></span> @ViewBag.PhoneNumber
+<span class="glyphicon glyphicon-map-marker"></span> @restaurant.StreetAddress , @restaurant.City <br />
+<span class="glyphicon glyphicon-earphone"></span> @restaurant.PhoneNumber
 
 <p></p>
 <div class="panel panel-default">
     <div class="panel-body">
-
-
         <!-- Create two columns: Empty and Occupied tables -->
         <div class="col-xs-6">
             <h3>
@@ -50,7 +51,7 @@
                 &nbsp;
                 @if (IsOwner())
                 {
-                    <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", ViewBag.RestaurantId)'>
+                    <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", restaurant.ID)'>
                         <span class="glyphicon glyphicon-cog"></span>
                     </a>
                 }
@@ -59,15 +60,16 @@
             <!-- The data passed in is a list of tables for a restaurant -->
             <!-- Empty -->
             <div class="col-xs-3">
+                <h4>Empty</h4>
                 <table class="table table-striped table-hover ">
                     <!-- contents -->
                     @{
                         var counter = 1;
                     }
-                    <h4>Empty</h4>
-                    @foreach (var item in Model.Item1)
+                
+                    @foreach (var item in allTables)
                     {
-                <!-- If user owns this restaurant, allow the user to modify data-->
+                        <!-- If user owns this restaurant, allow the user to modify data-->
                         if (IsOwner())
                         {
                             <tr>
@@ -111,13 +113,13 @@
 
             <!-- Occupied -->
             <div class="col-xs-3">
+                <h4>Occupied</h4>
                 <table class="table table-striped table-hover ">
                     <!-- contents -->
                     @{
                         counter = 1;
                     }
-                    <h4>Occupied</h4>
-                    @foreach (var item in Model.Item1)
+                    @foreach (var item in allTables)
                     {
                         if (IsOwner())
                         {
@@ -159,16 +161,15 @@
             </div>
 
             <!-- List reservation times -->
-
             <div class="col-xs-6">
                 <h4>
                     Reserved
                     @if (IsOwner())
                     {
-                        <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", ViewBag.RestaurantId)'>
+                        <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </a>
-                        <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", ViewBag.RestaurantId)'>
+                        <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </a>
                     }
@@ -181,22 +182,18 @@
                 {
                     <table class="table table-striped table-hover ">
                         <!-- contents -->
-                        @for (var tableCounter = 0; tableCounter < Model.Item1.Count(); tableCounter++)
+                        @for (var tableCounter = 0; tableCounter < allTables.Count(); tableCounter++)
                         {
                             <tr>
                                 <td>
-
                                     <!-- don't display empty blocks -->
-                                    @if (ViewBag.NumReservations[tableCounter] > 0)
+                                    @if (todayReservations[tableCounter].Count() > 0)
                                     {
                                         <span class="btn btn-default">
-                                            @for (var reservationCounter = 0; reservationCounter < ViewBag.NumReservations[tableCounter]; reservationCounter++)
-                                            {
-                                                var reservationTime = ViewBag.AllTimeSlots[tableCounter][reservationCounter];
-                                                var reservationId = ViewBag.ReservationIds[tableCounter][reservationCounter];
-
-                                                <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservationId)'>
-                                                    @ConvertIntTo24Hour(reservationTime)
+                                            @foreach (var reservation in todayReservations[tableCounter])
+                                            { 
+                                                <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
+                                                    @ConvertIntTo24Hour(reservation.TimeSlot)
                                                 </a>
                                             }
                                         </span>
@@ -216,7 +213,7 @@
                 {
                     <select>
                         <option value="-1">--- See All Available Times ---</option>
-                        @for (var i = ViewBag.RestaurantOpeningHour; i < ViewBag.RestaurantClosingHour; i++)
+                        @for (var i = restaurant.OpeningHourStart; i < restaurant.OpeningHourEnd; i++)
                         {
                             <option value="@i.ToString()">@ConvertIntTo24Hour(i)</option>
                         }
@@ -230,12 +227,12 @@
             <h3>
                 Priority Queue
                 <span class="label label-default">
-                    @ViewBag.NumCustomers
+                    @allCustomers.Count()
                 </span>
                 &nbsp;
                 @if (IsOwner())
                 {
-                    <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", ViewBag.RestaurantId)'>
+                    <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", restaurant.ID)'>
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </a>
                 }
@@ -248,7 +245,7 @@
                         counter = 1;
                     }
 
-                    @foreach (var item in Model.Item2)
+                    @foreach (var item in allCustomers)
                     {
                         <tr>
                             <td>
@@ -281,14 +278,14 @@
                 <!-- Only the restaurant can add news-->
                 @if (IsOwner())
                 {
-                    <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", ViewBag.RestaurantId)'>
+                    <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", restaurant.ID)'>
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </a>
                 }
             </h4>
             <hr />
             <!-- Check if there's any news for today-->
-            @if (ViewBag.MostRecentNews == "")
+            @if (mostRecentNews == null)
             {
                 <span>No News</span>
 
@@ -296,12 +293,12 @@
             }
             else
             {
-                @ViewBag.MostRecentNews <br />
-                <i>Posted On @ViewBag.MostRecentDate</i>
+                @mostRecentNews.Content <br />
+                <i>Posted On @mostRecentNews.Date</i>
 
                 <br />
 
-                <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", ViewBag.RestaurantId)'>
+                <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)'>
                     &laquo; View All &raquo;
                 </a>
             }
