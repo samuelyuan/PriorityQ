@@ -3,25 +3,23 @@
     ViewBag.Title = "Index";
 }
 
-<br />
-
 <div class="jumbotron">
-<div class="row">
-    <div class="col-md-6">
-        <h1 class="title">PriorityQ</h1>
-        <p class="intro">
-            PriorityQ is designed to make waiting for restaurants as <b>efficient</b> as possible.
-        </p>
-        <p>
-            Find a restaurant and see how many people are waiting.
-            @using (Html.BeginForm("Index", "Restaurants"))
-            {
-            <p>
-                @Html.TextBox("SearchString")
-                <input type="submit" value="Search" />
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="title">PriorityQ</h1>
+            <p class="intro">
+                PriorityQ is designed to make waiting for restaurants as <b>efficient</b> as possible.
             </p>
-            }
-            <a href="/Restaurants/Index" class="btn btn-primary btn-large">View All Restaurants &raquo;</a>
+            <p>
+                Find a restaurant and see how many people are waiting.
+                @using (Html.BeginForm("Index", "Restaurants"))
+                {
+                <p>
+                    @Html.TextBox("SearchString")
+                    <input type="submit" value="Search" />
+                </p>
+                }
+                <a href="/Restaurants/Index" class="btn btn-primary btn-large">View All Restaurants &raquo;</a>
             </p>
         </div>
 
@@ -64,7 +62,45 @@
                 <!-- go left or right to view different images-->
                 <a class="left carousel-control" href="#carousel-sshot" data-slide="prev"><span class="icon-prev"></span></a>
                 <a class="right carousel-control" href="#carousel-sshot" data-slide="next"><span class="icon-next"></span></a>
+            </div>
+        </div>
 
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <h2 class="latest-articles">Getting Started</h2>
+
+        <div class="well">
+            <h3>Reserve a Place</h3>
+            <div class="entry-content">
+                <p>
+                    <img src="http://farm7.staticflickr.com/6119/6358946399_e18fb90c25_b.jpg" style="width: 100%; height: 200px" />
+                </p>
+                <p>
+                    Text the restaurant (phone number is on the top of each page) the following in one message:
+                    <ul>
+                        <li>Day (ex. 01/01/2015)</li>
+                        <li>Time (ex. 6pm)</li>
+                        <li>Group Size (ex. 4)</li>
+                    </ul>
+                    <br />
+                    You will get an immediate response telling you whether you succeeded or not. If not, don't worry, there's still another option for you.
+                </p>
+            </div>
+        </div>
+
+        <div class="well">
+            <h3>No Reservations Allowed?</h3>
+            <div class="entry-content">
+                <p>
+                    <img src="https://m1.behance.net/rendition/pm/25670923/1400/4c092be4b13b3bf62b2860b74112aed7.jpg" style="width: 100%; height: 200px" />
+                </p>
+                <p>No problem!
+                 Simply visit the restaurant and they will add you to the priority queue. You can check your waiting progress
+                at any time. 
+                </p>
             </div>
         </div>
     </div>
