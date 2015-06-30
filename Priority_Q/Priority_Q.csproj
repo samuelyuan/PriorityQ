@@ -247,6 +247,7 @@
     <Content Include="Views\Reservations\Edit.cshtml" />
     <Content Include="Views\Reservations\Manage.cshtml" />
     <Content Include="Views\Restaurants\ViewReservations.cshtml" />
+    <Content Include="Views\Restaurants\CustomerView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

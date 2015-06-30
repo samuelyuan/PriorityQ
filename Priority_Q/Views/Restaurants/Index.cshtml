@@ -5,6 +5,8 @@
 
 @{
     ViewBag.Title = "All Restaurants";
+    var AllTableCounts = ViewData["AllTableCounts"] as List<int>;
+    var AllCustomerCounts = ViewData["AllCustomerCounts"] as List<int>;
 }
 
 <h2>
@@ -39,11 +41,23 @@
             <td>
             </td>
             <td>
-                <a class="btn btn-info" href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </a>
+                @if (Request.IsAuthenticated)
+                {
+                    <a class="btn btn-info" href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-info" href='@string.Format("/Restaurants/CustomerView/{0}", item.ID)'>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                }
             </td>
             <td>
+                @{
+                    bool isOpen = false;
+                }
                 @if (ViewBag.CurrentHour >= item.OpeningHourStart) 
                 {
                     /*Two cases:
@@ -54,24 +68,46 @@
                     if ((item.OpeningHourStart < item.OpeningHourEnd && ViewBag.CurrentHour < item.OpeningHourEnd) ||
                         (item.OpeningHourStart >= item.OpeningHourEnd && ViewBag.CurrentHour < item.OpeningHourEnd + 24))
                     { 
-                        <span class="label label-success">Open</span>
+                        isOpen = true;
                     }
                     else
                     {
-                        <span class="label label-danger">Closed</span>
+                        isOpen = false;
                     }
+                }
+                else
+                {
+                    isOpen = false;
+                }
+                @if (isOpen)
+                {
+                    <span class="label label-success">Open</span>
                 }
                 else
                 {
                     <span class="label label-danger">Closed</span>
                 }
-                <br />
-               
-                Opening Hours: 
+                <span class="glyphicon glyphicon-time"></span>
                 <!-- add zero to single digit numbers (3 -> 03), but leave it alone if it's double digit-->
                 @DateTime.ParseExact(item.OpeningHourStart.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
-                - 
+                -
                 @DateTime.ParseExact(item.OpeningHourEnd.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
+                
+                <br />
+                @if (/*isOpen*/ true)
+                { 
+                    if (AllTableCounts[counter] > 0)
+                    {
+                        <span class="label label-success">No Wait</span>
+                        <span class="label label-info">@AllTableCounts[counter] Open Table(s)</span> 
+                    }
+                    else
+                    {
+                        <span class="label label-danger">Wait in Line</span>
+                        <span class="label label-info">@AllCustomerCounts[counter] Group(s) Waiting</span> 
+                    }
+                }
+                <br />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StreetAddress) <br />
