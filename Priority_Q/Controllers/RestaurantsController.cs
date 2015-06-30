@@ -89,7 +89,56 @@ namespace Priority_Q.Controllers
 
             ViewBag.CurrentHour = Int32.Parse(DateTime.Now.ToString("HH"));
 
+            //Find all tables belonging to a restaurant 
+            List<int> allTableCounts = new List<int>();
+            for (var i = 0; i < restaurantArray.Length; i++)
+            {
+                IEnumerable<Priority_Q.Models.Table> tables = GetTables(restaurantArray[i].ID);
+                IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
+                allTableCounts.Add(availableTables.Count());
+            }
+            ViewData["AllTableCounts"] = allTableCounts;
+
+            //Find all customer belonging to a restaurant 
+            List<int> allCustomerCounts = new List<int>();
+            for (var i = 0; i < restaurantArray.Length; i++)
+            {
+                IEnumerable<Priority_Q.Models.Customer> customers = GetCustomers(restaurantArray[i].ID);
+                allCustomerCounts.Add(customers.Count());
+            }
+            ViewData["AllCustomerCounts"] = allCustomerCounts;
+
             return View(restaurantArray.ToList());
+        }
+
+        // GET: Restaurants/CustomerView/5
+        public ActionResult CustomerView(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Restaurant restaurant = db.Restaurants.Find(id);
+            ViewData["Restaurant"] = restaurant;
+            ViewBag.OwnsRestaurant = (restaurant.UserID == User.Identity.GetUserId());
+
+            //Find all tables belonging to a restaurant 
+            IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
+            ViewData["AllTables"] = tables;
+
+            IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
+            ViewBag.AvailableTablesCount = availableTables.Count();
+
+            //Find all customer belonging to a restaurant 
+            IEnumerable<Priority_Q.Models.Customer> customers = GetCustomers(id);
+            ViewData["AllCustomers"] = customers;
+
+            //Find the most recent news item for a restaurant (usually the last element)
+            NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
+            IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
+            ViewData["MostRecentNews"] = (newsInfos.Count() > 0) ? newsInfos.Last() : null;
+
+            return View();
         }
 
         // GET: Restaurants/Details/5

@@ -15,11 +15,6 @@
         return "#" + counter + " --- [Max: " + item.MaxCapacity + "]";
     }
 
-    private String DisplayCustomerData(int counter, Priority_Q.Models.Customer item)
-    {
-        return "#" + counter + " -- " + item.Name + " [" + item.GroupCapacity + "]";
-    }
-
     private Boolean IsOwner()
     {
         return (Request.IsAuthenticated && ViewBag.OwnsRestaurant);
@@ -35,7 +30,9 @@
 
 <h2>@restaurant.Name</h2>
 
-<span class="glyphicon glyphicon-map-marker"></span> @restaurant.StreetAddress , @restaurant.City <br />
+<span class="glyphicon glyphicon-map-marker"></span> @restaurant.StreetAddress , @restaurant.City &emsp; 
+<span class="glyphicon glyphicon-time"></span> @ConvertIntTo24Hour(restaurant.OpeningHourStart) - @ConvertIntTo24Hour(restaurant.OpeningHourEnd)
+<br />
 <span class="glyphicon glyphicon-earphone"></span> @restaurant.PhoneNumber
 
 <p></p>
@@ -98,8 +95,9 @@
                             {
                                 <tr>
                                     <td>
+                                        <span class="label label-default">#@counter</span> <br />
                                         <span class="btn btn-success disabled">
-                                            @DisplayTableData(counter, item)
+                                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>] 
                                         </span>
                                     </td>
                                 </tr>
@@ -147,8 +145,9 @@
                             //just display disabled button for occupied
                             <tr>
                                 <td>
+                                    <span class="label label-default">#@counter</span> <br />
                                     <span class="btn btn-danger disabled">
-                                        @DisplayTableData(counter, item)
+                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>] 
                                     </span>
                                 </td>
                             </tr>
@@ -223,7 +222,7 @@
         </div>
 
         <!-- Manage Priority Queue -->
-        <div class="col-xs-6">
+        <div class="col-md-6">
             <h3>
                 Priority Queue
                 <span class="label label-default">
@@ -238,35 +237,35 @@
                 }
             </h3>
             <hr />
-            <div class="col-xs-6">
+            <div class="col-md-6">
                 <table class="table table-striped table-hover ">
                     <!-- contents -->
                     @{
                         counter = 1;
                     }
-
                     @foreach (var item in allCustomers)
                     {
                         <tr>
                             <td>
+                                <span class="label label-default">#@counter</span>
                                 @if (IsOwner())
                                 {
                                     <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
-                                        @DisplayCustomerData(counter, item)
+                                        @item.GroupCapacity<span class="glyphicon glyphicon-user"></span> &emsp; @item.Name
                                     </a>
                                 }
                                 else
                                 {
-                                    <span class="btn btn-default disabled">
-                                        @DisplayCustomerData(counter, item)
-                                    </span>
+                                    <a class="btn btn-default disabled">
+                                        @item.GroupCapacity<span class="glyphicon glyphicon-user"></span> &emsp; @item.Name
+                                    </a>
                                 }
                             </td>
                         </tr>
-
                         counter++;
                     }
                 </table>
+
             </div>
         </div>
 
