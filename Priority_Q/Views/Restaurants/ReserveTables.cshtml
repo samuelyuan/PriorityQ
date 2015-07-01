@@ -37,10 +37,17 @@
         @{
             var counter = 1;
             var available = 0;
+            var numPerRow = (int)Math.Truncate(Math.Sqrt(Model.Count()));
         }
 
         @foreach (var item in Model)
         {
+
+            if (available % numPerRow == 0)
+            {
+                @:<tr>
+            }
+
             //make sure table can seat enough customers
             if (item.MaxCapacity >= ViewBag.GroupSize)
             {
@@ -65,27 +72,34 @@
                     continue;
                 }*/
 
-                <tr>
-                    <td>
-                        <!-- make sure table hasn't been reserved already -->
-                        @if (!isReservedAlready)
-                        {
-                            <a class="btn btn-success" 
-                               href="@String.Format("../../Reservations/AssignTable/?tableID={0}&timeSlot={1}&daySlot={2}", item.ID, ViewBag.TimeSlot, ViewBag.DaySlot)">
-                                @DisplayTableData(counter, item)
-                            </a>
-                        }
-                        else
-                        {
-                            <span>Already Reserved</span>
-                        }
-                    </td>
-                </tr>
+                <td>
+                    <span class="label label-default">#@counter</span> <br />
+                    <!-- make sure table hasn't been reserved already -->
+                    @if (!isReservedAlready)
+                    {
 
-                available++;
+                        <a class="btn btn-success"
+                           href="@String.Format("../../Reservations/AssignTable/?tableID={0}&timeSlot={1}&daySlot={2}", item.ID, ViewBag.TimeSlot, ViewBag.DaySlot)">
+                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                        </a>
+                    }
+                    else
+                    {
+                        <span>Already Reserved</span>
+                    }
+                </td>
+
+
+                    available++;
             }
 
             counter++;
+
+            if (available % numPerRow == 0)
+            {
+                @:</tr>
+            }
+
         }
 
         <!-- Notify the user that there are no available tables -->
