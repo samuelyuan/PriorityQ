@@ -33,6 +33,8 @@
     <div class="panel-body">
         <h3>
             Tables Available <span class="label label-default">@ViewBag.AvailableTablesCount</span> 
+            &emsp; 
+            <a class="btn btn-info" href='@string.Format("/Restaurants/CustomerAllTables/{0}", restaurant.ID)'>View Full Map</a>
         </h3>
 
         <!-- List all empty tables -->
@@ -93,7 +95,14 @@
                             @item.Name
                         </span>
                         <br />
-                        <span class="glyphicon glyphicon-arrow-left" ></span>
+                    </td>
+                    <td>
+                        @if (counter < allCustomers.Count())
+                        { 
+                            <span class="label label-default disabled">
+                                <span class="glyphicon glyphicon-arrow-left"></span>
+                            </span>
+                        }
                     </td>
                     counter++;
                 }

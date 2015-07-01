@@ -52,164 +52,115 @@
                         <span class="glyphicon glyphicon-cog"></span>
                     </a>
                 }
-            </h3>
-            <hr />
-            <!-- The data passed in is a list of tables for a restaurant -->
-            <!-- Empty -->
-            <div class="col-xs-3">
-                <h4>Empty</h4>
-                <table class="table table-striped table-hover ">
-                    <!-- contents -->
-                    @{
-                        var counter = 1;
-                    }
+                <br />
                 
-                    @foreach (var item in allTables)
-                    {
-                        <!-- If user owns this restaurant, allow the user to modify data-->
-                        if (IsOwner())
-                        {
-                            <tr>
-                                <td>
-                                    <!-- display clickable button for empty -->
-                                    @if (!item.IsOccupied)
-                                    {
-                                        <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                            @DisplayTableData(counter, item)
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        //display disabled button for occupied
-                                        <span class="btn btn-default disabled">
-                                            @DisplayTableData(counter, item)
-                                        </span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                        else
-                        {
-                            //just display disabled button for empty
-                            if (!item.IsOccupied)
-                            {
-                                <tr>
-                                    <td>
-                                        <span class="label label-default">#@counter</span> <br />
-                                        <span class="btn btn-success disabled">
-                                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>] 
-                                        </span>
-                                    </td>
-                                </tr>
-                            }
-                        }
-
-                        counter++;
-                    }
-                </table>
-            </div>
-
-            <!-- Occupied -->
-            <div class="col-xs-3">
-                <h4>Occupied</h4>
-                <table class="table table-striped table-hover ">
-                    <!-- contents -->
-                    @{
-                        counter = 1;
-                    }
-                    @foreach (var item in allTables)
-                    {
-                        if (IsOwner())
-                        {
-                            <tr>
-                                <td>
-                                    <!-- display clickable button for occupied -->
-                                    @if (item.IsOccupied)
-                                    {
-                                        <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                            @DisplayTableData(counter, item)
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        //display disabled button for empty
-                                        <span class="btn btn-default disabled">
-                                            @DisplayTableData(counter, item)
-                                        </span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                        else if (item.IsOccupied)
-                        {
-                            //just display disabled button for occupied
-                            <tr>
-                                <td>
-                                    <span class="label label-default">#@counter</span> <br />
-                                    <span class="btn btn-danger disabled">
-                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>] 
-                                    </span>
-                                </td>
-                            </tr>
-
-                        }
-
-                        counter++;
-                    }
-                </table>
-            </div>
-
-            <!-- List reservation times -->
-            <div class="col-xs-6">
-                <h4>
-                    Reserved
-                    @if (IsOwner())
-                    {
-                        <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        </a>
-                        <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
-                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                        </a>
-                    }
-                </h4>
-
-                @{
-                    //only let the owner see when the table has been reserved
-                }
                 @if (IsOwner())
                 {
-                    <table class="table table-striped table-hover ">
-                        <!-- contents -->
-                        @for (var tableCounter = 0; tableCounter < allTables.Count(); tableCounter++)
-                        {
-                            <tr>
-                                <td>
-                                    <!-- don't display empty blocks -->
-                                    @if (todayReservations[tableCounter].Count() > 0)
-                                    {
-                                        <span class="btn btn-default">
-                                            @foreach (var reservation in todayReservations[tableCounter])
-                                            { 
-                                                <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
-                                                    @ConvertIntTo24Hour(reservation.TimeSlot)
-                                                </a>
-                                            }
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="btn btn-default disabled">
-                                            None
-                                        </span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </table>
+                    <span>Reservations</span>
+                    <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </a>
+                    <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    </a>
                 }
-                else
-                {
+            </h3>
+
+            <!-- The data passed in is a list of tables for a restaurant -->
+            <!-- List all empty tables -->
+            <table class="table table-striped table-hover ">
+                <!-- contents -->
+                @{
+                    var counter = 1;
+                    var numPerRow = (int)Math.Truncate(Math.Sqrt(allTables.Count()));
+                }
+                <tr>
+                    @foreach (var item in allTables)
+                    {
+                        if (counter % numPerRow == 1)
+                        {
+                            @:<tr>
+                        }
+
+                        <td>
+                            <!-- Table info (#, max capacity) -->
+                            <span class="label label-default">#@counter</span> <br />
+                            @if (!item.IsOccupied)
+                            {
+                                if (IsOwner())
+                                {
+                                    <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="btn btn-success disabled" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                if (IsOwner())
+                                {
+                                    <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="btn btn-danger disabled" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                    </span>
+                                }
+                            }
+
+                            <br />
+
+                            <!-- Reservation Data-->
+                            <!-- don't display empty blocks -->
+                            @if (IsOwner())
+                            {
+                                if (todayReservations[counter - 1].Count() > 0)
+                                {
+                                    <span class="btn btn-default">
+                                        @foreach (var reservation in todayReservations[counter - 1])
+                                        {
+                                            <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
+                                                @ConvertIntTo24Hour(reservation.TimeSlot)
+                                            </a>
+                                        }
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="btn btn-default disabled">
+                                        None
+                                    </span>
+                                }
+                            }
+                        </td>
+
+                            counter++;
+
+                            if (counter % numPerRow == 1)
+                            {
+                                @:</tr>
+                            }
+                    }
+                    </tr>
+
+                </table>
+
+            <!-- List reservation times (for everyone but the owner, since the owner already knows) -->
+            @if (!IsOwner())
+            {
+                <div class="col-xs-6">
+                    <h4>
+                        Reservations
+                    </h4>
+
                     <select>
                         <option value="-1">--- See All Available Times ---</option>
                         @for (var i = restaurant.OpeningHourStart; i < restaurant.OpeningHourEnd; i++)
@@ -217,8 +168,8 @@
                             <option value="@i.ToString()">@ConvertIntTo24Hour(i)</option>
                         }
                     </select>
-                }
-            </div>
+                </div>
+            }
         </div>
 
         <!-- Manage Priority Queue -->

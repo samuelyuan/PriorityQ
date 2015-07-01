@@ -141,6 +141,27 @@ namespace Priority_Q.Controllers
             return View();
         }
 
+        // GET: Restaurants/CustomerAllTables/5
+        public ActionResult CustomerAllTables(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Restaurant restaurant = db.Restaurants.Find(id);
+            ViewData["Restaurant"] = restaurant;
+            ViewBag.OwnsRestaurant = (restaurant.UserID == User.Identity.GetUserId());
+
+            //Find all tables belonging to a restaurant 
+            IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
+            ViewData["AllTables"] = tables;
+
+            IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
+            ViewBag.AvailableTablesCount = availableTables.Count();
+
+            return View();
+        }
+
         // GET: Restaurants/Details/5
         public ActionResult Details(int? id)
         {

@@ -16,8 +16,8 @@
     }
 }
 
-<h2>Restaurant: @ViewBag.RestaurantName</h2>
-<h3>Tables
+<h2>@ViewBag.RestaurantName</h2>
+<h3>Tables Available
     <span class="label label-default">
         @ViewBag.AvailableTables / @ViewBag.TotalTables
     </span>
@@ -36,45 +36,52 @@
     <!-- contents -->
     @{
         var counter = 1;
+        var numPerRow = (int)Math.Truncate(Math.Sqrt(Model.Count()));
     }
-    @foreach (var item in Model)
-    {
         <tr>
-            <td>
-                @if (!item.IsOccupied)
+            @foreach (var item in Model)
+            {
+                if (counter % numPerRow == 1)
                 {
-                    <span class="btn btn-success disabled">
-                        @DisplayTableData(counter, item)
-                    </span>
+                    @: <tr>
                 }
-                else
-                {
-                    <span class="btn btn-danger disabled">
-                        @DisplayTableData(counter, item)
-                    </span>
-                }
-                @if (IsOwner())
-                {
-                     //only logged in users should be able to edit and delete
-                    //best if only the user modifies their own restaurant and not someone else's
-                    <a class="btn btn-warning" href='@string.Format("/Tables/Edit/{0}", item.ID)'>
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                    </a>
-                }
-            </td>
-            <td>
-                @if (IsOwner())
-                {
-                     //only logged in users should be able to edit and delete
-                    //best if only the user modifies their own restaurant and not someone else's
-                    <a class="btn btn-danger" href='@string.Format("/Tables/Delete/{0}", item.ID)'>
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </a>
-                }
-            </td>
-        </tr>
-        counter++;
-    }
-</table>
+                
+                <td>
+                    <span class="label label-default">#@counter</span> <br />
+                    @if (!item.IsOccupied)
+                    {
+                        <span class="btn btn-success disabled">
+                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="btn btn-danger disabled">
+                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                        </span>
+                    }
+                    @if (IsOwner())
+                    {
+                        //only logged in users should be able to edit and delete
+                        //best if only the user modifies their own restaurant and not someone else's
+                        <a class="btn btn-warning" href='@string.Format("/Tables/Edit/{0}", item.ID)'>
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </a>
 
+                        <a class="btn btn-danger" href='@string.Format("/Tables/Delete/{0}", item.ID)'>
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </a>
+                    }
+                </td>
+
+        counter++;
+
+        if (counter % numPerRow == 1)
+        {
+                    @:</tr>
+                }   
+            }
+        </tr>
+
+    </table>
 
