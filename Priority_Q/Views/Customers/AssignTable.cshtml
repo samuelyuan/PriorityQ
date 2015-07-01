@@ -12,25 +12,54 @@
     <!-- contents -->
     @{
         var counter = 1;
+        var numPerRow = (int)Math.Truncate(Math.Sqrt(Model.Count()));
     }
-    <tr>
-        @foreach (var item in Model)
+    
+    @foreach (var item in Model)
+    {
+        if (counter % numPerRow == 1)
         {
-            if (!item.IsOccupied && item.MaxCapacity >= ViewBag.CustomerGroupSize)
-            {
+            @:<tr>
+        }
 
+        if (!item.IsOccupied)
+        {
+            if (item.MaxCapacity >= ViewBag.CustomerGroupSize)
+            {
                 <td>
                     <span class="label label-default">#@counter</span> <br />
                     <a class="btn btn-success" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, ViewBag.CustomerID)">
                         [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
                     </a>
                 </td>
-
             }
-            counter++;
+            else
+            {
+                <td>
+                    <span class="label label-default">#@counter</span> <br />
+                    <span class="btn btn-default disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, ViewBag.CustomerID)">
+                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                    </span>
+                </td>
+            }
         }
-    </tr>
+        else
+        {
+            <td>
+                <span class="label label-default">#@counter</span> <br />
+                <span class="btn btn-danger disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, ViewBag.CustomerID)">
+                    [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                </span>
+            </td>
+        }
+        
+        counter++;
 
+        if (counter % numPerRow == 1)
+        {
+            @:</tr>
+        }
+    }
 </table>
 
 <p>

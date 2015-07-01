@@ -44,6 +44,24 @@ namespace Priority_Q.Controllers
             CustomerDBContext customerDB = new CustomerDBContext();
             return customerDB.Customers.Where(i => i.RestaurantID == restaurantID);
         }
+        
+        //Find out how many tables have "x" number of people
+        private SortedDictionary<int, int> GetTableCapacityCount(IEnumerable<Priority_Q.Models.Table> tables)
+        {
+            SortedDictionary<int, int> tableCapacityCount = new SortedDictionary<int, int>();
+            foreach (var item in tables)
+            {
+                if (!item.IsOccupied)
+                {
+                    if (!tableCapacityCount.ContainsKey(item.MaxCapacity))
+                        tableCapacityCount.Add(item.MaxCapacity, 1); //initialize
+                    else
+                        tableCapacityCount[item.MaxCapacity]++; //add one
+                }
+            }
+
+            return tableCapacityCount;
+        }
 
         //Get all reservations for each table
         private List<IEnumerable<Priority_Q.Models.Reservation>> GetAllReservations(IEnumerable<Priority_Q.Models.Table> tables)
@@ -129,9 +147,10 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTablesCount = availableTables.Count();
 
+            ViewData["TableCapacityCount"] = GetTableCapacityCount(tables);
+
             //Find all customer belonging to a restaurant 
-            IEnumerable<Priority_Q.Models.Customer> customers = GetCustomers(id);
-            ViewData["AllCustomers"] = customers;
+            ViewData["AllCustomers"] = GetCustomers(id);
 
             //Find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
@@ -158,6 +177,8 @@ namespace Priority_Q.Controllers
 
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTablesCount = availableTables.Count();
+
+            ViewData["TableCapacityCount"] = GetTableCapacityCount(tables);
 
             return View();
         }
@@ -247,7 +268,12 @@ namespace Priority_Q.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Restaurant restaurant = db.Restaurants.Find(id);
+
+            if (!IsAuthorized(restaurant))
+                return RedirectToAction("CustomerView", "Restaurants", new { id = id });
+
             ViewData["Restaurant"] = restaurant;
             ViewBag.OwnsRestaurant = (restaurant.UserID == User.Identity.GetUserId());
 
@@ -259,8 +285,7 @@ namespace Priority_Q.Controllers
             ViewBag.AvailableTablesCount = availableTables.Count();
 
             //Find all customer belonging to a restaurant 
-            IEnumerable<Priority_Q.Models.Customer> customers = GetCustomers(id);
-            ViewData["AllCustomers"] = customers;
+            ViewData["AllCustomers"] = GetCustomers(id);
 
             //Find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
