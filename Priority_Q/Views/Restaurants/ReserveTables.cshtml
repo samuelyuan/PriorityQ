@@ -42,6 +42,11 @@
 
         @foreach (var item in Model)
         {
+            //too late to reserve (must be done at least an hour in advance)
+            if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
+            {
+                continue;
+            }
 
             if (available % numPerRow == 0)
             {
@@ -65,12 +70,6 @@
                     }
 
                 }
-
-                //too late to reserve
-                /*if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
-                {
-                    continue;
-                }*/
 
                 <td>
                     <span class="label label-default">#@counter</span> <br />
@@ -100,6 +99,16 @@
                 @:</tr>
             }
 
+        }
+
+        
+        @if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
+        {
+            <tr>
+                <td>
+                    Tables must be reserved at least one hour in advance.
+                </td>
+            </tr>
         }
 
         <!-- Notify the user that there are no available tables -->
