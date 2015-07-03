@@ -243,7 +243,7 @@ namespace Priority_Q.Controllers
         }
 
         // GET: Restaurants/ViewReservations/5
-        public ActionResult ViewReservations(int? id)
+        public ActionResult ViewReservations(int? id, String DaySlotList)
         {
             if (id == null)
             {
@@ -251,11 +251,27 @@ namespace Priority_Q.Controllers
             }
 
             Restaurant restaurant = db.Restaurants.Find(id);
+            if (!IsAuthorized(restaurant))
+            {
+                return RedirectToAction("Index", "Restaurants");
+            }
+            ViewData["Restaurant"] = restaurant;
 
             //Find all tables belonging to a restaurant 
             IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
-            ViewBagSetRestaurantInfo(id);
-            ViewBag.TotalTables = tables.Count();
+            ViewData["AllTables"] = tables;
+
+            //add day slots
+            List<SelectListItem> items = new List<SelectListItem>();
+            DateTime todaysDate = DateTime.Now;
+            for (var i = 0; i < 14; i++)
+            {
+                String currentDateDisplay = todaysDate.AddDays(i).ToString("MMM dd, yyyy");
+                String currentDateStored = todaysDate.AddDays(i).ToString("MM/dd/yyyy");
+                items.Add(new SelectListItem { Text = currentDateDisplay, Value = currentDateStored });
+            }
+            ViewBag.DaySlotList = items;
+            ViewBag.DaySlot = (DaySlotList == null) ? "" : DaySlotList;
 
             //Find all reservations for each table
             return View(GetAllReservations(tables));
