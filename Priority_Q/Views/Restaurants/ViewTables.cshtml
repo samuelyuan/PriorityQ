@@ -15,11 +15,6 @@
         return "#" + counter + " --- [Max: " + item.MaxCapacity + "]";
     }
 
-    private Boolean IsOwner()
-    {
-        return (Request.IsAuthenticated && ViewBag.OwnsRestaurant);
-    }
-
     private String ConvertIntTo24Hour(int number)
     {
         String convertToString = number.ToString().PadLeft(2, '0');
@@ -46,24 +41,18 @@
                     @ViewBag.AvailableTablesCount
                 </span>
                 &nbsp;
-                @if (IsOwner())
-                {
-                    <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", restaurant.ID)'>
-                        <span class="glyphicon glyphicon-cog"></span>
-                    </a>
-                }
+                <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", restaurant.ID)'>
+                    <span class="glyphicon glyphicon-cog"></span>
+                </a>
                 <br />
                 
-                @if (IsOwner())
-                {
-                    <span>Reservations</span>
-                    <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </a>
-                    <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
-                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                    </a>
-                }
+                <span>Reservations</span>
+                <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </a>
+                <a class="label label-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                </a>
             </h3>
 
             <!-- The data passed in is a list of tables for a restaurant -->
@@ -87,59 +76,42 @@
                             <span class="label label-default">#@counter</span> <br />
                             @if (!item.IsOccupied)
                             {
-                                if (IsOwner())
-                                {
-                                    <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span class="btn btn-success disabled" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                                    </span>
-                                }
+                                <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                    [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                </a>
                             }
                             else
                             {
-                                if (IsOwner())
-                                {
-                                    <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span class="btn btn-danger disabled" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                                    </span>
-                                }
+                                <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                                    [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                </a>
                             }
 
                             <br />
 
                             <!-- Reservation Data-->
                             <!-- don't display empty blocks -->
-                            @if (IsOwner())
+                            @if (todayReservations[counter - 1].Count() > 0)
                             {
-                                if (todayReservations[counter - 1].Count() > 0)
-                                {
-                                    <span class="btn btn-default">
-                                        @foreach (var reservation in todayReservations[counter - 1])
-                                        {
-                                            <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
-                                                @ConvertIntTo24Hour(reservation.TimeSlot)
-                                            </a>
-                                        }
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="btn btn-default disabled">
-                                        None
-                                    </span>
-                                }
+                                <span class="btn btn-default">
+                                    @foreach (var reservation in todayReservations[counter - 1])
+                                    {
+                                        <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
+                                            @{
+                                                DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
+                                            }
+                                            @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
+                                        </a>
+                                    }
+                                </span>
                             }
+                            else
+                            {
+                                <span class="btn btn-default disabled">
+                                    None
+                                </span>
+                            }
+                          
                         </td>
 
                             counter++;
@@ -152,24 +124,6 @@
                     </tr>
 
                 </table>
-
-            <!-- List reservation times (for everyone but the owner, since the owner already knows) -->
-            @if (!IsOwner())
-            {
-                <div class="col-xs-6">
-                    <h4>
-                        Reservations
-                    </h4>
-
-                    <select>
-                        <option value="-1">--- See All Available Times ---</option>
-                        @for (var i = restaurant.OpeningHourStart; i < restaurant.OpeningHourEnd; i++)
-                        {
-                            <option value="@i.ToString()">@ConvertIntTo24Hour(i)</option>
-                        }
-                    </select>
-                </div>
-            }
         </div>
 
         <!-- Manage Priority Queue -->
@@ -180,12 +134,9 @@
                     @allCustomers.Count()
                 </span>
                 &nbsp;
-                @if (IsOwner())
-                {
-                    <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", restaurant.ID)'>
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </a>
-                }
+                <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", restaurant.ID)'>
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </a>
             </h3>
             <hr />
             <div class="col-md-6">
@@ -199,18 +150,9 @@
                         <tr>
                             <td>
                                 <span class="label label-default">#@counter</span>
-                                @if (IsOwner())
-                                {
-                                    <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
-                                        @item.GroupCapacity<span class="glyphicon glyphicon-user"></span> &emsp; @item.Name
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a class="btn btn-default disabled">
-                                        @item.GroupCapacity<span class="glyphicon glyphicon-user"></span> &emsp; @item.Name
-                                    </a>
-                                }
+                                <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
+                                    @item.GroupCapacity<span class="glyphicon glyphicon-user"></span> &emsp; @item.Name
+                                </a>
                             </td>
                         </tr>
                         counter++;
@@ -225,13 +167,9 @@
             <h4>
                 News
                 &nbsp;
-                <!-- Only the restaurant can add news-->
-                @if (IsOwner())
-                {
-                    <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", restaurant.ID)'>
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </a>
-                }
+                <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", restaurant.ID)'>
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </a>
             </h4>
             <hr />
             <!-- Check if there's any news for today-->

@@ -39,7 +39,7 @@ namespace Priority_Q.Views
         }
 
         // GET:  Reservations/AssignTable/?tableID=XX&timeSlot=XX&daySlot=XX
-        public ActionResult AssignTable(int? tableID, int? timeSlot, String daySlot)
+        public ActionResult AssignTable(int? tableID, String timeSlot, String daySlot)
         {
             //Find the table that we want to reserve
             TableDBContext tableDB = new TableDBContext();
@@ -52,8 +52,9 @@ namespace Priority_Q.Views
             //Find the reservation
             Reservation reservation = new Reservation();
             reservation.TableId = desiredTable.ID;
-            reservation.TimeSlot = timeSlot.Value;
             reservation.DaySlot = daySlot;
+            reservation.HourSlot = DateTime.Parse(timeSlot).Hour;
+            reservation.MinuteSlot = DateTime.Parse(timeSlot).Minute;
 
             //Add the reservation to the database
             db.Reservations.Add(reservation);

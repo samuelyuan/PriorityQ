@@ -8,15 +8,6 @@
     var allTables = ViewData["AllTables"] as IEnumerable<Priority_Q.Models.Table>;
 }
 
-@functions {
-    private String ConvertIntTo24Hour(int number)
-    {
-        String convertToString = number.ToString().PadLeft(2, '0');
-        DateTime convertToDateTime = DateTime.ParseExact(convertToString, "HH", CultureInfo.CurrentCulture);
-        return convertToDateTime.ToString("h:mm tt");
-    }
-}
-
 <h2>
     View All Reservations
     <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
@@ -73,7 +64,10 @@
                             || (ViewBag.DaySlot != "" && reservation.DaySlot.Equals(ViewBag.DaySlot)))
                         { 
                             <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
-                                @reservation.DaySlot - @ConvertIntTo24Hour(reservation.TimeSlot)
+                                @{
+                                    DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
+                                }
+                                @reservation.DaySlot - @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
                             </a>
                             <br />
                             availableReservations++;
