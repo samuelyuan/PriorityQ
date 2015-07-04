@@ -43,7 +43,7 @@
         @foreach (var item in Model)
         {
             //too late to reserve (must be done at least an hour in advance)
-            if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
+            if (Math.Abs(DateTime.Parse(ViewBag.TimeSlot).Hour - ViewBag.CurrentHour) <= 1)
             {
                 continue;
             }
@@ -61,14 +61,14 @@
                 //for ( var reservationCounter = 0; reservationCounter < allReservations[counter - 1].Count(); reservationCounter++)
                 foreach (var reservation in allReservations[counter - 1])
                 {
-                    var reservationTime = reservation.TimeSlot;
+                    var reservationTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
                     var reservationDay = reservation.DaySlot;
-                    if (reservationTime == ViewBag.TimeSlot && reservationDay == ViewBag.DaySlot)
+                    if (ViewBag.TimeSlot.Equals(reservationTime.ToString("hh:mm tt", new CultureInfo("en-US"))) 
+                        && ViewBag.DaySlot.Equals(reservationDay))
                     {
                         isReservedAlready = true;
                         break;
                     }
-
                 }
 
                 <td>
@@ -76,7 +76,6 @@
                     <!-- make sure table hasn't been reserved already -->
                     @if (!isReservedAlready)
                     {
-
                         <a class="btn btn-success"
                            href="@String.Format("../../Reservations/AssignTable/?tableID={0}&timeSlot={1}&daySlot={2}", item.ID, ViewBag.TimeSlot, ViewBag.DaySlot)">
                             [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
@@ -87,8 +86,7 @@
                         <span>Already Reserved</span>
                     }
                 </td>
-
-
+            
                     available++;
             }
 
@@ -101,8 +99,7 @@
 
         }
 
-        
-        @if (Math.Abs(ViewBag.TimeSlot - ViewBag.CurrentHour) <= 1)
+        @if (Math.Abs(DateTime.Parse(ViewBag.TimeSlot).Hour - ViewBag.CurrentHour) <= 1)
         {
             <tr>
                 <td>

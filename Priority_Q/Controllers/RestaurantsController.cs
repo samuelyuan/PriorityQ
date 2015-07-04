@@ -368,7 +368,7 @@ namespace Priority_Q.Controllers
         }
 
         // GET: Restaurants/ReserveTables/5?GroupSizeList=XX&&TimeSlotList=XX&&DaySlotList=XX
-        public ActionResult ReserveTables(int? id, int? GroupSizeList, int? TimeSlotList, String DaySlotList)
+        public ActionResult ReserveTables(int? id, int? GroupSizeList, String TimeSlotList, String DaySlotList)
         {
             if (id == null)
             {
@@ -401,12 +401,22 @@ namespace Priority_Q.Controllers
 
             //add time slots
             items = new List<SelectListItem>();
-            for (var i = restaurant.OpeningHourStart; i < restaurant.OpeningHourEnd; i++)
+            for (var numHours = restaurant.OpeningHourStart; numHours < restaurant.OpeningHourEnd; numHours++)
             {
-                items.Add(new SelectListItem { Text = ConvertIntTo24Hour(i), Value = i.ToString() });
+                for (var numMinutes = 0; numMinutes < 60; numMinutes += 30)
+                {
+                    //String currentTime = i + ":" + j.ToString().PadLeft(2, '0');
+                    DateTime currentTime = new DateTime().AddHours(numHours).AddMinutes(numMinutes);
+                    String currentTimeDisplay = currentTime.ToString("hh:mm tt", new CultureInfo("en-US"));
+                    items.Add(new SelectListItem
+                    {
+                        Text = currentTimeDisplay, 
+                        Value = currentTimeDisplay 
+                    });
+                }
             }
             ViewBag.TimeSlotList = items;
-            ViewBag.TimeSlot = (TimeSlotList == null) ? 0 : TimeSlotList;
+            ViewBag.TimeSlot = (TimeSlotList == null) ? "" : TimeSlotList;
 
             //add day slots
             items = new List<SelectListItem>();

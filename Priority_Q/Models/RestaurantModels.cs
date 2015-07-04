@@ -73,8 +73,9 @@ namespace Priority_Q.Models
 
         public int TableId { get; set; }
 
-        public int TimeSlot { get; set; }
         public String DaySlot { get; set; }
+        public int HourSlot { get; set; }
+        public int MinuteSlot { get; set; }
     }
 
     public class ReservationDBContext : DbContext
