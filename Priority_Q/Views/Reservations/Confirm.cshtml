@@ -1,0 +1,40 @@
+﻿@model Priority_Q.Models.Reservation
+
+@{
+    ViewBag.Title = "Confirm";
+}
+
+<h2>Confirm Reservation</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.TableId)
+    @Html.HiddenFor(model => model.DaySlot)
+    @Html.HiddenFor(model => model.HourSlot)
+    @Html.HiddenFor(model => model.MinuteSlot)
+
+    <h3>Reservation Details</h3>
+
+    String formattedTime = (new DateTime()).AddHours(Model.HourSlot).AddMinutes(Model.MinuteSlot).ToString("h:mm tt");
+    <div class="form-group">
+        Date: @Model.DaySlot, @formattedTime 
+    </div>
+    
+    <div class="form-group">
+        <h4>Enter Customer's Name Here:</h4>
+        @Html.EditorFor(model => model.CustomerName)
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Confirm" class="btn btn-default" />
+        </div>
+        <a class="btn btn-warning" href="@String.Format("../../Restaurants/ViewTables/{0}", ViewBag.RestaurantId)">
+            Cancel
+        </a>
+    </div>
+}

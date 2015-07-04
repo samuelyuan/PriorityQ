@@ -73,9 +73,16 @@ namespace Priority_Q.Models
 
         public int TableId { get; set; }
 
+        [Required]
         public String DaySlot { get; set; }
+        [Required]
         public int HourSlot { get; set; }
+        [Required]
         public int MinuteSlot { get; set; }
+
+        [Required]
+        [StringLength(50, ErrorMessage = "The customer's name must be specified.")]
+        public String CustomerName { get; set; } 
     }
 
     public class ReservationDBContext : DbContext

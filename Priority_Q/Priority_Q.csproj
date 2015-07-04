@@ -242,13 +242,12 @@
     <Content Include="Views\Restaurants\ViewNews.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Restaurants\ReserveTables.cshtml" />
-    <Content Include="Views\Reservations\Create.cshtml" />
     <Content Include="Views\Reservations\Delete.cshtml" />
-    <Content Include="Views\Reservations\Edit.cshtml" />
     <Content Include="Views\Reservations\Manage.cshtml" />
     <Content Include="Views\Restaurants\ViewReservations.cshtml" />
     <Content Include="Views\Restaurants\CustomerView.cshtml" />
     <Content Include="Views\Restaurants\CustomerAllTables.cshtml" />
+    <Content Include="Views\Reservations\Confirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

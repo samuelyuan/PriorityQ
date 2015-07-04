@@ -15,37 +15,15 @@ namespace Priority_Q.Views
     {
         private ReservationDBContext db = new ReservationDBContext();
 
-        // GET: Reservations/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Reservations/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,TableId,TimeSlot")] Reservation reservation)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Reservations.Add(reservation);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(reservation);
-        }
-
-        // GET:  Reservations/AssignTable/?tableID=XX&timeSlot=XX&daySlot=XX
-        public ActionResult AssignTable(int? tableID, String timeSlot, String daySlot)
+        // GET: Reservations/Confirm/?tableID=XX&timeSlot=XX&daySlot=XX
+        public ActionResult Confirm(int? tableID, String timeSlot, String daySlot)
         {
             //Find the table that we want to reserve
             TableDBContext tableDB = new TableDBContext();
             Table desiredTable = tableDB.Tables.Find(tableID);
 
             Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(desiredTable.RestaurantId);
+            ViewBag.RestaurantId = desiredTable.RestaurantId;
             if (!Request.IsAuthenticated || restaurant.UserID != User.Identity.GetUserId())
                 return RedirectToAction("Index", "Restaurants");
 
@@ -56,11 +34,27 @@ namespace Priority_Q.Views
             reservation.HourSlot = DateTime.Parse(timeSlot).Hour;
             reservation.MinuteSlot = DateTime.Parse(timeSlot).Minute;
 
-            //Add the reservation to the database
-            db.Reservations.Add(reservation);
-            db.SaveChanges();
+            return View(reservation);
+        }
 
-            return RedirectToAction("ViewTables", "Restaurants", new { id = desiredTable.RestaurantId });
+        // Post:  Reservations/AssignTable/?tableID=XX&timeSlot=XX&daySlot=XX
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Confirm([Bind(Include = "ID,TableId,DaySlot,HourSlot,MinuteSlot,CustomerName")] Reservation reservation)
+        {
+            //Find the table that we want to reserve
+            TableDBContext tableDB = new TableDBContext();
+            Table desiredTable = tableDB.Tables.Find(reservation.TableId);
+
+            if (ModelState.IsValid)
+            {
+                //Add the reservation to the database
+                db.Reservations.Add(reservation);
+                db.SaveChanges();
+                return RedirectToAction("ViewTables", "Restaurants", new { id = desiredTable.RestaurantId });
+            }
+
+            return View(reservation);
         }
 
         // GET: Reservations/Manage/5
@@ -83,37 +77,6 @@ namespace Priority_Q.Views
             if (!Request.IsAuthenticated || restaurant.UserID != User.Identity.GetUserId())
                 return RedirectToAction("Index", "Restaurants");
 
-            return View(reservation);
-        }
-
-        // GET: Reservations/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Reservation reservation = db.Reservations.Find(id);
-            if (reservation == null)
-            {
-                return HttpNotFound();
-            }
-            return View(reservation);
-        }
-
-        // POST: Reservations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,TableId,TimeSlot")] Reservation reservation)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(reservation).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
             return View(reservation);
         }
 

@@ -77,7 +77,7 @@
                     @if (!isReservedAlready)
                     {
                         <a class="btn btn-success"
-                           href="@String.Format("../../Reservations/AssignTable/?tableID={0}&timeSlot={1}&daySlot={2}", item.ID, ViewBag.TimeSlot, ViewBag.DaySlot)">
+                           href="@String.Format("../../Reservations/Confirm/?tableID={0}&timeSlot={1}&daySlot={2}", item.ID, ViewBag.TimeSlot, ViewBag.DaySlot)">
                             [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
                         </a>
                     }
