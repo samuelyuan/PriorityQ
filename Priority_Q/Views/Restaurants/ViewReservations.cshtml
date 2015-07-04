@@ -67,7 +67,7 @@
                                 @{
                                     DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
                                 }
-                                @reservation.DaySlot - @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
+                                @reservation.DaySlot - @currentTime.ToString("hh:mm tt", new CultureInfo("en-US")) ("@reservation.CustomerName")
                             </a>
                             <br />
                             availableReservations++;
