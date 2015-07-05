@@ -230,11 +230,11 @@
     <Content Include="Views\Tables\Edit.cshtml" />
     <Content Include="Views\Restaurants\ManageTables.cshtml" />
     <Content Include="Views\Account\AllUsers.cshtml" />
-    <Content Include="Views\Customers\Create.cshtml" />
+    <Content Include="Views\Customers\_Create.cshtml" />
     <Content Include="Views\Customers\Delete.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
     <Content Include="Views\Restaurants\ViewTables.cshtml" />
-    <Content Include="Views\Customers\AssignTable.cshtml" />
+    <Content Include="Views\Customers\_AssignTable.cshtml" />
     <Content Include="Views\NewsInfos\Create.cshtml" />
     <Content Include="Views\NewsInfos\Delete.cshtml" />
     <Content Include="Views\NewsInfos\Details.cshtml" />

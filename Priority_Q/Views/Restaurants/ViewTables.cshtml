@@ -32,6 +32,19 @@
 
 <p></p>
 
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @{
+                Priority_Q.Models.Customer newCustomer = new Priority_Q.Models.Customer();
+                newCustomer.RestaurantID = restaurant.ID;
+            }
+            @Html.Partial("~/Views/Customers/_Create.cshtml", newCustomer);
+        </div>
+    </div>
+</div>
+
 <div class="panel panel-default">
     <div class="panel-body">
         <!-- Create two columns: Empty and Occupied tables -->
@@ -135,9 +148,10 @@
                     @allCustomers.Count()
                 </span>
                 &nbsp;
-                <a class="btn btn-info" href='@string.Format("/Customers/Create/{0}", restaurant.ID)'>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addCustomerModal">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </a>
+                </button>
             </h3>
             <hr />
             <div class="col-md-6">
@@ -151,9 +165,27 @@
                         <tr>
                             <td>
                                 <span class="label label-default">#@counter</span>
-                                <a class="btn btn-default" href='@string.Format("/Customers/AssignTable/{0}", item.ID)'>
+                                <!-- Button trigger modal -->
+                                @{
+                                    var nameAssignTableModal = "assignTableModal" + item.ID;
+                                }
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#@nameAssignTableModal">
                                     @item.GroupCapacity<span class="glyphicon glyphicon-user"></span> &emsp; @item.Name
-                                </a>
+                                </button>
+
+                                <!-- Assign Table Modal -->
+                                <div class="modal fade" id="@nameAssignTableModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            @{
+                                                Priority_Q.Models.Customer customer = (new Priority_Q.Models.CustomerDBContext()).Customers.Find(item.ID);
+                                                ViewData["ReadyCustomer"] = customer;
+                                                IEnumerable<Priority_Q.Models.Table> tables = (new Priority_Q.Models.TableDBContext()).Tables.Where(i => i.RestaurantId == restaurant.ID);
+                                            }
+                                            @Html.Partial("~/Views/Customers/_AssignTable.cshtml", tables);
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         counter++;
