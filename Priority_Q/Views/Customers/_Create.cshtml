@@ -1,0 +1,44 @@
+﻿@model Priority_Q.Models.Customer
+
+@{
+    ViewBag.Title = "Create";
+    var restaurant = ViewData["Restaurant"] as Priority_Q.Models.Restaurant;
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Add Customer</h4>
+</div>
+
+@using (Html.BeginForm("Create", "Customers", new { id = restaurant.ID }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-body">
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(model => model.RestaurantID)
+
+        <div>
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+            @Html.EditorFor(model => model.Name)
+        </div>
+
+        <div>
+            @Html.LabelFor(model => model.GroupCapacity, htmlAttributes: new { @class = "control-label col-md-4" })
+            @{
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                for (var i = 1; i <= 20; i++)
+                {
+                listItems.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+                }
+            }
+            @Html.DropDownListFor(model => model.GroupCapacity, listItems, "-- Select Group Size --")
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-info">Create</button>
+    </div>
+}
