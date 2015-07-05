@@ -30,12 +30,33 @@
 
 <p></p>
 
+<!-- Full Map Modal -->
+<div class="modal fade" id="fullMapModal" tabindex="-1" role="dialog" aria-labelledby="fullMapModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Full Map</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_CustomerAllTables")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="panel panel-default">
     <div class="panel-body">
         <h3>
             Tables Available <span class="label label-default">@ViewBag.AvailableTablesCount</span> 
             &emsp; 
-            <a class="btn btn-info" href='@string.Format("/Restaurants/CustomerAllTables/{0}", restaurant.ID)'>View Full Map</a>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#fullMapModal">
+                View Full Map
+            </button>
         </h3>
 
         <!-- List all empty tables -->
@@ -120,10 +141,11 @@
 {
     <a class="btn btn-info" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
         Recent Updates
+        <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)'>
+            View All Updates
+        </a>
     </a>
-    <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)'>
-        View All Updates
-    </a>
+    
     <div class="collapse" id="collapseExample">
         <div class="well">
             @mostRecentNews.Content <br />
