@@ -33,58 +33,21 @@ namespace Priority_Q.Controllers
             return View(table);
         }
 
-        // GET: Tables/Create/1
-        public ActionResult Create(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Table table = new Table();
-            table.RestaurantId = id.Value;
-            return View(table);
-        }
-
         // POST: Tables/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,ReservedTimes")] Table table)
+        public ActionResult Create([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied")] Table table)
         {
             if (ModelState.IsValid)
             {
                 db.Tables.Add(table);
                 db.SaveChanges();
-                return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
+                return RedirectToAction("ManageTables", "Restaurants", new { id = table.RestaurantId });
             }
 
-            return View(table);
-        }
-
-        // GET: Tables/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Table table = db.Tables.Find(id);
-            if (table == null)
-            {
-                return HttpNotFound();
-            }
-
-            //if the user isn't logged in, they shouldn't be able to edit tables!
-            if (!Request.IsAuthenticated)
-                return RedirectToAction("Index", "Restaurants");
-
-            //if the user doesn't own the table, they shouldn't be able to edit tables
-            Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(table.RestaurantId);
-            if (restaurant.UserID != User.Identity.GetUserId())
-                return RedirectToAction("Index", "Restaurants");
-
-            return View(table);
+            return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
         }
 
         // POST: Tables/Edit/5
@@ -92,15 +55,15 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,ReservedTimes")] Table table)
+        public ActionResult Edit([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied")] Table table)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(table).State = EntityState.Modified;   
                 db.SaveChanges();
-                return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
+                return RedirectToAction("ManageTables", "Restaurants", new { id = table.RestaurantId });
             }
-            return View(table);
+            return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
         }
 
         // GET: Tables/ToggleOccupied/1
@@ -130,31 +93,6 @@ namespace Priority_Q.Controllers
             db.SaveChanges();
 
             return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
-        }
-
-        // GET: Tables/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Table table = db.Tables.Find(id);
-            if (table == null)
-            {
-                return HttpNotFound();
-            }
-
-            //if the user isn't logged in, they shouldn't be able to delete tables!
-            if (!Request.IsAuthenticated)
-                return RedirectToAction("Index", "Restaurants");
-
-            //if the user doesn't own the table, they shouldn't be able to delete tables
-            Restaurant restaurant = (new RestaurantDBContext()).Restaurants.Find(table.RestaurantId);
-            if (restaurant.UserID != User.Identity.GetUserId())
-                return RedirectToAction("Index", "Restaurants");
-
-            return View(table);
         }
 
         // POST: Tables/Delete/5

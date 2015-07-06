@@ -225,9 +225,9 @@
     <Content Include="Views\Restaurants\Delete.cshtml" />
     <Content Include="Views\Restaurants\Edit.cshtml" />
     <Content Include="Views\Restaurants\Index.cshtml" />
-    <Content Include="Views\Tables\Create.cshtml" />
-    <Content Include="Views\Tables\Delete.cshtml" />
-    <Content Include="Views\Tables\Edit.cshtml" />
+    <Content Include="Views\Tables\_Create.cshtml" />
+    <Content Include="Views\Tables\_Delete.cshtml" />
+    <Content Include="Views\Tables\_Edit.cshtml" />
     <Content Include="Views\Restaurants\ManageTables.cshtml" />
     <Content Include="Views\Account\AllUsers.cshtml" />
     <Content Include="Views\Customers\_Create.cshtml" />
@@ -242,12 +242,12 @@
     <Content Include="Views\Restaurants\ViewNews.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Restaurants\ReserveTables.cshtml" />
-    <Content Include="Views\Reservations\Delete.cshtml" />
-    <Content Include="Views\Reservations\Manage.cshtml" />
+    <Content Include="Views\Reservations\_Delete.cshtml" />
+    <Content Include="Views\Reservations\_Manage.cshtml" />
     <Content Include="Views\Restaurants\ViewReservations.cshtml" />
     <Content Include="Views\Restaurants\CustomerView.cshtml" />
     <Content Include="Views\Restaurants\_CustomerAllTables.cshtml" />
-    <Content Include="Views\Reservations\Confirm.cshtml" />
+    <Content Include="Views\Reservations\_Confirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

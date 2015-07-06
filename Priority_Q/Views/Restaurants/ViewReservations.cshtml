@@ -10,7 +10,7 @@
 
 <h2>
     View All Reservations
-    <a class="label label-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
+    <a class="btn btn-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </a>
 </h2>
@@ -63,12 +63,25 @@
                         if (ViewBag.DaySlot == "" 
                             || (ViewBag.DaySlot != "" && reservation.DaySlot.Equals(ViewBag.DaySlot)))
                         { 
-                            <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
+                            var manageReservationModal = "manageReservationModal" + reservation.ID;
+                            <button type="button" class="label label-warning" data-toggle="modal" data-target="#@manageReservationModal">
                                 @{
-                                    DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
+                            DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
                                 }
                                 @reservation.DaySlot - @currentTime.ToString("hh:mm tt", new CultureInfo("en-US")) ("@reservation.CustomerName")
-                            </a>
+                            </button>
+
+                            <div class="modal fade" id="@manageReservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        @{
+                            Priority_Q.Models.Reservation currentReservation = (new Priority_Q.Models.ReservationDBContext()).Reservations.Find(reservation.ID);
+                                        }
+                                        @Html.Partial("~/Views/Reservations/_Manage.cshtml", currentReservation);
+                                    </div>
+                                </div>
+                            </div>
+
                             <br />
                             availableReservations++;
                         }

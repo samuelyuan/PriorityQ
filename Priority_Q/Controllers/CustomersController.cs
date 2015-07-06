@@ -29,7 +29,7 @@ namespace Priority_Q.Controllers
                 return RedirectToAction("ViewTables", "Restaurants", new { id = customer.RestaurantID });
             }
 
-            return View(customer);
+            return RedirectToAction("ViewTables", "Restaurants", new { id = customer.RestaurantID });
         }
 
         // GET: Customers/Edit/5

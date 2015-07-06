@@ -1,0 +1,48 @@
+﻿@model Priority_Q.Models.Table
+
+@{
+    ViewBag.Title = "Edit";
+    var tableID = Model.ID;
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Edit Table</h4>
+</div>
+
+@using (Html.BeginForm("Edit", "Tables", new { id = tableID }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-body">
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.RestaurantId)
+        @Html.HiddenFor(model => model.IsOccupied)
+
+        <table>
+            <tr>
+                <td>
+                    @{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    for (var i = 1; i <= 20; i++)
+    {
+        listItems.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+    }
+                    }
+
+                    [Max: @Html.DropDownListFor(model => model.MaxCapacity, listItems, "--Table Size--")<span class="glyphicon glyphicon-user"></span>]
+                </td>
+            </tr>
+        </table>
+    </div>
+
+        <div class="modal-footer">
+            <input type="submit" value="Save" class="btn btn-info" />
+        </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
