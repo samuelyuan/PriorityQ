@@ -10,11 +10,6 @@
 }
 
 @functions {
-    private String DisplayTableData(int counter, Priority_Q.Models.Table item)
-    {
-        return "#" + counter + " --- [Max: " + item.MaxCapacity + "]";
-    }
-
     private String ConvertIntTo24Hour(int number)
     {
         String convertToString = number.ToString().PadLeft(2, '0');
@@ -55,16 +50,16 @@
                     @ViewBag.AvailableTablesCount
                 </span>
                 &nbsp;
-                <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", restaurant.ID)'>
+                <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", restaurant.ID)' title="Manage Tables">
                     <span class="glyphicon glyphicon-cog"></span>
                 </a>
                 <br />
                 
                 <span>Reservations</span>
-                <a class="btn btn-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
+                <a class="btn btn-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)' title="Add Reservation">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>   
                 </a>
-                <a class="btn btn-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
+                <a class="btn btn-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)' title="View All Reservations">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                 </a>
             </h3>
@@ -109,13 +104,25 @@
                             {
                                 <span class="btn btn-default">
                                     @foreach (var reservation in todayReservations[counter - 1])
-                                    {
-                                        <a class="label label-warning" href='@string.Format("/Reservations/Manage/{0}", reservation.ID)'>
+                                    { 
+                                        var manageReservationModal = "manageReservationModal" + reservation.ID;
+                                        <button type="button" class="label label-warning" data-toggle="modal" data-target="#@manageReservationModal">
                                             @{
-                                                DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
+                                        DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
                                             }
                                             @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
-                                        </a>
+                                        </button>
+
+                                        <div class="modal fade" id="@manageReservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    @{
+                                                        Priority_Q.Models.Reservation currentReservation = (new Priority_Q.Models.ReservationDBContext()).Reservations.Find(reservation.ID);
+                                                    }
+                                                    @Html.Partial("~/Views/Reservations/_Manage.cshtml", currentReservation);
+                                                </div>
+                                            </div>
+                                        </div>
                                     }
                                 </span>
                             }

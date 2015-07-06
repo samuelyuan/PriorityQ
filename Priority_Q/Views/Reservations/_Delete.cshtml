@@ -1,0 +1,33 @@
+﻿@using System.Globalization;
+
+@model Priority_Q.Models.Reservation
+
+@{
+    ViewBag.Title = "Delete";
+}
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
+    </div>
+
+    <div class="modal-body">
+        <h4>Are you sure you want to remove the reservation?</h4>
+        <p>
+            <h4>
+                <b>Date:</b>
+                @Model.DaySlot,  @((new DateTime()).AddHours(Model.HourSlot).AddMinutes(Model.MinuteSlot).ToString("h:mm tt"))
+                <br />
+                <b>Customer:</b>
+                @Model.CustomerName
+            </h4>
+        </p>
+    </div>
+    <div class="modal-footer">
+        @using (Html.BeginForm("Delete", "Reservations", new { id = Model.ID }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            
+            <input type="submit" value="Yes" class="btn btn-danger" />
+            <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">No</button>
+        }
+    </div>

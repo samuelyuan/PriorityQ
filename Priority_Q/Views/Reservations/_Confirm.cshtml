@@ -1,0 +1,42 @@
+﻿@model Priority_Q.Models.Reservation
+
+@{
+    ViewBag.Title = "Confirm";
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Confirm Reservation</h4>
+</div>
+
+@using (Html.BeginForm("Confirm", "Reservations", new { tableID = Model.TableId, timeSlot = ViewBag.TimeSlot, daySlot = ViewBag.DaySlot }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.TableId)
+    @Html.HiddenFor(model => model.DaySlot)
+    @Html.HiddenFor(model => model.HourSlot)
+    @Html.HiddenFor(model => model.MinuteSlot)
+
+    <div class="modal-body">
+        @{ 
+            String formattedTime = (new DateTime()).AddHours(Model.HourSlot).AddMinutes(Model.MinuteSlot).ToString("h:mm tt"); 
+        }
+        <h4>
+            <b>Date:</b> @Model.DaySlot, @formattedTime 
+            <br /><br />
+            <b>Enter Customer Name Below:</b>
+            <br />
+            @Html.TextBoxFor(model => model.CustomerName)
+        </h4>    
+    </div>
+
+    <div class="modal-footer">
+        <input type="submit" value="Confirm" class="btn btn-info" />
+        <a class="btn btn-warning" href="@String.Format("../../Restaurants/ViewTables/{0}", ViewBag.RestaurantId)">
+            Cancel
+        </a>
+    </div>
+}

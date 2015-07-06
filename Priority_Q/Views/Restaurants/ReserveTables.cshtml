@@ -76,10 +76,25 @@
                     <!-- make sure table hasn't been reserved already -->
                     @if (!isReservedAlready)
                     {
-                        <a class="btn btn-success"
-                           href="@String.Format("../../Reservations/Confirm/?tableID={0}&timeSlot={1}&daySlot={2}", item.ID, ViewBag.TimeSlot, ViewBag.DaySlot)">
+                        var confirmModal = "confirmModal" + item.ID;
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#@confirmModal">
                             [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                        </a>
+                        </button>
+
+                        <div class="modal fade" id="@confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    @{
+                                        Priority_Q.Models.Reservation reservation = new Priority_Q.Models.Reservation();
+                                        reservation.TableId = item.ID;
+                                        reservation.DaySlot = ViewBag.DaySlot;
+                                        reservation.HourSlot = DateTime.Parse(ViewBag.TimeSlot).Hour;
+                                        reservation.MinuteSlot = DateTime.Parse(ViewBag.TimeSlot).Minute;
+                                    }
+                                    @Html.Partial("~/Views/Reservations/_Confirm.cshtml", reservation);
+                                </div>
+                            </div>
+                        </div>
                     }
                     else
                     {
