@@ -17,7 +17,8 @@
     <div class="modal-body">
         @Html.ValidationSummary(true)
 
-        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.ID, new { @Value = tableID })
+
         @Html.HiddenFor(model => model.RestaurantId)
         @Html.HiddenFor(model => model.IsOccupied)
 
