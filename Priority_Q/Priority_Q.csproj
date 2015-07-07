@@ -248,6 +248,9 @@
     <Content Include="Views\Restaurants\CustomerView.cshtml" />
     <Content Include="Views\Restaurants\_CustomerAllTables.cshtml" />
     <Content Include="Views\Reservations\_Confirm.cshtml" />
+    <Content Include="Views\Restaurants\_CustomerPreview.cshtml" />
+    <Content Include="Views\Restaurants\_CustomerPriorityQueue.cshtml" />
+    <Content Include="Views\Restaurants\_CustomerPreviewTables.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

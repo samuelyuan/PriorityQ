@@ -1,0 +1,26 @@
+﻿@model SortedDictionary<int, int>
+
+<!-- List all empty tables -->
+<table class="table table-striped table-hover ">
+    <!-- contents -->
+    <tr>
+        <td>
+            @foreach (var pair in Model)
+            {
+                if (pair.Value > 1)
+                {
+                    <span>@pair.Value tables</span>
+                }
+                else
+                {
+                    <span>@pair.Value table</span>
+                }
+                <span class="btn btn-success disabled">
+                    @pair.Key<span class="glyphicon glyphicon-user"></span>
+                </span>
+                <span>&emsp;</span>
+            }
+        </td>
+    </tr>
+</table>
+

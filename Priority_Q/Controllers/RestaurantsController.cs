@@ -129,7 +129,7 @@ namespace Priority_Q.Controllers
             return View(restaurantArray.ToList());
         }
 
-        // GET: Restaurants/CustomerView/5
+        // GET: Restaurants/CustomerView/XX
         public ActionResult CustomerView(int? id)
         {
             if (id == null)
