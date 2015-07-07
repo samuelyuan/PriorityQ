@@ -41,19 +41,34 @@
             <td>
             </td>
             <td>
-                @if (Request.IsAuthenticated)
-                {
-                    <a class="btn btn-info" href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </a>
-                }
-                else
-                {
-                    <a class="btn btn-info" href='@string.Format("/Restaurants/CustomerView/{0}", item.ID)'>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </a>
-                }
+                <p>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <a class="btn btn-info" href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    }
+                    else
+                    {
+                        <h4>
+                            <a href='@string.Format("/Restaurants/CustomerView/{0}", item.ID)'>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </h4>
+                    }
+                </p>
+                <p>
+                    <span class="glyphicon glyphicon-map-marker"></span> @item.StreetAddress &emsp;
+                    <span class="glyphicon glyphicon-earphone"></span> @item.PhoneNumber
+                    <br />
+                    @item.City <br />
+                </p>
             </td>
+
+            <td>
+                
+            </td>
+
             <td>
                 @{
                     bool isOpen = false;
@@ -79,47 +94,104 @@
                 {
                     isOpen = false;
                 }
-                @if (isOpen)
-                {
-                    <span class="label label-success">Open</span>
-                }
-                else
-                {
-                    <span class="label label-danger">Closed</span>
-                }
-                <span class="glyphicon glyphicon-time"></span>
-                <!-- add zero to single digit numbers (3 -> 03), but leave it alone if it's double digit-->
-                @DateTime.ParseExact(item.OpeningHourStart.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
-                -
-                @DateTime.ParseExact(item.OpeningHourEnd.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
-                
-                <br />
-                @if (/*isOpen*/ true)
-                { 
-                    if (AllTableCounts[counter] > 0)
+
+                <p>
+                    @if (isOpen)
                     {
-                        <span class="label label-success">No Wait</span>
-                        <span class="label label-info">@AllTableCounts[counter] Open Table(s)</span> 
+                        <span class="label label-success">Open</span>
                     }
                     else
                     {
-                        <span class="label label-danger">Wait in Line</span>
-                        <span class="label label-info">@AllCustomerCounts[counter] Group(s) Waiting</span> 
+                        <span class="label label-danger">Closed</span>
                     }
+                    <span class="glyphicon glyphicon-time"></span>
+                    <!-- add zero to single digit numbers (3 -> 03), but leave it alone if it's double digit-->
+                    @DateTime.ParseExact(item.OpeningHourStart.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
+                    -
+                    @DateTime.ParseExact(item.OpeningHourEnd.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt")
+                </p>
+                <h4>
+                    @if (/*isOpen*/ true)
+                    {
+                        if (AllTableCounts[counter] > 0)
+                        {
+                            <span class="label label-success">No Wait</span>
+                            <span class="label label-info">@AllTableCounts[counter] Open Tables</span>
+                        }
+                        else
+                        {
+                            <span class="label label-danger">Wait in Line</span>
+                            <span class="label label-info">@AllCustomerCounts[counter] Groups Waiting</span>
+                        }
+                    }
+                </h4>
+                
+                <!-- Button trigger modal -->
+                @{
+                    var previewModal = "previewModal" + item.ID;
                 }
-                <br />
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#@previewModal">
+                    Going Now?
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="@previewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Going To @item.Name</h4>
+                            </div>
+                            <div class="modal-body">
+                                @if (AllTableCounts[counter] > 0)
+                                {
+                                    //show tables
+                                    IEnumerable<Priority_Q.Models.Table> tables = (new Priority_Q.Models.TableDBContext()).Tables.Where(i => i.RestaurantId == item.ID);
+
+                                    SortedDictionary<int, int> tableCapacityCount = new SortedDictionary<int, int>();
+                                    foreach (var table in tables)
+                                    {
+                                        if (!table.IsOccupied)
+                                        {
+                                            if (!tableCapacityCount.ContainsKey(table.MaxCapacity))
+                                            {
+                                                tableCapacityCount.Add(table.MaxCapacity, 1); //initialize
+                                            }
+                                            else
+                                            {
+                                                tableCapacityCount[table.MaxCapacity]++; //add one
+                                            }
+                                        }
+                                    }
+                                    <p>
+                                        There are currently <b>@AllTableCounts[counter]</b> open tables.
+                                    </p>
+                                    @Html.Partial("_CustomerPreviewTables", tableCapacityCount)
+                                }
+                                else
+                                {
+                                    //show priority queue
+                                    var allCustomers = (new Priority_Q.Models.CustomerDBContext()).Customers.Where(i => i.RestaurantID == item.ID);
+                                    <p>
+                                        There are currently <b>@allCustomers.Count()</b> groups waiting.
+                                    </p>
+                                    @Html.Partial("_CustomerPriorityQueue", allCustomers)
+                                }
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.StreetAddress) <br />
-                @Html.DisplayFor(modelItem => item.City) <br />
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                
             </td>
-            <td>
- 
-            </td>
-            <td>
-       
-            </td>
+            <td></td>
+
             <td>
                 @if (Request.IsAuthenticated && item.UserID.Equals(User.Identity.GetUserId()))
                 {
