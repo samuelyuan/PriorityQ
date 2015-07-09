@@ -160,8 +160,6 @@ namespace Priority_Q.Controllers
             return View();
         }
 
-  
-
         // GET: Restaurants/Details/5
         public ActionResult Details(int? id)
         {
@@ -288,24 +286,26 @@ namespace Priority_Q.Controllers
             ViewData["MostRecentNews"] = (newsInfos.Count() > 0) ? newsInfos.Last() : null;
 
             //Find all reservations for each table
-            List<IEnumerable<Priority_Q.Models.Reservation>> allReservations = GetAllReservations(tables);
-            List<List<Priority_Q.Models.Reservation>> todayReservations = new List<List<Reservation>>();
-            foreach (var item in allReservations)
+            SortedDictionary<int, List<Priority_Q.Models.Reservation>> todayReservations = new SortedDictionary<int, List<Reservation>>();
+            foreach (var table in tables)
             {
-                todayReservations.Add(new List<Priority_Q.Models.Reservation>());
-                foreach (var reservation in item)
+                ReservationDBContext reservationDB = new ReservationDBContext();
+                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
+
+                todayReservations.Add(table.ID, new List<Priority_Q.Models.Reservation>());
+                foreach (var reservation in reservations)
                 {
                     //only display reservations for the current day
                     if (DateTime.Now.ToString("MM/dd/yyyy").Equals(reservation.DaySlot))
                     {
-                        int tableCounter = todayReservations.Count() - 1;
-                        todayReservations[tableCounter].Add(reservation);
+                        todayReservations[table.ID].Add(reservation);
                     }   
                 }
             }
             ViewData["TodayReservations"] = todayReservations;
 
             //Remove all old reservations
+            List<IEnumerable<Priority_Q.Models.Reservation>> allReservations = GetAllReservations(tables);
             foreach (var item in allReservations)
             {
                 foreach (var reservation in item)
