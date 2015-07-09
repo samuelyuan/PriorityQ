@@ -16,6 +16,77 @@
 
     <h4>Customer "@customer.Name", Party of @customer.GroupCapacity</h4>
 
+    @{
+        //Initialize empty layout
+        var length = 5;
+        int[][] mapLayout = new int[length][];
+
+        for (int i = 0; i < length; i++)
+        {
+            mapLayout[i] = new int[length];
+        }
+
+        //Fill in the tables
+        foreach (var item in Model)
+        {
+            mapLayout[item.CoordRow][item.CoordCol] = item.ID;
+        }
+    }
+
+    <!-- The table layout is supposed to match the actual layout of a restaurant-->
+    <table class="table table-striped table-hover ">
+        @{
+            for (var r = 0; r < length; r++)
+            {
+                <tr>
+                    @for (var c = 0; c < length; c++)
+                    {
+                        
+                            if (mapLayout[r][c] == 0)
+                            {
+                                <td>
+                                    <span class="btn btn-info disabled" style="background: transparent;">
+                                        &emsp; &emsp; &emsp; &emsp;
+                                    </span>
+                                </td>
+                            }
+                            else
+                            {
+                                var item = (new Priority_Q.Models.TableDBContext()).Tables.Find(mapLayout[r][c]);
+                                if (!item.IsOccupied)
+                                {
+                                    if (item.MaxCapacity >= customer.GroupCapacity)
+                                    {
+                                    <td>
+                                        <a class="btn btn-success" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
+                                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                        </a>
+                                    </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <span class="btn btn-default disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
+                                                [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                            </span>
+                                        </td>
+                                    }
+                                }
+                                else
+                                {
+                                    <td>
+                                        <span class="btn btn-danger disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
+                                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                        </span>
+                                    </td>
+                                }
+                            }
+                    }
+                </tr>
+            }
+        }
+    </table>
+
     <!-- The data passed in is a list of tables for a restaurant -->
     <table class="table table-striped table-hover ">
         <!-- contents -->
@@ -31,36 +102,7 @@
                 @:<tr>
             }
 
-            if (!item.IsOccupied)
-            {
-                if (item.MaxCapacity >= customer.GroupCapacity)
-                {
-                    <td>
-                        <span class="label label-default">#@counter</span> <br />
-                        <a class="btn btn-success" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
-                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                        </a>
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        <span class="label label-default">#@counter</span> <br />
-                        <span class="btn btn-default disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
-                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                        </span>
-                    </td>
-                }
-            }
-            else
-            {
-                <td>
-                    <span class="label label-default">#@counter</span> <br />
-                    <span class="btn btn-danger disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
-                        [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                    </span>
-                </td>
-            }
+            
 
             counter++;
 

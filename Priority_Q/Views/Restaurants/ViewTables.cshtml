@@ -6,7 +6,7 @@
     var allTables = ViewData["AllTables"] as IEnumerable<Priority_Q.Models.Table>;
     var allCustomers = ViewData["AllCustomers"] as IEnumerable<Priority_Q.Models.Customer>;
     var mostRecentNews = ViewData["MostRecentNews"] as Priority_Q.Models.NewsInfo;
-    var todayReservations = ViewData["TodayReservations"] as List<List<Priority_Q.Models.Reservation>>;
+    var todayReservations = ViewData["TodayReservations"] as SortedDictionary<int, List<Priority_Q.Models.Reservation>>;
 }
 
 @functions {
@@ -43,7 +43,7 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <!-- Create two columns: Empty and Occupied tables -->
-        <div class="col-xs-6">
+        <div class="col-xs-8">
             <h3>
                 Tables Available
                 <span class="label label-default">
@@ -54,10 +54,10 @@
                     <span class="glyphicon glyphicon-cog"></span>
                 </a>
                 <br />
-                
+
                 <span>Reservations</span>
                 <a class="btn btn-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)' title="Add Reservation">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>   
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </a>
                 <a class="btn btn-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)' title="View All Reservations">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -66,89 +66,104 @@
 
             <!-- The data passed in is a list of tables for a restaurant -->
             <!-- List all empty tables -->
-            <table class="table table-striped table-hover ">
-                <!-- contents -->
-                @{
-                    var counter = 1;
-                    var numPerRow = (int)Math.Truncate(Math.Sqrt(allTables.Count()));
+            @{
+                //Initialize empty layout
+                var length = 5;
+                int[][] mapLayout = new int[length][];
+
+                for (int i = 0; i < length; i++)
+                {
+                    mapLayout[i] = new int[length];
                 }
-                <tr>
-                    @foreach (var item in allTables)
+
+                //Fill in the tables
+                foreach (var item in allTables)
+                {
+                    mapLayout[item.CoordRow][item.CoordCol] = item.ID;
+                }
+            }
+
+            <!-- The table layout is supposed to match the actual layout of a restaurant-->
+            <table class="table table-striped table-hover ">
+                @{
+                    for (var r = 0; r < length; r++)
                     {
-                        if (counter % numPerRow == 1)
-                        {
-                            @:<tr>
-                        }
-
-                        <td>
-                            <!-- Table info (#, max capacity) -->
-                            <span class="label label-default">#@counter</span> <br />
-                            @if (!item.IsOccupied)
+                        <tr>
+                            @for (var c = 0; c < length; c++)
                             {
-                                <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                    [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
-                                    [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
-                                </a>
-                            }
-
-                            <br />
-
-                            <!-- Reservation Data-->
-                            <!-- don't display empty blocks -->
-                            @if (todayReservations[counter - 1].Count() > 0)
-                            {
-                                <span class="btn btn-default">
-                                    @foreach (var reservation in todayReservations[counter - 1])
-                                    { 
-                                        var manageReservationModal = "manageReservationModal" + reservation.ID;
-                                        <button type="button" class="label label-warning" data-toggle="modal" data-target="#@manageReservationModal">
-                                            @{
-                                        DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
-                                            }
-                                            @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
-                                        </button>
-
-                                        <div class="modal fade" id="@manageReservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    @{
-                                                        Priority_Q.Models.Reservation currentReservation = (new Priority_Q.Models.ReservationDBContext()).Reservations.Find(reservation.ID);
-                                                    }
-                                                    @Html.Partial("~/Views/Reservations/_Manage.cshtml", currentReservation);
-                                                </div>
-                                            </div>
-                                        </div>
+                                <td>
+                                    @if (mapLayout[r][c] == 0)
+                                    {
+                                        <span class="btn btn-info disabled" style="background: transparent;">
+                                            &emsp; &emsp; &emsp; &emsp;
+                                        </span>
+                                        continue;
                                     }
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="btn btn-default disabled">
-                                    None
-                                </span>
-                            }
-                          
-                        </td>
 
-                            counter++;
+                                    @{
+                                var currentTable = (new Priority_Q.Models.TableDBContext()).Tables.Find(mapLayout[r][c]);
+                                    }
 
-                            if (counter % numPerRow == 1)
-                            {
-                                @:</tr>
+                                    <!-- Table info (#, max capacity) -->
+                                    @if (!currentTable.IsOccupied)
+                                    {
+                                        <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", currentTable.ID)'>
+                                            [Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", currentTable.ID)'>
+                                            [Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                        </a>
+                                    }
+
+                                    <br />
+
+                                    <!-- Reservation Data-->
+                                    <!-- don't display empty blocks -->
+                                    @if (todayReservations[currentTable.ID].Count() > 0)
+                                    {
+                                        <span class="btn btn-default">
+                                            @foreach (var reservation in todayReservations[currentTable.ID])
+                                            {
+                                                var manageReservationModal = "manageReservationModal" + reservation.ID;
+                                                <button type="button" class="label label-warning" data-toggle="modal" data-target="#@manageReservationModal">
+                                                    @{
+                                                DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
+                                                    }
+                                                    @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
+                                                </button>
+
+                                                <div class="modal fade" id="@manageReservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            @{
+                                                Priority_Q.Models.Reservation currentReservation = (new Priority_Q.Models.ReservationDBContext()).Reservations.Find(reservation.ID);
+                                                            }
+                                                            @Html.Partial("~/Views/Reservations/_Manage.cshtml", currentReservation);
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="btn btn-default disabled">
+                                            None
+                                        </span>
+                                    }
+                                </td>
                             }
+                        </tr>
                     }
-                    </tr>
-
-                </table>
+                }
+            </table>
         </div>
 
         <!-- Manage Priority Queue -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h3>
                 Priority Queue
                 <span class="label label-default">
@@ -165,7 +180,7 @@
                 <table class="table table-striped table-hover ">
                     <!-- contents -->
                     @{
-                        counter = 1;
+                        var counter = 1;
                     }
                     @foreach (var item in allCustomers)
                     {
@@ -174,7 +189,7 @@
                                 <span class="label label-default">#@counter</span>
                                 <!-- Button trigger modal -->
                                 @{
-                                    var nameAssignTableModal = "assignTableModal" + item.ID;
+                        var nameAssignTableModal = "assignTableModal" + item.ID;
                                 }
                                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#@nameAssignTableModal">
                                     @item.GroupCapacity<span class="glyphicon glyphicon-user"></span> &emsp; @item.Name
@@ -185,11 +200,11 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             @{
-                                                Priority_Q.Models.Customer customer = (new Priority_Q.Models.CustomerDBContext()).Customers.Find(item.ID);
-                                                ViewData["ReadyCustomer"] = customer;
-                                                IEnumerable<Priority_Q.Models.Table> tables = (new Priority_Q.Models.TableDBContext()).Tables.Where(i => i.RestaurantId == restaurant.ID);
+                        Priority_Q.Models.Customer customer = (new Priority_Q.Models.CustomerDBContext()).Customers.Find(item.ID);
+                        ViewData["ReadyCustomer"] = customer;
+                        IEnumerable<Priority_Q.Models.Table> tables = (new Priority_Q.Models.TableDBContext()).Tables.Where(i => i.RestaurantId == restaurant.ID);
                                             }
-                                            @Html.Partial("~/Views/Customers/_AssignTable.cshtml", tables);
+                                            @Html.Partial("~/Views/Customers/_AssignTable.cshtml", tables)
                                         </div>
                                     </div>
                                 </div>
@@ -200,37 +215,32 @@
                 </table>
             </div>
         </div>
-
-        <!-- Display news -->
-        <div class="col-xs-3">
-            <h4>
-                News
-                &nbsp;
-                <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", restaurant.ID)'>
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </a>
-            </h4>
-            <hr />
-            <!-- Check if there's any news for today-->
-            @if (mostRecentNews == null)
-            {
-                <span>No News</span>
-
-                <br />
-            }
-            else
-            {
-                @mostRecentNews.Content <br />
-                <i>Posted On @mostRecentNews.Date</i>
-
-                <br />
-
-                <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)'>
-                    &laquo; View All &raquo;
-                </a>
-            }
-        </div>
     </div>
-
-
 </div>
+
+<!-- Display news -->
+<h4>
+    News
+    &nbsp;
+    <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", restaurant.ID)'>
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    </a>
+</h4>
+<!-- Check if there's any news for today-->
+@if (mostRecentNews == null)
+{
+    <span>No News</span>
+
+    <br />
+}
+else
+{
+    @mostRecentNews.Content <br />
+    <i>Posted On @mostRecentNews.Date</i>
+
+    <br />
+
+    <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)'>
+        &laquo; View All &raquo;
+    </a>
+}

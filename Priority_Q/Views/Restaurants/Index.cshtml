@@ -74,9 +74,11 @@
                 <p>
                     @if (Request.IsAuthenticated)
                     {
-                        <a class="btn btn-info" href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </a>
+                        <h4>
+                            <a href='@string.Format("/Restaurants/ViewTables/{0}", item.ID)'>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </h4>
                     }
                     else
                     {
