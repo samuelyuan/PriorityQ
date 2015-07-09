@@ -58,6 +58,9 @@ namespace Priority_Q.Models
 
         [Display(Name = "Occupied")]
         public Boolean IsOccupied { get; set; }
+
+        public int CoordRow { get; set; }
+        public int CoordCol { get; set; }
     }
 
     public class TableDBContext : DbContext

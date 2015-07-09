@@ -19,6 +19,8 @@
         @Html.HiddenFor(model => model.ID)
         @Html.HiddenFor(model => model.RestaurantId)
         @Html.HiddenFor(model => model.IsOccupied)
+        @Html.HiddenFor(model => model.CoordRow)
+        @Html.HiddenFor(model => model.CoordCol)
 
         @{
             List<SelectListItem> listItems = new List<SelectListItem>();

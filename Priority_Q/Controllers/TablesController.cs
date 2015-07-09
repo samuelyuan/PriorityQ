@@ -38,7 +38,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied")] Table table)
+        public ActionResult Create([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,CoordRow,CoordCol")] Table table)
         {
             if (ModelState.IsValid)
             {
@@ -55,7 +55,7 @@ namespace Priority_Q.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied")] Table table)
+        public ActionResult Edit([Bind(Include = "ID,RestaurantId,MaxCapacity,IsOccupied,CoordRow,CoordCol")] Table table)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace Priority_Q.Controllers
             Table table = db.Tables.Find(id);
             db.Tables.Remove(table);
             db.SaveChanges();
-            return RedirectToAction("ViewTables", "Restaurants", new { id = table.RestaurantId });
+            return RedirectToAction("ManageTables", "Restaurants", new { id = table.RestaurantId });
         }
 
         protected override void Dispose(bool disposing)
