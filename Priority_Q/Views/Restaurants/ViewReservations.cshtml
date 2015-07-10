@@ -16,7 +16,7 @@
 </h2>
 
 <p>
-    @using (Html.BeginForm("ViewReservations", "Restaurants", FormMethod.Get))
+    @using (Html.BeginForm())
     {
         <fieldset>
             Show Reservations For Only:  @Html.DropDownList("DaySlotList")
