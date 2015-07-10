@@ -60,23 +60,6 @@
         </h3>
         @Html.Partial("_CustomerPreviewTables", tableCapacityCount)
 
-        <!-- List reservation times -->
-        <p>
-            Reservation Times
-            <select>
-                <option value="-1">--- See All Available Times ---</option>
-                @for (var i = restaurant.OpeningHourStart; i < restaurant.OpeningHourEnd; i++)
-                {
-                    for (var minutes = 0; minutes < 60; minutes += 30)
-                    {
-                        var displayTime = (new DateTime()).AddHours(i).AddMinutes(minutes).ToString("h:mm tt");
-
-                        <option value="@displayTime">@displayTime</option>
-                    }
-                }
-            </select>
-        </p>
-
         <!-- Manage Priority Queue -->
         <h3>
             Priority Queue <span class="label label-default">@allCustomers.Count()</span>
