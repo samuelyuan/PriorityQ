@@ -88,13 +88,18 @@
 <!-- Check if there's any news for today-->
 @if (mostRecentNews != null)
 {
-    <a class="btn btn-info" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-        Recent Updates
+    <p>
+        <a class="btn btn-info" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Recent Updates
+        </a>
+        &emsp;
         <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)'>
             View All Updates
         </a>
-    </a>
+    </p>
     
+    
+
     <div class="collapse" id="collapseExample">
         <div class="well">
             @mostRecentNews.Content <br />
