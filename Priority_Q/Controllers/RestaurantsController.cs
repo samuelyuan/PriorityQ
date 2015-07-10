@@ -92,6 +92,19 @@ namespace Priority_Q.Controllers
             return convertToDateTime.ToString("h:mm tt");
         }
 
+        private void ViewBagSetMapOffset(int? rowOffset, int? colOffset)
+        {
+            //Assign variables to the viewbag
+            ViewBag.RowOffset = (rowOffset != null) ? rowOffset : 0;
+            ViewBag.ColOffset = (colOffset != null) ? colOffset : 0;
+
+            //prevent the user from scrolling out of bounds
+            if (ViewBag.RowOffset < 0) ViewBag.RowOffset = 0;
+            if (ViewBag.RowOffset > 5) ViewBag.RowOffset = 5;
+            if (ViewBag.ColOffset < 0) ViewBag.ColOffset = 0;
+            if (ViewBag.ColOffset > 5) ViewBag.ColOffset = 5;
+        }
+
         //----------------------------------------------
 
         // GET: Restaurants
@@ -158,7 +171,7 @@ namespace Priority_Q.Controllers
         }
 
         // GET: Restaurants/CustomerView/XX
-        public ActionResult CustomerView(int? id)
+        public ActionResult CustomerView(int? id, int? rowOffset, int? colOffset)
         {
             if (id == null)
             {
@@ -184,6 +197,8 @@ namespace Priority_Q.Controllers
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
             ViewData["MostRecentNews"] = (newsInfos.Count() > 0) ? newsInfos.Last() : null;
+
+            ViewBagSetMapOffset(rowOffset, colOffset);
 
             return View();
         }
@@ -306,8 +321,7 @@ namespace Priority_Q.Controllers
             }
 
             //scroll the map when viewing tables
-            ViewBag.RowOffset = (rowOffset != null) ? rowOffset : 0;
-            ViewBag.ColOffset = (colOffset != null) ? colOffset : 0;
+            ViewBagSetMapOffset(rowOffset, colOffset);
 
             return View();
         }
@@ -332,8 +346,8 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTables = availableTables.Count();
 
-            ViewBag.RowOffset = (rowOffset != null) ? rowOffset : 0;
-            ViewBag.ColOffset = (colOffset != null) ? colOffset : 0;
+            //scroll the map
+            ViewBagSetMapOffset(rowOffset, colOffset);
 
             return View(tables);
         }
