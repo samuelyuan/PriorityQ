@@ -29,7 +29,11 @@
         //Fill in the tables
         foreach (var item in Model)
         {
-            mapLayout[item.CoordRow][item.CoordCol] = item.ID;
+            if ((item.CoordRow - ViewBag.RowOffset >= 0) && (item.CoordRow - ViewBag.RowOffset < length)
+            && (item.CoordCol - ViewBag.ColOffset >= 0) && (item.CoordCol - ViewBag.ColOffset < length))
+            {
+                mapLayout[item.CoordRow - ViewBag.RowOffset][item.CoordCol - ViewBag.ColOffset] = item.ID;
+            }
         }
     }
 
