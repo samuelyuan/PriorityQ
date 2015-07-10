@@ -129,6 +129,34 @@ namespace Priority_Q.Controllers
             return View(restaurantArray.ToList());
         }
 
+        // GET: Restaurants/Create
+        public ActionResult Create()
+        {
+            //user isn't logged in
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Index", "Restaurants");
+
+            return View();
+        }
+
+        // POST: Restaurants/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID,OpeningHourStart,OpeningHourEnd")] Restaurant restaurant)
+        {
+            if (ModelState.IsValid)
+            {
+                restaurant.UserID = User.Identity.GetUserId();
+                db.Restaurants.Add(restaurant);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(restaurant);
+        }
+
         // GET: Restaurants/CustomerView/XX
         public ActionResult CustomerView(int? id)
         {
@@ -160,50 +188,7 @@ namespace Priority_Q.Controllers
             return View();
         }
 
-        // GET: Restaurants/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Restaurant restaurant = db.Restaurants.Find(id);
-            if (restaurant == null)
-            {
-                return HttpNotFound();
-            }
-            return View(restaurant);
-        }
-
-        // GET: Restaurants/Create
-        public ActionResult Create()
-        {
-            //user isn't logged in
-            if (!Request.IsAuthenticated)
-                return RedirectToAction("Index", "Restaurants");
-
-            return View();
-        }
-
-        // POST: Restaurants/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,StreetAddress,City,PhoneNumber,NumTables,UserID,OpeningHourStart,OpeningHourEnd")] Restaurant restaurant)
-        {
-            if (ModelState.IsValid)
-            {
-                restaurant.UserID = User.Identity.GetUserId();
-                db.Restaurants.Add(restaurant);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(restaurant);
-        }
-
-        // GET: Restaurants/ViewNews/5
+        // GET: Restaurants/ViewNews/XX
         public ActionResult ViewNews(int? id)
         {
             if (id == null)
@@ -219,7 +204,7 @@ namespace Priority_Q.Controllers
             return View(newsInfos.Reverse());
         }
 
-        // GET: Restaurants/ViewReservations/5
+        // GET: Restaurants/ViewReservations/XX
         public ActionResult ViewReservations(int? id, String DaySlotList)
         {
             if (id == null)
@@ -255,7 +240,7 @@ namespace Priority_Q.Controllers
         }
 
         // GET: Restaurants/ViewTables/XX
-        public ActionResult ViewTables(int? id, int? GroupSizeList, String TimeSlotList, String DaySlotList)
+        public ActionResult ViewTables(int? id, int? GroupSizeList, String TimeSlotList, String DaySlotList, int? rowOffset, int? colOffset)
         {
             if (id == null)
             {
@@ -320,11 +305,15 @@ namespace Priority_Q.Controllers
                 }
             }
 
+            //scroll the map when viewing tables
+            ViewBag.RowOffset = (rowOffset != null) ? rowOffset : 0;
+            ViewBag.ColOffset = (colOffset != null) ? colOffset : 0;
+
             return View();
         }
 
-        // GET: Restaurants/ManageTables/5
-        public ActionResult ManageTables(int? id)
+        // GET: Restaurants/ManageTables/XX
+        public ActionResult ManageTables(int? id, int? rowOffset, int? colOffset)
         {
             if (id == null)
             {
@@ -343,10 +332,13 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTables = availableTables.Count();
 
+            ViewBag.RowOffset = (rowOffset != null) ? rowOffset : 0;
+            ViewBag.ColOffset = (colOffset != null) ? colOffset : 0;
+
             return View(tables);
         }
 
-        // GET: Restaurants/ReserveTables/5?GroupSizeList=XX&&TimeSlotList=XX&&DaySlotList=XX
+        // GET: Restaurants/ReserveTables/XX?GroupSizeList=XX&&TimeSlotList=XX&&DaySlotList=XX
         public ActionResult ReserveTables(int? id, int? GroupSizeList, String TimeSlotList, String DaySlotList)
         {
             if (id == null)
@@ -449,7 +441,7 @@ namespace Priority_Q.Controllers
             return RedirectToAction("ViewTables", "Restaurants", new { id = restaurantID });
         }
 
-        // GET: Restaurants/Edit/5
+        // GET: Restaurants/Edit/XX
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -468,7 +460,7 @@ namespace Priority_Q.Controllers
             return View(restaurant);
         }
 
-        // POST: Restaurants/Edit/5
+        // POST: Restaurants/Edit/XX
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -488,7 +480,7 @@ namespace Priority_Q.Controllers
             return View(restaurant);
         }
 
-        // GET: Restaurants/Delete/5
+        // GET: Restaurants/Delete/XX
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -507,7 +499,7 @@ namespace Priority_Q.Controllers
             return View(restaurant);
         }
 
-        // POST: Restaurants/Delete/5
+        // POST: Restaurants/Delete/XX
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
