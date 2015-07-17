@@ -64,4 +64,20 @@ namespace Priority_Q.Models
         [Display(Name = "Access Code")]
         public string AccessCode { get; set; }
     }
+
+    public class ContactViewModel
+    {
+        [Required]
+        [Display(Name = "Full Name")]
+        public string FullName { get; set; }
+
+        [Required]
+        public string Email { get; set; }
+        
+        [Required]
+        public string Subject { get; set; }
+
+        [Required]
+        public string Message { get; set; }
+    }
 }
