@@ -231,7 +231,7 @@
     <Content Include="Views\Restaurants\ManageTables.cshtml" />
     <Content Include="Views\Account\AllUsers.cshtml" />
     <Content Include="Views\Customers\_Create.cshtml" />
-    <Content Include="Views\Customers\Delete.cshtml" />
+    <Content Include="Views\Customers\_Delete.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
     <Content Include="Views\Restaurants\ViewTables.cshtml" />
     <Content Include="Views\Customers\_AssignTable.cshtml" />
