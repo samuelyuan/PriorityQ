@@ -6,7 +6,7 @@
 background: url('../../Content/bg-about.jpg') center center scroll;
     padding: 20px 0; margin-bottom: 30px;">
     <h1 class="text-center" style="color: white; text-shadow: 0px 0px 5px black;">
-        @ViewBag.Title  
+        <span class="glyphicon glyphicon-info-sign"></span> @ViewBag.Title  
     </h1>
 </header>
 
@@ -82,35 +82,47 @@ background: url('../../Content/bg-about.jpg') center center scroll;
         <p>
             <b>The restaurants</b> will update the information in real time. Every time you check the website, you can be sure that it is reliable.
         </p>
-        <b>
-            How exactly? 
-        </b>
+        <h3>How exactly?</h3>
+        <hr />
         <p>
-            If there's available tables, assign customers as follows:
+            <h4>If there's available tables, assign customer to that table</h4>
+            <hr />
             <ul>
-                <li>Find an empty table (green)</li>
-                <li>Click on that table</li>
-                <li>It should change color and be set to occupied (red)</li>
+                <li>Step 1: Find an empty table (green)</li>
+                <li>Step 2: Click on that table</li>
+                <li>Step 3: It should change color and be set to occupied (red)</li>
             </ul>
             <br />
             <img src="~/Content/about-fill_table.png" /> 
         </p>
-
         <p>
-            If there's no open tables, the customer is added to a priority queue. <br />
+            <h4>If there's no open tables, the customer is added to a priority queue.</h4>
+            <hr />
             <ul>
                 <li>
-                    Step 1: <img src="~/Content/about-add_customer_1.png" /> 
+                    Step 1: Click on the add button (the "+" sign) <br />
+                    <img src="~/Content/about-add_customer_1.png" />
                 </li>
                 <li>
-                    Step 2: <img src="~/Content/about-add_customer_2.png" /> 
+                    Step 2: Enter the requested information and click "Create" <br />
+                    <img src="~/Content/about-add_customer_2.png" />
                 </li>
             </ul>
-            
+
         </p>
         <p>
-            If a table is available for a customer, the customer is assigned to that table. <br />
-            <img src="~/Content/about-assign_table.png">
+            <h4>If a table is available for a customer, the customer is assigned to that table.</h4> 
+            <hr />
+            <ul>
+                <li>
+                    Step 1: Select the person at the top (since they have the highest priority) <br />
+                    <img src="~/Content/about-assign_table_1.png">
+                </li>
+                <li>
+                    Step 2: Click on the desired table <br />
+                    <img src="~/Content/about-assign_table_2.png">
+                </li>
+            </ul>
         </p>
     </div>
 </div>

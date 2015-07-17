@@ -112,12 +112,14 @@ namespace Priority_Q.Controllers
         {
             Restaurant[] restaurantArray = db.Restaurants.ToArray();
 
+            //search for the restaurant by name or location
             if (!String.IsNullOrEmpty(searchString))
             {
                 restaurantArray = db.Restaurants.Where(s => s.Name.Contains(searchString)
                                        || s.City.Contains(searchString)).ToArray();
             }
 
+            //Use this variable to check if the restaurant is open or closed
             ViewBag.CurrentHour = Int32.Parse(DateTime.Now.ToString("HH"));
 
             //Find all tables belonging to a restaurant 

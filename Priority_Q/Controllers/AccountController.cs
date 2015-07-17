@@ -57,7 +57,6 @@ namespace Priority_Q.Controllers
                 }
             }
 
-            // 如果我们进行到这一步时某个地方出错，则重新显示表单
             return View(model);
         }
 
@@ -96,7 +95,6 @@ namespace Priority_Q.Controllers
                 }
             }
 
-            // 如果我们进行到这一步时某个地方出错，则重新显示表单
             return View(model);
         }
 
@@ -131,6 +129,20 @@ namespace Priority_Q.Controllers
                 : "";
             ViewBag.HasLocalPassword = HasPassword();
             ViewBag.ReturnUrl = Url.Action("Manage");
+
+            //Find the restaurant associated with this account (only allow one restaurant to be created)
+            Restaurant[] restaurantArray = (new RestaurantDBContext()).Restaurants.ToArray();
+            ViewBag.RestaurantIndex = -1;
+            for (var i = 0; i < restaurantArray.Length; i++)
+            {
+                //Match found: restaurant's user id matches the account's user id
+                if (restaurantArray[i].UserID.Equals(User.Identity.GetUserId()))
+                {
+                    ViewBag.RestaurantIndex = i;
+                    ViewData["Restaurant"] = restaurantArray[i];
+                }
+            }
+
             return View();
         }
 
