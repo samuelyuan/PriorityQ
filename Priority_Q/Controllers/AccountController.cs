@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Priority_Q.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Priority_Q.Controllers
 {
@@ -68,6 +70,23 @@ namespace Priority_Q.Controllers
             return View();
         }
 
+        //md5 hashing ensures that the access code is unique for each restaurant
+        public string CalculateMD5Hash(string input)
+        {
+            // step 1, calculate MD5 hash from input
+            MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // step 2, convert byte array to hex string
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("x2"));
+            }
+            return sb.ToString();
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
@@ -77,9 +96,9 @@ namespace Priority_Q.Controllers
         {
             if (ModelState.IsValid)
             {
-                //for now, set the access code to 1234
-                //in the future, this should be changed to something unique
-                if (!model.AccessCode.Equals("1234"))
+                //access code is a md5 hash of the username
+                String correctHashString = CalculateMD5Hash(model.UserName);
+                if (!model.AccessCode.Equals(correctHashString))
                     return View(model);
 
                 var user = new ApplicationUser() { UserName = model.UserName };
@@ -193,7 +212,6 @@ namespace Priority_Q.Controllers
                 }
             }
 
-            // 如果我们进行到这一步时某个地方出错，则重新显示表单
             return View(model);
         }
 
@@ -204,7 +222,6 @@ namespace Priority_Q.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
-            // 请求重定向到外部登录提供程序
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
@@ -276,7 +293,6 @@ namespace Priority_Q.Controllers
 
             if (ModelState.IsValid)
             {
-                // 从外部登录提供程序获取有关用户的信息
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
