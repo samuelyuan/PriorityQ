@@ -1,0 +1,28 @@
+﻿@model Priority_Q.Models.Customer
+
+@{
+    ViewBag.Title = "Remove Customer";
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
+</div>
+
+<div class="modal-body">
+    <h4>Are you sure you want to remove this customer?</h4>
+    <h4><b>Customer:</b> @Model.Name</h4>
+    <h4><b>Group Size:</b> @Model.GroupCapacity</h4>
+</div>
+
+<div class="modal-footer">
+    @using (Html.BeginForm("Delete", "Customers", new { id = Model.ID }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Yes" class="btn btn-danger" />
+            <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">No</button>
+        </div>
+    } 
+</div>

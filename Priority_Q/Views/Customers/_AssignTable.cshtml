@@ -6,7 +6,6 @@
     var customer = ViewData["ReadyCustomer"] as Priority_Q.Models.Customer;
 }
 
-
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title" id="myModalLabel">Assign Table</h4>
@@ -90,39 +89,27 @@
             }
         }
     </table>
-
-    <!-- The data passed in is a list of tables for a restaurant -->
-    <table class="table table-striped table-hover ">
-        <!-- contents -->
-        @{
-            var counter = 1;
-            var numPerRow = (int)Math.Truncate(Math.Sqrt(Model.Count()));
-        }
-
-        @foreach (var item in Model)
-        {
-            if (counter % numPerRow == 1)
-            {
-                @:<tr>
-            }
-
-            
-
-            counter++;
-
-            if (counter % numPerRow == 1)
-            {
-                @:</tr>
-            }
-        }
-    </table>
 </div>
 
+@{
+    var deleteCustomerModal = "deleteCustomer" + customer.ID;
+}
+
+<div class="modal fade" id="@deleteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @Html.Partial("~/Views/Customers/_Delete.cshtml", customer)
+        </div>
+    </div>
+</div>
+
+
 <div class="modal-footer">
-    <a class="btn btn-danger" href="@String.Format("../../Customers/Delete/{0}", customer.ID)">
+     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#@deleteCustomerModal">
         Remove Only
-    </a>
-    <a class="btn btn-warning" href="@String.Format("../../Restaurants/ViewTables/{0}", restaurant.ID)">
+    </button>
+ 
+   <a class="btn btn-warning" href="@String.Format("../../Restaurants/ViewTables/{0}", restaurant.ID)">
         Cancel
     </a>
 </div>
