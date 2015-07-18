@@ -198,27 +198,11 @@ namespace Priority_Q.Controllers
             //Find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewData["MostRecentNews"] = (newsInfos.Count() > 0) ? newsInfos.Last() : null;
+            ViewData["AllNews"] = newsInfos.Reverse();
 
             ViewBagSetMapOffset(rowOffset, colOffset);
 
             return View();
-        }
-
-        // GET: Restaurants/ViewNews/XX
-        public ActionResult ViewNews(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            //Find all pieces of news belonging to a restaurant 
-            NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
-            IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewBagSetRestaurantInfo(id);
-
-            //reverse because the site should display the most recent posts, which are at the end
-            return View(newsInfos.Reverse());
         }
 
         // GET: Restaurants/ViewReservations/XX
@@ -285,7 +269,7 @@ namespace Priority_Q.Controllers
             //Find the most recent news item for a restaurant (usually the last element)
             NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
             IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewData["MostRecentNews"] = (newsInfos.Count() > 0) ? newsInfos.Last() : null;
+            ViewData["AllNews"] = newsInfos.Reverse();
 
             //Find all reservations for each table
             SortedDictionary<int, List<Priority_Q.Models.Reservation>> todayReservations = new SortedDictionary<int, List<Reservation>>();

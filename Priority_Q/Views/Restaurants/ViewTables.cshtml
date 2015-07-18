@@ -5,7 +5,7 @@
     var restaurant = ViewData["Restaurant"] as Priority_Q.Models.Restaurant;
     var allTables = ViewData["AllTables"] as IEnumerable<Priority_Q.Models.Table>;
     var allCustomers = ViewData["AllCustomers"] as IEnumerable<Priority_Q.Models.Customer>;
-    var mostRecentNews = ViewData["MostRecentNews"] as Priority_Q.Models.NewsInfo;
+    var allNews = ViewData["AllNews"] as IEnumerable<Priority_Q.Models.NewsInfo>;
     var todayReservations = ViewData["TodayReservations"] as SortedDictionary<int, List<Priority_Q.Models.Reservation>>;
 }
 
@@ -18,7 +18,9 @@
     }
 }
 
-<h2>@restaurant.Name</h2>
+<h2>
+    @restaurant.Name 
+</h2>
 
 <span class="glyphicon glyphicon-map-marker"></span> @restaurant.StreetAddress , @restaurant.City &emsp; 
 <span class="glyphicon glyphicon-time"></span> @ConvertIntTo24Hour(restaurant.OpeningHourStart) - @ConvertIntTo24Hour(restaurant.OpeningHourEnd)
@@ -52,16 +54,6 @@
                 &nbsp;
                 <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", restaurant.ID)' title="Manage Tables">
                     <span class="glyphicon glyphicon-cog"></span>
-                </a>
-
-                &emsp;
-
-                <span>Reservations</span>
-                <a class="btn btn-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)' title="Add Reservation">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </a>
-                <a class="btn btn-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)' title="View All Reservations">
-                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                 </a>
             </h3>
 
@@ -260,29 +252,66 @@
     </div>
 </div>
 
-<!-- Display news -->
-<h4>
-    News
+<h3>
+    Reservations
+    
+</h3>
+<hr />
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p>
+            <h3>
+                <a class="btn btn-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)' title="Add Reservation">
+                    <span class="glyphicon glyphicon-plus"></span> Add New
+                </a>
+            </h3>
+            <h3>
+                <a class="btn btn-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)' title="View All Reservations">
+                    <span class="glyphicon glyphicon-cog"></span> Manage
+                </a>
+            </h3>
+        </p>
+    </div>
+</div>
+
+<!-- Check if there's any news -->
+<h3>
+    Recent Updates
     &nbsp;
     <a class="btn btn-info" href='@string.Format("/NewsInfos/Create/{0}", restaurant.ID)'>
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </a>
-</h4>
-<!-- Check if there's any news for today-->
-@if (mostRecentNews == null)
-{
-    <span>No News</span>
+</h3>
+<hr />
 
-    <br />
+@if (allNews.Count() > 0)
+{
+    <table class="table table-striped table-hover ">
+        @foreach (var item in allNews)
+        {
+            <tr>
+                <td>
+                    <h4 style="color: black;">
+                        @Html.DisplayFor(modelItem => item.Content) <br />
+                        <i>Posted On @item.Date</i>
+                    </h4>
+                </td>
+                <td>
+                    <a class="btn btn-warning" href='@string.Format("/NewsInfos/Edit/{0}", item.ID)' title="Edit">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </a>
+                    <a class="btn btn-danger" href='@string.Format("/NewsInfos/Delete/{0}", item.ID)' title="Delete">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </a>
+                </td>
+                <td></td>
+            </tr>
+        }
+    </table>
 }
 else
 {
-    @mostRecentNews.Content <br />
-    <i>Posted On @mostRecentNews.Date</i>
-
-    <br />
-
-    <a class="btn btn-info" href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)'>
-        &laquo; View All &raquo;
-    </a>
+    <h4 style="color: black;">
+        You haven't posted any updates yet.
+    </h4>
 }
