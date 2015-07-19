@@ -1,16 +1,57 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
+    //Find the restaurant's id
+    Priority_Q.Models.Restaurant[] restaurantArray = (new Priority_Q.Models.RestaurantDBContext()).Restaurants.ToArray();
+    var restaurantID = -1;
+    for (var i = 0; i < restaurantArray.Length; i++)
+    {
+        //Match found: restaurant's user id matches the account's user id
+        if (restaurantArray[i].UserID.Equals(User.Identity.GetUserId()))
+        {
+            restaurantID = restaurantArray[i].ID; //save restaurant's id
+            break;
+        }
+    }
+    
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
     @Html.AntiForgeryToken()
 
     <ul class="nav navbar-nav navbar-right">
+        <!-- Home Button-->
         <li>
-            <a href="/Account/Manage" title="Manage">
-                <span class=' glyphicon glyphicon-cog'></span>@User.Identity.GetUserName()
-            </a>
+            @if (restaurantID != -1)
+            {
+                <a href='@string.Format("/Restaurants/ViewTables/{0}", restaurantID)'>
+                    <span class="glyphicon glyphicon-home"></span>
+                </a>
+            }
+            else
+            {
+                <a href="/Restaurants/Create">
+                    <span class="glyphicon glyphicon-home"></span>
+                </a>
+            }
         </li>
+
+        <!-- Settings List-->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span class=' glyphicon glyphicon-cog'></span> <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            @if (restaurantID != -1)
+            {
+                <li><a href='@string.Format("/Restaurants/Edit/{0}", restaurantID)'>Edit Profile</a></li>
+                <li><a href='@string.Format("/Restaurants/ManageTables/{0}", restaurantID)'>Edit Table Layout</a></li>
+                <li role="separator" class="divider"></li>
+            }
+            <li><a href="/Account/Manage">Account Security</a></li>
+          </ul>
+        </li>
+
+        <!-- Logout Button-->
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
     </ul>
     }

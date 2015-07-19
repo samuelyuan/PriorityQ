@@ -1,7 +1,7 @@
 ﻿@using System.Globalization;
 
 @{
-    ViewBag.Title = "View Tables";
+    ViewBag.Title = "My Restaurant";
     var restaurant = ViewData["Restaurant"] as Priority_Q.Models.Restaurant;
     var allTables = ViewData["AllTables"] as IEnumerable<Priority_Q.Models.Table>;
     var allCustomers = ViewData["AllCustomers"] as IEnumerable<Priority_Q.Models.Customer>;
@@ -18,14 +18,9 @@
     }
 }
 
-<h2>
+<h1>
     @restaurant.Name 
-</h2>
-
-<span class="glyphicon glyphicon-map-marker"></span> @restaurant.StreetAddress , @restaurant.City &emsp; 
-<span class="glyphicon glyphicon-time"></span> @ConvertIntTo24Hour(restaurant.OpeningHourStart) - @ConvertIntTo24Hour(restaurant.OpeningHourEnd)
-<br />
-<span class="glyphicon glyphicon-earphone"></span> @restaurant.PhoneNumber
+</h1>
 
 <p></p>
 
@@ -51,11 +46,9 @@
                 <span class="label label-default">
                     @ViewBag.AvailableTablesCount
                 </span>
-                &nbsp;
-                <a class="btn btn-warning" href='@string.Format("/Restaurants/ManageTables/{0}", restaurant.ID)' title="Manage Tables">
-                    <span class="glyphicon glyphicon-cog"></span>
-                </a>
             </h3>
+
+            <hr />
 
             <!-- Navigate the map -->
             <div class="row">

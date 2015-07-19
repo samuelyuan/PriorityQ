@@ -12,10 +12,30 @@
     }
 }
 
+@if (ViewBag.TotalTables == 0)
+{
+    <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3>
+            Before you can take advantage of all the site's features, you just need to take a few minutes to setup your table layout. You will
+            only need to do this once.
+        </h3>
+        <h4>
+            If you need to edit the table layout at any time, click on the Settings button <span class="glyphicon glyphicon-cog"></span> and then
+            select "Edit Table Layout".
+        </h4>
+    </div>
+
+}
+
 <h2>@ViewBag.RestaurantName</h2>
-<h3>Tables Available
+<h3>Table Layout</h3>
+<hr />
+
+<h3>
+    Total: 
     <span class="label label-default">
-        @ViewBag.AvailableTables / @ViewBag.TotalTables
+        @ViewBag.TotalTables
     </span>
 </h3>
 
