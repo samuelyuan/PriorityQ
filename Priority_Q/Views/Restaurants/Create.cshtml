@@ -6,67 +6,71 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Add Restaurant</h2>
+<h3>Before you begin using this site, we just want to take a few minutes to help you set up a profile.</h3>
 
+<h4>Enter your restaurant information: </h4>
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
-    
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Restaurant</h3>
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        <div class="form-group">
+            <label class="control-label col-sm-2">Name: </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, new { placeholder = "Your restaurant name here", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
         </div>
-        <div class="panel-body">
-            @Html.ValidationSummary(true)
-            <div class="form-group">
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.Name, new { placeholder = "Your restaurant name here" })
-                    @Html.ValidationMessageFor(model => model.Name)
-                </div>
+
+        
+        <div class="form-group">
+            <label class="control-label col-sm-2">Address: </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.StreetAddress, new { placeholder = "1234 Main Street", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StreetAddress)
             </div>
-
-            <div class="form-group">
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.StreetAddress, new { placeholder = "1234 Main Street" })
-                    @Html.ValidationMessageFor(model => model.StreetAddress)
-                </div>
+        
+            <label class="control-label col-sm-2"> </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.City, new { placeholder = "Troy, NY 12180", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.City)
             </div>
+    
+            <label class="control-label col-sm-2"> </label>
 
-            <div class="form-group">
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.City, new { placeholder = "Troy, NY 12180" })
-                    @Html.ValidationMessageFor(model => model.City)
-                </div>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.PhoneNumber, new { placeholder = "(123) 456-7890", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PhoneNumber)
             </div>
+        </div>
 
-            <div class="form-group">
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.PhoneNumber, new { placeholder = "(123) 456-7890" })
-                    @Html.ValidationMessageFor(model => model.PhoneNumber)
-                </div>
+        <!-- fill in opening hours -->
+        @{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    for (var i = 0; i < 24; i++)
+    {
+        listItems.Add(new SelectListItem
+        {
+            Text = DateTime.ParseExact(i.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt"),
+            Value = i.ToString().PadLeft(2, '0')
+        });
+    }
+        }
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <label class="control-label col-sm-2">Opening Hours: </label>
+                @Html.DropDownListFor(model => model.OpeningHourStart, listItems, "-- Select Opening Hour --", new { @class = "form-control" })
+                <label class="control-label col-sm-2"> </label>
+                @Html.DropDownListFor(model => model.OpeningHourEnd, listItems, "-- Select Closing Hour --", new { @class = "form-control" })
             </div>
+        </div>
 
-            <!-- fill in opening hours -->
-            @{
-                List<SelectListItem> listItems = new List<SelectListItem>();
-                for (var i = 0; i < 24; i++)
-                {
-                    listItems.Add(new SelectListItem
-                    {
-                        Text = DateTime.ParseExact(i.ToString().PadLeft(2, '0'), "HH", CultureInfo.CurrentCulture).ToString("h:mm tt"),
-                        Value = i.ToString().PadLeft(2, '0')
-                    });
-                }
-            }
 
-            @Html.DropDownListFor(model => model.OpeningHourStart, listItems, "-- Select Opening Hour --")
-            -
-            @Html.DropDownListFor(model => model.OpeningHourEnd, listItems, "-- Select Closing Hour --")
-
-            <div class="form-group">
-                <div class="col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Join PriorityQ" class="btn btn-default" />
             </div>
         </div>
     </div>

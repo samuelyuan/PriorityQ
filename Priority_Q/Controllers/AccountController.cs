@@ -51,7 +51,31 @@ namespace Priority_Q.Controllers
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
+
+                    //Find the restaurant associated with this account (only allow one restaurant to be created)
+                    Restaurant[] restaurantArray = (new RestaurantDBContext()).Restaurants.ToArray();
+                    int restaurantID = -1;
+                    for (var i = 0; i < restaurantArray.Length; i++)
+                    {
+                        //Match found: restaurant's user id matches the account's user id
+                        if (restaurantArray[i].UserID.Equals(user.Id))
+                        {
+                            restaurantID = restaurantArray[i].ID;
+                            break;
+                        }
+                    }
+
+                    //don't redirect to homepage
+                    if (restaurantID == -1)
+                    {
+                        return RedirectToAction("Create", "Restaurants");
+                    }
+                    else
+                    {
+                        return RedirectToAction("ViewTables", "Restaurants", new { id = restaurantID });
+                    }
+
+                    //return RedirectToLocal(returnUrl);
                 }
                 else
                 {
@@ -106,7 +130,7 @@ namespace Priority_Q.Controllers
                 if (result.Succeeded)
                 {
                     await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Manage", "Account");
                 }
                 else
                 {

@@ -260,6 +260,12 @@ namespace Priority_Q.Controllers
             IEnumerable<Priority_Q.Models.Table> tables = GetTables(id);
             ViewData["AllTables"] = tables;
 
+            //help the restaurant setup its table layout
+            if (tables.Count() == 0)
+            {
+                return RedirectToAction("ManageTables", new { id = restaurant.ID });
+            }
+
             IEnumerable<Priority_Q.Models.Table> availableTables = tables.Where(table => table.IsOccupied == false);
             ViewBag.AvailableTablesCount = availableTables.Count();
 
