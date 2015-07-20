@@ -1,0 +1,19 @@
+﻿@{
+    var restaurant = ViewData["Restaurant"] as Priority_Q.Models.Restaurant;
+}
+
+<h1>
+    @restaurant.Name
+</h1>
+
+<div class="btn-group" role="group" aria-label="...">
+    <a href='@string.Format("/Restaurants/ViewTables/{0}", restaurant.ID)' type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-user"></span> Tables / Priority Queue
+    </a>
+    <a href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)' type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-book"></span> Reservations
+    </a>
+    <a href='@string.Format("/Restaurants/ViewNews/{0}", restaurant.ID)' type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-list-alt"></span> Status Updates
+    </a>
+</div>

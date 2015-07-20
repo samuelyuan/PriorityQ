@@ -1,0 +1,29 @@
+﻿@model Priority_Q.Models.NewsInfo
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Edit Post</h4>
+</div>
+
+@using (Html.BeginForm("Edit", "NewsInfos", new { id = Model.ID }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.ID, new { @Value = Model.ID })
+    @Html.HiddenFor(model => model.RestaurantId)
+    @Html.HiddenFor(model => model.Date)
+
+    <div class="modal-body">
+        @Html.TextAreaFor(model => model.Content)
+        @Html.ValidationMessageFor(model => model.Content)
+    </div>
+    
+    <div class="modal-footer">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+}

@@ -240,6 +240,29 @@ namespace Priority_Q.Controllers
             return View(GetAllReservations(tables));
         }
 
+        // GET: Restaurants/ViewNews/XX
+        public ActionResult ViewNews(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Restaurant restaurant = db.Restaurants.Find(id);
+            if (!IsAuthorized(restaurant))
+            {
+                return RedirectToAction("Index", "Restaurants");
+            }
+            ViewData["Restaurant"] = restaurant;
+
+            //Find the most recent news item for a restaurant (usually the last element)
+            NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
+            IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
+
+            //Find all reservations for each table
+            return View(newsInfos.Reverse());
+        }
+
         // GET: Restaurants/ViewTables/XX
         public ActionResult ViewTables(int? id, int? GroupSizeList, String TimeSlotList, String DaySlotList, int? rowOffset, int? colOffset)
         {
@@ -271,11 +294,6 @@ namespace Priority_Q.Controllers
 
             //Find all customer belonging to a restaurant 
             ViewData["AllCustomers"] = GetCustomers(id);
-
-            //Find the most recent news item for a restaurant (usually the last element)
-            NewsInfoDBContext newsInfoDB = new NewsInfoDBContext();
-            IEnumerable<Priority_Q.Models.NewsInfo> newsInfos = newsInfoDB.NewsInfos.Where(i => i.RestaurantId == id);
-            ViewData["AllNews"] = newsInfos.Reverse();
 
             //Find all reservations for each table
             SortedDictionary<int, List<Priority_Q.Models.Reservation>> todayReservations = new SortedDictionary<int, List<Reservation>>();

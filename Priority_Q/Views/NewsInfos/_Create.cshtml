@@ -1,0 +1,32 @@
+﻿@model Priority_Q.Models.NewsInfo
+
+@{
+    ViewBag.Title = "Create";
+    var restaurant = ViewData["Restaurant"] as Priority_Q.Models.Restaurant;
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">New Post</h4>
+</div>
+
+@using (Html.BeginForm("Create", "NewsInfos", new { id = restaurant.ID }, FormMethod.Post)) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-body">
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(model => model.RestaurantId)
+        @Html.HiddenFor(model => model.Date)
+
+
+       @Html.TextAreaFor(model => model.Content)
+       @Html.ValidationMessageFor(model => model.Content)
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Post</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    </div>
+}

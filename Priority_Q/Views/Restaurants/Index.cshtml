@@ -51,7 +51,7 @@ background: url('../../Content/bg-all_restaurants.jpg') center center scroll;
 @using (Html.BeginForm())
 {
     <h4>
-        Find by name or location: @Html.TextBox("SearchString")
+        @Html.TextBox("SearchString", null, new { @placeholder = "Enter Name Or Location" })
         <input type="submit" value="Search" />
     </h4>
 }

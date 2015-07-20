@@ -8,12 +8,16 @@
     var allTables = ViewData["AllTables"] as IEnumerable<Priority_Q.Models.Table>;
 }
 
-<h2>
-    View All Reservations
-    <a class="btn btn-info" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+@Html.Partial("_RestaurantHeader")
+
+<h3>
+    Reservations
+    &emsp;
+    <a class="btn btn-default" href='@string.Format("/Restaurants/ReserveTables/{0}", restaurant.ID)'>
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add New
     </a>
-</h2>
+</h3>
+<hr />
 
 <p>
     @using (Html.BeginForm())
@@ -54,7 +58,7 @@
 
                 <!-- Reservation Data-->
                 <!-- don't display empty blocks -->
-                <span class="btn btn-default">
+                <div class="btn btn-default">
                     @{
                         var availableReservations = 0;
                     }
@@ -64,7 +68,7 @@
                             || (ViewBag.DaySlot != "" && reservation.DaySlot.Equals(ViewBag.DaySlot)))
                         { 
                             var manageReservationModal = "manageReservationModal" + reservation.ID;
-                            <button type="button" class="label label-warning" data-toggle="modal" data-target="#@manageReservationModal">
+                            <button type="button" class="label label-info" data-toggle="modal" data-target="#@manageReservationModal">
                                 @{
                             DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
                                 }
@@ -91,7 +95,7 @@
                     {
                         <span>None</span>
                     }
-                </span>
+                </div>
 
             </td>
 
