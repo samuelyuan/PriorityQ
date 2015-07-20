@@ -1,0 +1,27 @@
+﻿@model Priority_Q.Models.NewsInfo
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Delete Post?</h4>
+</div>
+
+<div class="modal-body">
+    Are you sure you want to delete it?
+</div>
+
+<div class="modal-footer">
+    @using (Html.BeginForm("Delete", "NewsInfos", new { id = Model.ID }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <button type="button" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        </div>
+    }
+</div>

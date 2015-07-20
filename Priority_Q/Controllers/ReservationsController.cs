@@ -29,7 +29,7 @@ namespace Priority_Q.Views
                 //Add the reservation to the database
                 db.Reservations.Add(reservation);
                 db.SaveChanges();
-                return RedirectToAction("ViewTables", "Restaurants", new { id = desiredTable.RestaurantId });
+                return RedirectToAction("ViewReservations", "Restaurants", new { id = desiredTable.RestaurantId });
             }
 
             return RedirectToAction("ReserveTables", "Restaurants", new { id = desiredTable.RestaurantId });
@@ -47,7 +47,7 @@ namespace Priority_Q.Views
             var table = (new TableDBContext()).Tables.Find(reservation.TableId);
             var restaurantId = table.RestaurantId;
 
-            return RedirectToAction("ViewTables", "Restaurants", new { id = restaurantId });
+            return RedirectToAction("ViewReservations", "Restaurants", new { id = restaurantId });
         }
 
         protected override void Dispose(bool disposing)
