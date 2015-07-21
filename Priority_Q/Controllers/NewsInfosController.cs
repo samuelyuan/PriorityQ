@@ -14,40 +14,6 @@ namespace Priority_Q.Controllers
     {
         private NewsInfoDBContext db = new NewsInfoDBContext();
 
-        // GET: NewsInfoes
-        public ActionResult Index()
-        {
-            return View(db.NewsInfos.ToList());
-        }
-
-        // GET: NewsInfoes/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            NewsInfo newsInfo = db.NewsInfos.Find(id);
-            if (newsInfo == null)
-            {
-                return HttpNotFound();
-            }
-            return View(newsInfo);
-        }
-
-        // GET: NewsInfoes/Create
-        public ActionResult Create(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            NewsInfo newsInfo = new NewsInfo();
-            newsInfo.RestaurantId = id.Value;
-
-            return View(newsInfo);
-        }
-
         // POST: NewsInfoes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -63,22 +29,7 @@ namespace Priority_Q.Controllers
                 return RedirectToAction("ViewNews", "Restaurants", new { id = newsInfo.RestaurantId });
             }
 
-            return View(newsInfo);
-        }
-
-        // GET: NewsInfoes/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            NewsInfo newsInfo = db.NewsInfos.Find(id);
-            if (newsInfo == null)
-            {
-                return HttpNotFound();
-            }
-            return View(newsInfo);
+            return RedirectToAction("ViewNews", "Restaurants", new { id = newsInfo.RestaurantId });
         }
 
         // POST: NewsInfoes/Edit/5
@@ -94,22 +45,7 @@ namespace Priority_Q.Controllers
                 db.SaveChanges();
                 return RedirectToAction("ViewNews", "Restaurants", new { id = newsInfo.RestaurantId });
             }
-            return View(newsInfo);
-        }
-
-        // GET: NewsInfoes/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            NewsInfo newsInfo = db.NewsInfos.Find(id);
-            if (newsInfo == null)
-            {
-                return HttpNotFound();
-            }
-            return View(newsInfo);
+            return RedirectToAction("ViewNews", "Restaurants", new { id = newsInfo.RestaurantId });
         }
 
         // POST: NewsInfoes/Delete/5

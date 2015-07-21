@@ -237,7 +237,6 @@
     <Content Include="Views\Customers\_AssignTable.cshtml" />
     <Content Include="Views\NewsInfos\_Create.cshtml" />
     <Content Include="Views\NewsInfos\_Delete.cshtml" />
-    <Content Include="Views\NewsInfos\Details.cshtml" />
     <Content Include="Views\NewsInfos\_Edit.cshtml" />
     <Content Include="Views\Restaurants\ViewNews.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />

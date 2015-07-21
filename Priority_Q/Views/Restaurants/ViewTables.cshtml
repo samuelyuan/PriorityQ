@@ -36,7 +36,7 @@
     <!-- Display Table Data -->
     <div class="col-xs-8">
         <h3>
-            Tables Available
+            Tables
             <span class="badge">
                 @ViewBag.AvailableTablesCount
             </span>
@@ -131,13 +131,13 @@
                                         @if (!currentTable.IsOccupied)
                                         {
                                             <a class="btn btn-success" href='@string.Format("/Tables/ToggleOccupied/{0}", currentTable.ID)'>
-                                                [Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                                @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                             </a>
                                         }
                                         else
                                         {
                                             <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", currentTable.ID)'>
-                                                [Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                                @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                             </a>
                                         }
 

@@ -25,15 +25,19 @@
     </h4>
 </div>
 
+@{
+    var removeModalLabel = "removeModal" + Model.ID;    
+}
+
 <div class="modal-footer">
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeModal">
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#@removeModalLabel">
         Remove
     </button>
 
     <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
 </div>
 
-<div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="@removeModalLabel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             @{

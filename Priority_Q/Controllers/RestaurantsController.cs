@@ -215,9 +215,8 @@ namespace Priority_Q.Controllers
 
             Restaurant restaurant = db.Restaurants.Find(id);
             if (!IsAuthorized(restaurant))
-            {
-                return RedirectToAction("Index", "Restaurants");
-            }
+                return RedirectToAction("CustomerView", "Restaurants", new { id = id });
+
             ViewData["Restaurant"] = restaurant;
 
             //Find all tables belonging to a restaurant 
@@ -250,9 +249,8 @@ namespace Priority_Q.Controllers
 
             Restaurant restaurant = db.Restaurants.Find(id);
             if (!IsAuthorized(restaurant))
-            {
-                return RedirectToAction("Index", "Restaurants");
-            }
+                return RedirectToAction("CustomerView", "Restaurants", new { id = id });
+
             ViewData["Restaurant"] = restaurant;
 
             //Find the most recent news item for a restaurant (usually the last element)

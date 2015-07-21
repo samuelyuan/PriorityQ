@@ -24,8 +24,8 @@
     {
         <fieldset>
             Show Reservations For Only:  @Html.DropDownList("DaySlotList")
-            <input class="btn btn-info" type="submit" value="Filter" />
-            <a class="btn btn-warning" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
+            <input class="btn btn-primary" type="submit" value="Filter" />
+            <a class="btn btn-default" href='@string.Format("/Restaurants/ViewReservations/{0}", restaurant.ID)'>
                 Show All
             </a>
         </fieldset>
@@ -51,7 +51,7 @@
             <td>
                 <!-- Table info (#, max capacity) -->
                 <span class="label label-default">#@counter</span> <br />
-                <span class="btn btn-info disabled" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
+                <span class="btn btn-default disabled" href='@string.Format("/Tables/ToggleOccupied/{0}", item.ID)'>
                     [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
                 </span>
                 <br />
@@ -68,12 +68,12 @@
                             || (ViewBag.DaySlot != "" && reservation.DaySlot.Equals(ViewBag.DaySlot)))
                         { 
                             var manageReservationModal = "manageReservationModal" + reservation.ID;
-                            <button type="button" class="label label-info" data-toggle="modal" data-target="#@manageReservationModal">
+                            <a data-toggle="modal" data-target="#@manageReservationModal">
                                 @{
                             DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
                                 }
                                 @reservation.DaySlot - @currentTime.ToString("hh:mm tt", new CultureInfo("en-US")) ("@reservation.CustomerName")
-                            </button>
+                            </a>
 
                             <div class="modal fade" id="@manageReservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                 <div class="modal-dialog" role="document">

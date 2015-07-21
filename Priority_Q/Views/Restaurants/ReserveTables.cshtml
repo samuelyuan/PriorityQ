@@ -25,7 +25,7 @@
         @Html.DropDownList("DaySlotList")
         @Html.DropDownList("TimeSlotList")
 
-        <input class="btn btn-info" type="submit" value="Find A Table" />
+        <input class="btn btn-primary" type="submit" value="Find A Table" />
     </fieldset>
 }
 
@@ -43,7 +43,9 @@
         @foreach (var item in Model)
         {
             //too late to reserve (must be done at least an hour in advance)
-            if (Math.Abs(DateTime.Parse(ViewBag.TimeSlot).Hour - ViewBag.CurrentHour) <= 1)
+            //also check to make sure it's on the same day
+            if (Math.Abs(DateTime.Parse(ViewBag.TimeSlot).Hour - ViewBag.CurrentHour) <= 1 
+                && ViewBag.DaySlot.Equals(DateTime.Today.ToString("MM/dd/yyyy")))
             {
                 continue;
             }
@@ -114,7 +116,8 @@
 
         }
 
-        @if (Math.Abs(DateTime.Parse(ViewBag.TimeSlot).Hour - ViewBag.CurrentHour) <= 1)
+        @if (Math.Abs(DateTime.Parse(ViewBag.TimeSlot).Hour - ViewBag.CurrentHour) <= 1
+            && ViewBag.DaySlot.Equals(DateTime.Today.ToString("MM/dd/yyyy")))
         {
             <tr>
                 <td>
@@ -136,7 +139,7 @@
 }
 
 <p>
-    <a class="btn btn-default" href="@String.Format("../../Restaurants/ViewTables/{0}", ViewBag.RestaurantId)">
+    <a class="btn btn-default" href="@String.Format("../../Restaurants/ViewReservations/{0}", ViewBag.RestaurantId)">
         Cancel
     </a>
 </p>
