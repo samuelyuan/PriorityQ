@@ -151,12 +151,12 @@
                                                 @foreach (var reservation in todayReservations[currentTable.ID])
                                                 {
                                                     var manageReservationModal = "manageReservationModal" + reservation.ID;
-                                                    <button type="button" class="label label-default" data-toggle="modal" data-target="#@manageReservationModal">
+                                                    <a data-toggle="modal" data-target="#@manageReservationModal">
                                                         @{
                                                     DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
                                                         }
                                                         @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
-                                                    </button>
+                                                    </a>
 
                                                     <div class="modal fade" id="@manageReservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                                         <div class="modal-dialog" role="document">

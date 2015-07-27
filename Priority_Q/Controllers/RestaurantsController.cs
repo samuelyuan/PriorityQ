@@ -236,6 +236,26 @@ namespace Priority_Q.Controllers
             ViewBag.DaySlot = (DaySlotList == null) ? "" : DaySlotList;
 
             //Find all reservations for each table
+            SortedDictionary<int, List<Priority_Q.Models.Reservation>> allReservations = new SortedDictionary<int, List<Reservation>>();
+            foreach (var table in tables)
+            {
+                ReservationDBContext reservationDB = new ReservationDBContext();
+                IEnumerable<Priority_Q.Models.Reservation> reservations = reservationDB.Reservations.Where(reservation => reservation.TableId == table.ID);
+
+                allReservations.Add(table.ID, new List<Priority_Q.Models.Reservation>());
+                foreach (var reservation in reservations)
+                {
+                    String filterDaySlot = ViewBag.DaySlot;
+                    if (filterDaySlot.Equals("") || filterDaySlot.Equals(reservation.DaySlot))
+                    {
+                        allReservations[table.ID].Add(reservation);
+                    }
+                }
+            }
+            ViewData["AllReservations"] = allReservations;
+
+
+            //Find all reservations for each table
             return View(GetAllReservations(tables));
         }
 
