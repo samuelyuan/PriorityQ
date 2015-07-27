@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Priority_Q.Models;
 using Microsoft.AspNet.Identity;
+using System.Web.Security.AntiXss;
 
 namespace Priority_Q.Views
 {
@@ -17,6 +18,7 @@ namespace Priority_Q.Views
 
         // Post:  Reservations/Confirm/?tableID=XX&timeSlot=XX&daySlot=XX
         [HttpPost]
+        [ValidateInput(false)]
         [ValidateAntiForgeryToken]
         public ActionResult Confirm([Bind(Include = "ID,TableId,DaySlot,HourSlot,MinuteSlot,CustomerName")] Reservation reservation)
         {
