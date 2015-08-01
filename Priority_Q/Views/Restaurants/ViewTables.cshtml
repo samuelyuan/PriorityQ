@@ -107,18 +107,18 @@
                 }
 
                 <!-- The table layout is supposed to match the actual layout of a restaurant-->
-                <table class="table table-striped table-hover ">
+                <table class="table">
                     @{
                         for (var r = 0; r < length; r++)
                         {
                             <tr>
                                 @for (var c = 0; c < length; c++)
                                 {
-                                    <td>
+                                    <td style="border-top: none;">
                                         @if (mapLayout[r][c] == 0)
                                         {
                                             <span class="btn btn-info disabled" style="background: transparent;">
-                                                &emsp; &emsp; &emsp; &emsp;
+                                                &emsp; &emsp; 
                                             </span>
                                             continue;
                                         }
@@ -139,43 +139,6 @@
                                             <a class="btn btn-danger" href='@string.Format("/Tables/ToggleOccupied/{0}", currentTable.ID)'>
                                                 @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                             </a>
-                                        }
-
-                                        <br />
-
-                                        <!-- Reservation Data-->
-                                        <!-- don't display empty blocks -->
-                                        @if (todayReservations[currentTable.ID].Count() > 0)
-                                        {
-                                            <span class="btn btn-default">
-                                                @foreach (var reservation in todayReservations[currentTable.ID])
-                                                {
-                                                    var manageReservationModal = "manageReservationModal" + reservation.ID;
-                                                    <a data-toggle="modal" data-target="#@manageReservationModal">
-                                                        @{
-                                                    DateTime currentTime = new DateTime().AddHours(reservation.HourSlot).AddMinutes(reservation.MinuteSlot);
-                                                        }
-                                                        @currentTime.ToString("hh:mm tt", new CultureInfo("en-US"))
-                                                    </a>
-
-                                                    <div class="modal fade" id="@manageReservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                @{
-                                                    Priority_Q.Models.Reservation currentReservation = (new Priority_Q.Models.ReservationDBContext()).Reservations.Find(reservation.ID);
-                                                                }
-                                                                @Html.Partial("~/Views/Reservations/_Manage.cshtml", currentReservation);
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="btn btn-default disabled">
-                                                None
-                                            </span>
                                         }
                                     </td>
                                 }

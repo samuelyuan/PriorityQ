@@ -62,7 +62,7 @@
                                     {
                                     <td>
                                         <a class="btn btn-success" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
-                                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                            Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                         </a>
                                     </td>
                                     }
@@ -70,7 +70,7 @@
                                     {
                                         <td>
                                             <span class="btn btn-default disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
-                                                [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                                Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                             </span>
                                         </td>
                                     }
@@ -79,7 +79,7 @@
                                 {
                                     <td>
                                         <span class="btn btn-danger disabled" href="@String.Format("../../Restaurants/AssignTable/?tableID={0}&customerID={1}", item.ID, customer.ID)">
-                                            [Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                            Max: @item.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                         </span>
                                     </td>
                                 }
