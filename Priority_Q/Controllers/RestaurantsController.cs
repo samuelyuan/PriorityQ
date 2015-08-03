@@ -282,7 +282,7 @@ namespace Priority_Q.Controllers
         }
 
         // GET: Restaurants/ViewTables/XX
-        public ActionResult ViewTables(int? id, int? GroupSizeList, String TimeSlotList, String DaySlotList, int? rowOffset, int? colOffset)
+        public ActionResult ViewTables(int? id)
         {
             if (id == null)
             {
@@ -347,9 +347,6 @@ namespace Priority_Q.Controllers
                     }
                 }
             }
-
-            //scroll the map when viewing tables
-            ViewBagSetMapOffset(rowOffset, colOffset);
 
             return View();
         }

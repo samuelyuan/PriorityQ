@@ -34,7 +34,7 @@
 
 <div class="row">
     <!-- Display Table Data -->
-    <div class="col-xs-8">
+    <div class="col-md-8">
         <h3>
             Tables
             <span class="badge">
@@ -45,49 +45,13 @@
         <hr />
 
         <!-- Navigate the map -->
-        <div class="panel panel-default">
+        <div class="panel panel-default" style="width: 75%; height: 400px; overflow: auto;">
             <div class="panel-body">
-                <div class="row">
-                    <table>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <a class="btn btn-default" href='@string.Format("/Restaurants/ViewTables/{0}?rowOffset={1}&&colOffset={2}",
-            restaurant.ID, ViewBag.RowOffset - 1, ViewBag.ColOffset)'>
-        <span class="glyphicon glyphicon-arrow-up"></span>
-    </a>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a class="btn btn-default" href='@string.Format("/Restaurants/ViewTables/{0}?rowOffset={1}&&colOffset={2}",
-            restaurant.ID, ViewBag.RowOffset, ViewBag.ColOffset - 1)'>
-                                    <span class="glyphicon glyphicon-arrow-left"></span>
-                                </a>
-                            </td>
-                            <td>
-                                <a class="btn btn-default" href='@string.Format("/Restaurants/ViewTables/{0}?rowOffset={1}&&colOffset={2}",
-            restaurant.ID, ViewBag.RowOffset + 1, ViewBag.ColOffset)'>
-                                    <span class="glyphicon glyphicon-arrow-down"></span>
-                                </a>
-                            </td>
-                            <td>
-                                <a class="btn btn-default" href='@string.Format("/Restaurants/ViewTables/{0}?rowOffset={1}&&colOffset={2}",
-            restaurant.ID, ViewBag.RowOffset, ViewBag.ColOffset + 1)'>
-                                    <span class="glyphicon glyphicon-arrow-right"></span>
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <p></p>
-
                 <!-- The data passed in is a list of tables for a restaurant -->
                 <!-- List all empty tables -->
                 @{
                     //Initialize empty layout
-                    var length = 5;
+                    var length = 10;
                     int[][] mapLayout = new int[length][];
 
                     for (int i = 0; i < length; i++)
@@ -98,11 +62,7 @@
                     //Fill in the tables
                     foreach (var item in allTables)
                     {
-                        if ((item.CoordRow - ViewBag.RowOffset >= 0) && (item.CoordRow - ViewBag.RowOffset < length)
-                && (item.CoordCol - ViewBag.ColOffset >= 0) && (item.CoordCol - ViewBag.ColOffset < length))
-                        {
-                            mapLayout[item.CoordRow - ViewBag.RowOffset][item.CoordCol - ViewBag.ColOffset] = item.ID;
-                        }
+                        mapLayout[item.CoordRow][item.CoordCol] = item.ID;
                     }
                 }
 
@@ -117,8 +77,8 @@
                                     <td style="border-top: none;">
                                         @if (mapLayout[r][c] == 0)
                                         {
-                                            <span class="btn btn-info disabled" style="background: transparent;">
-                                                &emsp; &emsp; 
+                                            <span class="btn btn-info disabled" style="border:0px solid transparent;  background: transparent;">
+                                                &emsp; &emsp;
                                             </span>
                                             continue;
                                         }
