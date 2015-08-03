@@ -29,15 +29,13 @@
 }
 
 <h2>@ViewBag.RestaurantName</h2>
-<h3>Table Layout</h3>
-<hr />
-
 <h3>
-    Total: 
-    <span class="label label-default">
+    Table Layout
+    <span class="badge">
         @ViewBag.TotalTables
-    </span>
-</h3>
+    </span>   
+ </h3>
+<hr />
 
 @{
     //Initialize empty layout
@@ -217,13 +215,13 @@
                                     if (!currentTable.IsOccupied)
                                     {
                                         <span class="btn btn-success disabled">
-                                            [Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                            Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="btn btn-danger disabled">
-                                            [Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>]
+                                            Max: @currentTable.MaxCapacity <span class="glyphicon glyphicon-user"></span>
                                         </span>
                                     }
 
