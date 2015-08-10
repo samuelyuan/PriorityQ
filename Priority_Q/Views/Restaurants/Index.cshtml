@@ -51,12 +51,14 @@ background: url('../../Content/bg-all_restaurants.jpg') center center scroll;
 @using (Html.BeginForm())
 {
     <h4>
-        @Html.TextBox("SearchString", null, new { @placeholder = "Enter Name Or Location" })
-        <input type="submit" value="Search" />
+        @Html.TextBox("SearchString", null, new { @placeholder = "Name Or Location" })
+        <button type="submit" value="Search" class="btn btn-primary">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
     </h4>
 }
 
-<table class="table table-striped table-hover ">
+<table class="table table-striped">
     @{
         var counter = 0;
     }
@@ -64,9 +66,8 @@ background: url('../../Content/bg-all_restaurants.jpg') center center scroll;
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-            </td>
-            <td>
+            <td style="border-top: none;"></td>
+            <td style="border-top: none;">
                 <p>
                     @if (Request.IsAuthenticated)
                     {
@@ -86,8 +87,6 @@ background: url('../../Content/bg-all_restaurants.jpg') center center scroll;
                     }
                 </p>
             </td>
-
-            <td></td>
         </tr>
                 counter++;
     }
