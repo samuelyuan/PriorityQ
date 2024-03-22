@@ -14,3 +14,5 @@ obj/
 
 # Database files
 *.mdf
+
+.vs/
